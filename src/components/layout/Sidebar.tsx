@@ -10,6 +10,7 @@ import {
   Books,
   Calculator,
   Plant,
+  GameController,
   ChatDots,
   Gear,
   Sparkle,
@@ -25,6 +26,7 @@ const navItems: { href: string; label: string; icon: ReactNode }[] = [
   { href: '/spelling', label: 'Spelling', icon: <Books weight="duotone" size={24} /> },
   { href: '/maths', label: 'Maths', icon: <Calculator weight="duotone" size={24} /> },
   { href: '/progress', label: 'My Garden', icon: <Plant weight="duotone" size={24} /> },
+  { href: '/games', label: 'Games', icon: <GameController weight="duotone" size={24} /> },
 ];
 
 const adminItem = { href: '/admin', label: 'Admin', icon: <Gear weight="duotone" size={20} /> };

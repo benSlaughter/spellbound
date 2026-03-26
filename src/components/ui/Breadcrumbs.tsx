@@ -19,6 +19,7 @@ const ROUTE_NAMES: Record<string, string> = {
   'river': 'Number River',
   'explorer': 'Times Tables',
   'progress': 'My Garden',
+  'games': 'Games',
   'entry': 'Add Words',
   'admin': 'Admin',
   'spellings': 'Spellings',
@@ -34,6 +35,7 @@ const ROUTE_NAMES: Record<string, string> = {
   'wordal': 'Wordal',
   'maze': 'Math Maze',
   'cascade': 'Number Cascade',
+  'game': 'Number Match',
 };
 
 export default function Breadcrumbs() {

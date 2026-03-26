@@ -305,7 +305,7 @@ function Scramble() {
       </div>
 
       {/* Answer + Scrambled Letters */}
-      <div className="flex flex-col md:flex-row md:gap-6">
+      <div className="flex flex-col gap-6">
       {/* Answer Area */}
       <div className="game-card p-6 md:flex-1">
         <p className="text-sm font-bold text-garden-text-light mb-3 text-center">

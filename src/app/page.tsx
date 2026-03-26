@@ -2,8 +2,9 @@
 
 import { motion } from 'framer-motion';
 import GameCard from '@/components/ui/GameCard';
-import { Plant, Tree, TreeEvergreen, Lightbulb, Books, Calculator, Trophy } from '@phosphor-icons/react';
+import { Plant, Tree, TreeEvergreen, Lightbulb, Books, Calculator, GameController, Trophy } from '@phosphor-icons/react';
 import { SvgDaisy, SvgTulip, SvgBluebell, SvgDaffodil, SvgLavender } from '@/components/svg';
+import Link from 'next/link';
 
 const stagger = {
   hidden: { opacity: 0 },
@@ -78,11 +79,11 @@ export default function Home() {
             color="bg-accent-light/10 border-2 border-accent-light/30"
           />
           <GameCard
-            title="My Garden"
-            description="See how much your learning garden has grown!"
-            emoji={<Plant weight="duotone" size={48} color="#66BB6A" />}
-            href="/progress"
-            color="bg-secondary/10 border-2 border-secondary/30"
+            title="Games"
+            description="Play fun games just for the joy of it!"
+            emoji={<GameController weight="duotone" size={48} color="#9C27B0" />}
+            href="/games"
+            color="bg-fun-purple/10 border-2 border-fun-purple/30"
           />
           <GameCard
             title="Challenges"
@@ -95,30 +96,32 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* Garden progress placeholder */}
-      <motion.section
-        variants={fadeUp}
-        className="game-card p-6 text-center"
-      >
-        <h2 className="text-xl font-bold text-garden-text mb-3">
-          Your Garden
-        </h2>
-        <p className="text-garden-text-light mb-4">
-          Keep learning to grow beautiful flowers and unlock achievements!
-        </p>
-        <div className="flex justify-center items-end gap-4 opacity-50 select-none">
-          <SvgBluebell size={28} />
-          <Tree weight="duotone" size={44} color="#4CAF50" />
-          <SvgDaisy size={38} color="#E91E63" />
-          <SvgDaffodil size={42} />
-          <TreeEvergreen weight="duotone" size={48} color="#2E7D32" />
-          <SvgTulip size={36} color="#AB47BC" />
-          <SvgLavender size={34} />
-        </div>
-        <p className="mt-3 text-sm text-garden-text-light">
-          Complete activities to watch your garden bloom!
-        </p>
-      </motion.section>
+      {/* Garden progress — links to My Garden */}
+      <Link href="/progress" className="block">
+        <motion.section
+          variants={fadeUp}
+          className="game-card p-6 text-center hover:shadow-md transition-shadow cursor-pointer"
+        >
+          <h2 className="text-xl font-bold text-garden-text mb-3">
+            Your Garden
+          </h2>
+          <p className="text-garden-text-light mb-4">
+            Keep learning to grow beautiful flowers and unlock achievements!
+          </p>
+          <div className="flex justify-center items-end gap-4 opacity-50 select-none">
+            <SvgBluebell size={28} />
+            <Tree weight="duotone" size={44} color="#4CAF50" />
+            <SvgDaisy size={38} color="#E91E63" />
+            <SvgDaffodil size={42} />
+            <TreeEvergreen weight="duotone" size={48} color="#2E7D32" />
+            <SvgTulip size={36} color="#AB47BC" />
+            <SvgLavender size={34} />
+          </div>
+          <p className="mt-3 text-sm text-garden-text-light">
+            Tap to see your garden grow!
+          </p>
+        </motion.section>
+      </Link>
 
       {/* Encouraging footer */}
       <motion.p

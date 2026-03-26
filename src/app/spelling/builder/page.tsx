@@ -333,7 +333,7 @@ function Builder() {
       </div>
 
       {/* Letter Boxes + Keyboard */}
-      <div className="flex flex-col md:flex-row md:gap-6">
+      <div className="flex flex-col gap-6">
       {/* Letter Boxes */}
       <div className="game-card p-6 md:flex-1">
         <div className="flex flex-wrap justify-center gap-2">
