@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import BackButton from '@/components/ui/BackButton';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
+import { Frog } from '@/components/svg';
 import { playSound } from '@/lib/sounds';
 import {
   generateQuestions,
@@ -168,13 +169,14 @@ function NumberRiver() {
             >
               <p className="text-xl font-extrabold text-primary">{feedback}</p>
               {showFrog && (
-                <motion.span
+                <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="text-4xl inline-block mt-1"
+                  className="inline-flex items-center gap-2 mt-1"
                 >
-                  🐸 Ribbit!
-                </motion.span>
+                  <Frog variant="sitting" size={28} />
+                  <span className="text-4xl font-extrabold">Ribbit!</span>
+                </motion.div>
               )}
             </motion.div>
           )}
@@ -260,13 +262,13 @@ function NumberRiver() {
                     <span className="absolute w-12 h-[2px] bg-green-700/20 rounded top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-45" />
                     <span className="relative z-10">{ans}</span>
                     {isCorrectPad && (
-                      <motion.span
+                      <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        className="absolute -top-4 text-3xl"
+                        className="absolute -top-5"
                       >
-                        🐸
-                      </motion.span>
+                        <Frog variant="jumping" size={32} />
+                      </motion.div>
                     )}
                   </motion.button>
                 );

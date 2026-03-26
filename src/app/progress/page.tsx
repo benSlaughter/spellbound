@@ -6,6 +6,16 @@ import Badge from '@/components/ui/Badge';
 import BackButton from '@/components/ui/BackButton';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { playSound } from '@/lib/sounds';
+import {
+  Cloud as SvgCloud,
+  Butterfly as SvgButterfly,
+  Bee as SvgBee,
+  Sun as SvgSun,
+  Rainbow as SvgRainbow,
+  Flower as SvgFlower,
+  Tree as SvgTree,
+  Sprout as SvgSprout,
+} from '@/components/svg';
 
 // ── Types ──
 
@@ -52,8 +62,11 @@ const popIn = {
 
 // ── Constants ──
 
-const SPELLING_FLOWERS = ['🌸', '🌻', '🌷', '🌺'];
-const MATHS_PLANTS = ['🌿', '🌴', '🌳', '🎋'];
+type FlowerVariant = 'daisy' | 'sunflower' | 'tulip' | 'rose';
+type TreeVariant = 'sapling' | 'palm' | 'oak' | 'pine';
+
+const SPELLING_FLOWERS: FlowerVariant[] = ['daisy', 'sunflower', 'tulip', 'rose'];
+const MATHS_PLANTS: TreeVariant[] = ['sapling', 'palm', 'oak', 'pine'];
 
 const CLOUD_POSITIONS = [
   { top: '8%', delay: 0, duration: 22 },
@@ -66,7 +79,7 @@ const CLOUD_POSITIONS = [
 function Cloud({ top, delay, duration }: { top: string; delay: number; duration: number }) {
   return (
     <motion.div
-      className="absolute text-3xl sm:text-4xl select-none pointer-events-none"
+      className="absolute select-none pointer-events-none"
       style={{ top }}
       initial={{ left: '-10%' }}
       animate={{ left: '110%' }}
@@ -77,7 +90,7 @@ function Cloud({ top, delay, duration }: { top: string; delay: number; duration:
         ease: 'linear',
       }}
     >
-      ☁️
+      <SvgCloud variant="medium" />
     </motion.div>
   );
 }
@@ -90,11 +103,12 @@ function Butterfly({ index }: { index: number }) {
     { left: '85%', top: '30%' },
     { left: '30%', top: '15%' },
   ];
+  const colors = ['#9C27B0', '#E91E63', '#FF9800', '#2196F3', '#4CAF50'];
   const pos = positions[index % positions.length];
 
   return (
-    <motion.span
-      className="absolute text-xl sm:text-2xl select-none pointer-events-none"
+    <motion.div
+      className="absolute select-none pointer-events-none"
       style={{ left: pos.left, top: pos.top }}
       initial={{ opacity: 0, scale: 0 }}
       animate={{
@@ -110,8 +124,8 @@ function Butterfly({ index }: { index: number }) {
         x: { duration: 4 + index * 0.7, repeat: Infinity, ease: 'easeInOut' },
       }}
     >
-      🦋
-    </motion.span>
+      <SvgButterfly color={colors[index % colors.length]} size={28} />
+    </motion.div>
   );
 }
 
@@ -124,8 +138,8 @@ function Bee({ index }: { index: number }) {
   const pos = positions[index % positions.length];
 
   return (
-    <motion.span
-      className="absolute text-lg select-none pointer-events-none"
+    <motion.div
+      className="absolute select-none pointer-events-none"
       style={{ left: pos.left, top: pos.top }}
       initial={{ opacity: 0 }}
       animate={{
@@ -139,22 +153,26 @@ function Bee({ index }: { index: number }) {
         x: { duration: 3 + index * 0.5, repeat: Infinity, ease: 'easeInOut' },
       }}
     >
-      🐝
-    </motion.span>
+      <SvgBee size={24} />
+    </motion.div>
   );
 }
 
 function GardenPlant({
-  emoji,
+  variant,
+  type,
   height,
   left,
   delay,
 }: {
-  emoji: string;
+  variant: string;
+  type: 'flower' | 'tree';
   height: number;
   left: string;
   delay: number;
 }) {
+  const clampedHeight = Math.min(height, 80);
+
   return (
     <motion.div
       className="absolute bottom-[15%] flex flex-col items-center select-none pointer-events-none"
@@ -163,40 +181,37 @@ function GardenPlant({
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay, type: 'spring', stiffness: 200, damping: 12 }}
     >
-      {/* Stem */}
       <motion.div
-        className="w-1 bg-green-500 rounded-full origin-bottom"
-        initial={{ height: 0 }}
-        animate={{ height: `${Math.min(height, 80)}px` }}
-        transition={{ delay: delay + 0.2, duration: 0.6, ease: 'easeOut' }}
-      />
-      <motion.span
-        className="text-2xl sm:text-3xl -mt-3"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
-        transition={{ delay: delay + 0.5, type: 'spring', stiffness: 300 }}
+        transition={{ delay: delay + 0.3, type: 'spring', stiffness: 300 }}
       >
-        {emoji}
-      </motion.span>
+        {type === 'flower' ? (
+          <SvgFlower variant={variant as FlowerVariant} height={clampedHeight} />
+        ) : (
+          <SvgTree variant={variant as TreeVariant} height={clampedHeight} />
+        )}
+      </motion.div>
     </motion.div>
   );
 }
 
 function Sun({ streakDays }: { streakDays: number }) {
-  const brightness = Math.min(1, 0.4 + streakDays * 0.1);
+  // Map streak: 0 days → 0.3, 5+ days → 1.0
+  const intensity = Math.min(1, 0.3 + streakDays * 0.14);
   const glowSize = Math.min(20, 8 + streakDays * 2);
 
   return (
     <motion.div
-      className="absolute top-[6%] right-[8%] text-4xl sm:text-5xl select-none pointer-events-none"
+      className="absolute top-[6%] right-[8%] select-none pointer-events-none"
       initial={{ opacity: 0, scale: 0, rotate: -180 }}
-      animate={{ opacity: brightness, scale: 1, rotate: 0 }}
+      animate={{ opacity: 1, scale: 1, rotate: 0 }}
       transition={{ delay: 0.3, type: 'spring', stiffness: 150, damping: 12 }}
       style={{
-        filter: `drop-shadow(0 0 ${glowSize}px rgba(255, 200, 0, ${brightness}))`,
+        filter: `drop-shadow(0 0 ${glowSize}px rgba(255, 200, 0, ${intensity}))`,
       }}
     >
-      ☀️
+      <SvgSun intensity={intensity} size={60} />
     </motion.div>
   );
 }
@@ -204,12 +219,12 @@ function Sun({ streakDays }: { streakDays: number }) {
 function Rainbow() {
   return (
     <motion.div
-      className="absolute top-[5%] left-[10%] text-5xl sm:text-6xl select-none pointer-events-none"
+      className="absolute top-[5%] left-[10%] select-none pointer-events-none"
       initial={{ opacity: 0, scale: 0, x: -20 }}
       animate={{ opacity: 0.85, scale: 1, x: 0 }}
       transition={{ delay: 1.5, type: 'spring', stiffness: 100, damping: 15 }}
     >
-      🌈
+      <SvgRainbow size={120} />
     </motion.div>
   );
 }
@@ -296,13 +311,13 @@ export default function ProgressPage() {
     );
 
     const flowers = spellingTypes.map((s, i) => ({
-      emoji: SPELLING_FLOWERS[i % SPELLING_FLOWERS.length],
+      variant: SPELLING_FLOWERS[i % SPELLING_FLOWERS.length],
       height: Math.min(80, 20 + s.total * 3),
       left: `${12 + i * 14}%`,
     }));
 
     const plants = mathsTypes.map((s, i) => ({
-      emoji: MATHS_PLANTS[i % MATHS_PLANTS.length],
+      variant: MATHS_PLANTS[i % MATHS_PLANTS.length],
       height: Math.min(80, 20 + s.total * 3),
       left: `${55 + i * 12}%`,
     }));
@@ -426,7 +441,8 @@ export default function ProgressPage() {
         {gardenElements.flowers.map((flower, i) => (
           <GardenPlant
             key={`flower-${i}`}
-            emoji={flower.emoji}
+            variant={flower.variant}
+            type="flower"
             height={flower.height}
             left={flower.left}
             delay={0.5 + i * 0.15}
@@ -437,7 +453,8 @@ export default function ProgressPage() {
         {gardenElements.plants.map((plant, i) => (
           <GardenPlant
             key={`plant-${i}`}
-            emoji={plant.emoji}
+            variant={plant.variant}
+            type="tree"
             height={plant.height}
             left={plant.left}
             delay={0.8 + i * 0.15}
@@ -479,30 +496,30 @@ export default function ProgressPage() {
         {/* Decorative ground flowers */}
         {!isEmptyGarden && (
           <>
-            <motion.span
-              className="absolute bottom-[13%] left-[5%] text-lg select-none pointer-events-none"
+            <motion.div
+              className="absolute bottom-[13%] left-[5%] select-none pointer-events-none"
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.7 }}
               transition={{ delay: 1.8 }}
             >
-              🌱
-            </motion.span>
-            <motion.span
-              className="absolute bottom-[14%] right-[6%] text-lg select-none pointer-events-none"
+              <SvgSprout size={20} />
+            </motion.div>
+            <motion.div
+              className="absolute bottom-[14%] right-[6%] select-none pointer-events-none"
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.7 }}
               transition={{ delay: 2.0 }}
             >
-              🌱
-            </motion.span>
-            <motion.span
-              className="absolute bottom-[15%] left-[48%] text-sm select-none pointer-events-none"
+              <SvgSprout size={20} />
+            </motion.div>
+            <motion.div
+              className="absolute bottom-[15%] left-[48%] select-none pointer-events-none"
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.6 }}
               transition={{ delay: 2.2 }}
             >
-              🍃
-            </motion.span>
+              <SvgSprout size={16} />
+            </motion.div>
           </>
         )}
       </motion.div>

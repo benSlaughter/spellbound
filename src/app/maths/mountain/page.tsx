@@ -7,6 +7,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import BackButton from '@/components/ui/BackButton';
 import Button from '@/components/ui/Button';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
+import { Bear, Flag, Signpost, Owl } from '@/components/svg';
 import { playSound } from '@/lib/sounds';
 import {
   generateQuestions,
@@ -19,7 +20,6 @@ import {
 } from '@/lib/maths-helpers';
 
 const TOTAL_STOPS = 10;
-const ANIMAL = '🐻';
 
 export default function MathMountainPage() {
   return (
@@ -205,15 +205,15 @@ function MathMountain() {
               left: `${25 + Math.sin(currentStop * 1.2) * 15 + 8}%`,
             }}
             transition={{ type: 'spring', damping: 15, stiffness: 100 }}
-            className="absolute text-3xl"
+            className="absolute"
             style={{ transform: 'translate(-50%, 50%)' }}
           >
-            {ANIMAL}
+            <Bear size={36} />
           </motion.div>
 
           {/* Flag at top */}
-          <div className="absolute top-1 left-1/2 -translate-x-1/2 text-2xl">
-            🚩
+          <div className="absolute top-1 left-1/2 -translate-x-1/2">
+            <Flag size={24} />
           </div>
         </div>
       </div>
@@ -227,7 +227,7 @@ function MathMountain() {
           className="mx-auto bg-white rounded-2xl shadow-md px-8 py-6 text-center max-w-sm w-full"
         >
           {/* Signpost */}
-          <div className="text-4xl mb-2">🪧</div>
+          <div className="mb-2 flex justify-center"><Signpost size={36} /></div>
           <p className="text-2xl font-extrabold text-garden-text mb-4">
             {question.question} = ?
           </p>
@@ -257,7 +257,7 @@ function MathMountain() {
                   exit={{ opacity: 0 }}
                   className="flex items-center justify-center gap-2"
                 >
-                  {showOwl && <span className="text-3xl">🦉</span>}
+                  {showOwl && <Owl size={32} />}
                   <p className="text-lg font-bold text-primary">{feedback}</p>
                 </motion.div>
               )}

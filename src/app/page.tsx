@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import GameCard from '@/components/ui/GameCard';
+import { Sprout, Tree, Flower } from '@/components/svg';
 
 const stagger = {
   hidden: { opacity: 0 },
@@ -104,12 +105,12 @@ export default function Home() {
         <p className="text-garden-text-light mb-4">
           Keep learning to grow beautiful flowers and unlock achievements!
         </p>
-        <div className="flex justify-center gap-4 text-4xl opacity-50 select-none">
-          <span>🌱</span>
-          <span>🌿</span>
-          <span>🌸</span>
-          <span>🌻</span>
-          <span>🌳</span>
+        <div className="flex justify-center items-end gap-4 opacity-50 select-none">
+          <Sprout size={24} />
+          <Tree variant="sapling" height={40} />
+          <Flower variant="daisy" height={35} />
+          <Flower variant="sunflower" height={40} />
+          <Tree variant="oak" height={45} />
         </div>
         <p className="mt-3 text-sm text-garden-text-light">
           Complete activities to watch your garden bloom!

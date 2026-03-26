@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -17,6 +17,20 @@ import {
   makeShuffledAnswers,
   type MathQuestion,
 } from '@/lib/maths-helpers';
+import {
+  Rainbow,
+  Sun,
+  Cloud,
+  Flower,
+  Butterfly,
+  Tree,
+  Owl,
+  Sprout,
+  Frog,
+  LilyPad,
+  Bee,
+  Bear,
+} from '@/components/svg';
 
 const GRID_SIZE = 9; // 3x3
 
@@ -24,7 +38,7 @@ interface HiddenPicture {
   name: string;
   emoji: string;
   bg: string;
-  elements: { emoji: string; style: React.CSSProperties }[];
+  render: () => React.ReactNode;
 }
 
 const PICTURES: HiddenPicture[] = [
@@ -32,71 +46,154 @@ const PICTURES: HiddenPicture[] = [
     name: 'Rainbow Scene',
     emoji: '🌈',
     bg: 'bg-gradient-to-b from-blue-200 to-green-200',
-    elements: [
-      { emoji: '🌈', style: { fontSize: '80px', position: 'absolute', top: '10%', left: '20%' } },
-      { emoji: '☀️', style: { fontSize: '50px', position: 'absolute', top: '5%', right: '10%' } },
-      { emoji: '🌸', style: { fontSize: '30px', position: 'absolute', bottom: '10%', left: '15%' } },
-      { emoji: '🌻', style: { fontSize: '35px', position: 'absolute', bottom: '10%', left: '45%' } },
-      { emoji: '🌷', style: { fontSize: '30px', position: 'absolute', bottom: '10%', right: '15%' } },
-      { emoji: '🦋', style: { fontSize: '25px', position: 'absolute', top: '40%', left: '60%' } },
-      { emoji: '☁️', style: { fontSize: '35px', position: 'absolute', top: '15%', left: '5%' } },
-    ],
+    render: () => (
+      <>
+        <div className="absolute" style={{ top: '5%', left: '15%' }}>
+          <Rainbow size={160} />
+        </div>
+        <div className="absolute" style={{ top: '3%', right: '8%' }}>
+          <Sun size={50} />
+        </div>
+        <div className="absolute" style={{ top: '12%', left: '3%' }}>
+          <Cloud variant="small" />
+        </div>
+        <div className="absolute" style={{ bottom: '5%', left: '10%' }}>
+          <Flower variant="daisy" height={50} />
+        </div>
+        <div className="absolute" style={{ bottom: '3%', left: '42%' }}>
+          <Flower variant="sunflower" height={60} />
+        </div>
+        <div className="absolute" style={{ bottom: '5%', right: '12%' }}>
+          <Flower variant="tulip" height={45} />
+        </div>
+        <div className="absolute" style={{ top: '40%', left: '58%' }}>
+          <Butterfly size={30} />
+        </div>
+      </>
+    ),
   },
   {
-    name: 'Rocket in Space',
-    emoji: '🚀',
-    bg: 'bg-gradient-to-b from-indigo-900 to-purple-900',
-    elements: [
-      { emoji: '🚀', style: { fontSize: '70px', position: 'absolute', top: '20%', left: '35%', transform: 'rotate(-30deg)' } },
-      { emoji: '⭐', style: { fontSize: '25px', position: 'absolute', top: '10%', left: '10%' } },
-      { emoji: '🌟', style: { fontSize: '20px', position: 'absolute', top: '30%', right: '15%' } },
-      { emoji: '⭐', style: { fontSize: '15px', position: 'absolute', bottom: '30%', left: '20%' } },
-      { emoji: '🌙', style: { fontSize: '40px', position: 'absolute', top: '5%', right: '10%' } },
-      { emoji: '🪐', style: { fontSize: '45px', position: 'absolute', bottom: '15%', right: '10%' } },
-      { emoji: '✨', style: { fontSize: '20px', position: 'absolute', top: '50%', left: '10%' } },
-    ],
+    name: 'Forest Scene',
+    emoji: '🌲',
+    bg: 'bg-gradient-to-b from-green-800 to-green-950',
+    render: () => (
+      <>
+        <div className="absolute" style={{ top: '5%', left: '15%' }}>
+          <Cloud variant="medium" />
+        </div>
+        <div className="absolute" style={{ bottom: '8%', left: '15%' }}>
+          <Tree variant="oak" height={120} />
+        </div>
+        <div className="absolute" style={{ bottom: '8%', right: '12%' }}>
+          <Tree variant="pine" height={100} />
+        </div>
+        <div className="absolute" style={{ bottom: '5%', left: '50%' }}>
+          <Tree variant="sapling" height={60} />
+        </div>
+        <div className="absolute" style={{ top: '22%', left: '28%' }}>
+          <Owl size={40} />
+        </div>
+        <div className="absolute" style={{ top: '12%', right: '25%' }}>
+          <Butterfly size={25} />
+        </div>
+        <div className="absolute" style={{ bottom: '3%', left: '40%' }}>
+          <Sprout size={20} />
+        </div>
+        <div className="absolute" style={{ bottom: '3%', right: '30%' }}>
+          <Sprout size={20} />
+        </div>
+      </>
+    ),
   },
   {
-    name: 'Underwater Scene',
-    emoji: '🐙',
-    bg: 'bg-gradient-to-b from-cyan-400 to-blue-600',
-    elements: [
-      { emoji: '🐙', style: { fontSize: '60px', position: 'absolute', top: '25%', left: '30%' } },
-      { emoji: '🐠', style: { fontSize: '30px', position: 'absolute', top: '15%', right: '20%' } },
-      { emoji: '🐟', style: { fontSize: '25px', position: 'absolute', bottom: '30%', left: '15%' } },
-      { emoji: '🪸', style: { fontSize: '35px', position: 'absolute', bottom: '5%', left: '25%' } },
-      { emoji: '🐚', style: { fontSize: '25px', position: 'absolute', bottom: '5%', right: '20%' } },
-      { emoji: '🫧', style: { fontSize: '20px', position: 'absolute', top: '10%', left: '15%' } },
-      { emoji: '🦀', style: { fontSize: '30px', position: 'absolute', bottom: '8%', right: '35%' } },
-    ],
+    name: 'Pond Scene',
+    emoji: '🐸',
+    bg: 'bg-gradient-to-b from-sky-300 to-teal-500',
+    render: () => (
+      <>
+        <div className="absolute" style={{ top: '5%', left: '10%' }}>
+          <Cloud variant="small" />
+        </div>
+        <div className="absolute" style={{ bottom: '25%', left: '30%' }}>
+          <LilyPad size={70} showFlower />
+        </div>
+        <div className="absolute" style={{ bottom: '18%', right: '20%' }}>
+          <LilyPad size={50} />
+        </div>
+        <div className="absolute" style={{ bottom: '30%', left: '35%' }}>
+          <Frog variant="sitting" size={50} />
+        </div>
+        <div className="absolute" style={{ bottom: '10%', right: '10%' }}>
+          <Flower variant="rose" height={55} />
+        </div>
+        <div className="absolute" style={{ top: '25%', right: '18%' }}>
+          <Bee size={25} />
+        </div>
+      </>
+    ),
   },
   {
-    name: 'Castle',
-    emoji: '🏰',
+    name: 'Garden Scene',
+    emoji: '🌻',
     bg: 'bg-gradient-to-b from-orange-200 to-green-300',
-    elements: [
-      { emoji: '🏰', style: { fontSize: '80px', position: 'absolute', top: '15%', left: '25%' } },
-      { emoji: '🌳', style: { fontSize: '40px', position: 'absolute', bottom: '10%', left: '10%' } },
-      { emoji: '🌳', style: { fontSize: '45px', position: 'absolute', bottom: '10%', right: '10%' } },
-      { emoji: '🦅', style: { fontSize: '25px', position: 'absolute', top: '10%', right: '15%' } },
-      { emoji: '⛅', style: { fontSize: '30px', position: 'absolute', top: '5%', left: '10%' } },
-      { emoji: '🚩', style: { fontSize: '20px', position: 'absolute', top: '12%', left: '42%' } },
-    ],
+    render: () => (
+      <>
+        <div className="absolute" style={{ top: '3%', right: '8%' }}>
+          <Sun size={45} intensity={0.8} />
+        </div>
+        <div className="absolute" style={{ bottom: '8%', left: '38%' }}>
+          <Flower variant="sunflower" height={80} />
+        </div>
+        <div className="absolute" style={{ bottom: '8%', left: '12%' }}>
+          <Flower variant="daisy" height={50} />
+        </div>
+        <div className="absolute" style={{ bottom: '8%', right: '12%' }}>
+          <Flower variant="tulip" height={55} />
+        </div>
+        <div className="absolute" style={{ bottom: '5%', left: '55%' }}>
+          <Flower variant="rose" height={45} />
+        </div>
+        <div className="absolute" style={{ top: '25%', left: '20%' }}>
+          <Butterfly size={30} />
+        </div>
+        <div className="absolute" style={{ top: '30%', right: '25%' }}>
+          <Bee size={25} />
+        </div>
+        <div className="absolute" style={{ bottom: '3%', left: '28%' }}>
+          <Sprout size={20} />
+        </div>
+      </>
+    ),
   },
   {
-    name: 'Flower Garden',
-    emoji: '🌺',
+    name: 'Meadow Scene',
+    emoji: '🐻',
     bg: 'bg-gradient-to-b from-yellow-100 to-green-300',
-    elements: [
-      { emoji: '🌺', style: { fontSize: '45px', position: 'absolute', top: '30%', left: '20%' } },
-      { emoji: '🌻', style: { fontSize: '50px', position: 'absolute', top: '20%', right: '20%' } },
-      { emoji: '🌷', style: { fontSize: '40px', position: 'absolute', bottom: '20%', left: '35%' } },
-      { emoji: '🌸', style: { fontSize: '35px', position: 'absolute', top: '15%', left: '45%' } },
-      { emoji: '🐝', style: { fontSize: '25px', position: 'absolute', top: '25%', right: '30%' } },
-      { emoji: '🦋', style: { fontSize: '30px', position: 'absolute', top: '10%', left: '15%' } },
-      { emoji: '🌿', style: { fontSize: '30px', position: 'absolute', bottom: '10%', left: '10%' } },
-      { emoji: '🌿', style: { fontSize: '25px', position: 'absolute', bottom: '10%', right: '10%' } },
-    ],
+    render: () => (
+      <>
+        <div className="absolute" style={{ top: '5%', left: '20%' }}>
+          <Cloud variant="large" />
+        </div>
+        <div className="absolute" style={{ bottom: '8%', left: '5%' }}>
+          <Tree variant="palm" height={90} />
+        </div>
+        <div className="absolute" style={{ bottom: '8%', right: '10%' }}>
+          <Tree variant="sapling" height={50} />
+        </div>
+        <div className="absolute" style={{ bottom: '5%', left: '45%' }}>
+          <Flower variant="tulip" height={55} />
+        </div>
+        <div className="absolute" style={{ bottom: '10%', left: '55%' }}>
+          <Bear size={45} />
+        </div>
+        <div className="absolute" style={{ top: '15%', right: '20%' }}>
+          <Butterfly size={28} color="purple" />
+        </div>
+        <div className="absolute" style={{ bottom: '3%', right: '35%' }}>
+          <Sprout size={18} />
+        </div>
+      </>
+    ),
   },
 ];
 
@@ -226,11 +323,7 @@ function PuzzlePieces() {
         <div className={`relative ${picture.bg} rounded-2xl overflow-hidden aspect-square`}>
           {/* Hidden picture underneath */}
           <div className="absolute inset-0">
-            {picture.elements.map((el, i) => (
-              <span key={i} style={el.style} className="select-none">
-                {el.emoji}
-              </span>
-            ))}
+            {picture.render()}
           </div>
 
           {/* Puzzle pieces overlay */}
