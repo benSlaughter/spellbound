@@ -4,7 +4,7 @@ import { Suspense, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
-import BackButton from '@/components/ui/BackButton';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Button from '@/components/ui/Button';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
 import { playSound } from '@/lib/sounds';
@@ -114,11 +114,11 @@ function TimesTableExplorer() {
 
   return (
     <div className="flex flex-col gap-6 pb-12">
-      <BackButton />
+      <Breadcrumbs />
 
       <div className="text-center">
         <h1 className="text-2xl sm:text-3xl font-extrabold text-garden-text">
-          🔍 Times Table Explorer
+          Times Table Explorer
         </h1>
         <p className="text-garden-text-light mt-1">
           Tap any cell to explore — no wrong answers here!
@@ -145,20 +145,22 @@ function TimesTableExplorer() {
         ))}
       </div>
 
-      {/* Current fact display */}
-      <AnimatePresence mode="wait">
-        {fact && (
-          <motion.div
-            key={fact}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            className="text-center text-2xl font-extrabold text-primary bg-primary/10 rounded-2xl py-3 px-6 mx-auto"
-          >
-            {fact}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Current fact display — fixed height to prevent layout shift */}
+      <div className="min-h-[52px] flex items-center justify-center">
+        <AnimatePresence mode="wait">
+          {fact && (
+            <motion.div
+              key={fact}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              className="text-center text-2xl font-extrabold text-primary bg-primary/10 rounded-2xl py-3 px-6"
+            >
+              {fact}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* Pattern legend */}
       {mode === 'pattern' && (
@@ -239,7 +241,7 @@ function TimesTableExplorer() {
                             transition-all duration-150 cursor-pointer
                             flex items-center justify-center
                             ${hidden ? 'bg-secondary/60 text-secondary-dark hover:bg-secondary' : cellColor(value)}
-                            ${isExactCell ? 'ring-2 ring-primary scale-110 z-10' : ''}
+                            ${isExactCell ? 'ring-2 ring-primary z-10' : ''}
                             ${isHighlightedCell && !isExactCell ? 'brightness-110 ring-1 ring-accent-light' : ''}
                             ${patternClass}
                           `}

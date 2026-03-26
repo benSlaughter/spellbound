@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import BackButton from '@/components/ui/BackButton';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
 import { playSound } from '@/lib/sounds';
@@ -302,7 +302,7 @@ export default function WordSearchPage() {
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col items-center justify-center min-h-[60vh] gap-6"
       >
-        <BackButton />
+        <Breadcrumbs />
         <div className="game-card p-10 text-center max-w-md">
           <span className="text-6xl block mb-4">🌱</span>
           <h2 className="text-2xl font-extrabold text-garden-text mb-3">No words to practise!</h2>
@@ -324,14 +324,14 @@ export default function WordSearchPage() {
       className="flex flex-col gap-5 max-w-3xl mx-auto"
     >
       <div className="flex items-center justify-between">
-        <BackButton />
+        <Breadcrumbs />
         <div className="bg-primary-light/20 px-4 py-2 rounded-full font-bold text-garden-text">
           {foundWords.size} of {placedWords.length} found
         </div>
       </div>
 
       <div className="text-center">
-        <h1 className="text-3xl font-extrabold text-garden-text">🧩 Word Search</h1>
+        <h1 className="text-3xl font-extrabold text-garden-text">Word Search</h1>
         <p className="mt-1 text-garden-text-light">
           Click the first letter, then the last letter of each word!
         </p>

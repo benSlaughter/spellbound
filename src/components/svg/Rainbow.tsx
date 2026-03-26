@@ -59,15 +59,6 @@ export function Rainbow({ size = 200, className }: RainbowProps) {
         />
       </g>
 
-      {/* Soft cloud at left base */}
-      <ellipse cx="16" cy="92" rx="14" ry="7" fill="white" opacity="0.8" />
-      <ellipse cx="8" cy="90" rx="8" ry="6" fill="white" opacity="0.7" />
-      <ellipse cx="24" cy="90" rx="10" ry="6" fill="white" opacity="0.7" />
-
-      {/* Soft cloud at right base */}
-      <ellipse cx="184" cy="92" rx="14" ry="7" fill="white" opacity="0.8" />
-      <ellipse cx="176" cy="90" rx="8" ry="6" fill="white" opacity="0.7" />
-      <ellipse cx="192" cy="90" rx="10" ry="6" fill="white" opacity="0.7" />
     </svg>
   );
 }

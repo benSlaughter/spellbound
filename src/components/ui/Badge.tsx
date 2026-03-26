@@ -10,13 +10,15 @@ export interface BadgeProps {
   title: string;
   /** Whether the achievement has been earned (default: false) */
   unlocked?: boolean;
+  /** Description of how to unlock the achievement */
+  description?: string;
 }
 
 /**
  * A circular achievement badge that shows an emoji when unlocked
  * or a "?" when locked. Includes a spring animation on unlock.
  */
-export default function Badge({ emoji, title, unlocked = false }: BadgeProps) {
+export default function Badge({ emoji, title, unlocked = false, description }: BadgeProps) {
   return (
     <motion.div
       initial={unlocked ? { scale: 0 } : false}
@@ -39,6 +41,7 @@ export default function Badge({ emoji, title, unlocked = false }: BadgeProps) {
               : 'bg-gray-200 text-gray-400'
           }
         `}
+        {...(!unlocked && { title: description || title })}
       >
         {unlocked ? emoji : '?'}
       </div>

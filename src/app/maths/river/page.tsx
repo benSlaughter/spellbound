@@ -4,7 +4,7 @@ import { Suspense, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
-import BackButton from '@/components/ui/BackButton';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
 import { Frog } from '@/components/svg';
 import { playSound } from '@/lib/sounds';
@@ -106,7 +106,7 @@ function NumberRiver() {
   if (questions.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 py-12">
-        <BackButton />
+        <Breadcrumbs />
         <p className="text-garden-text-light text-lg">
           No questions to show — go back and pick some tables! 🔢
         </p>
@@ -117,7 +117,7 @@ function NumberRiver() {
   if (finished) {
     return (
       <div className="flex flex-col items-center gap-6 py-12">
-        <BackButton />
+        <Breadcrumbs />
         <CelebrationOverlay
           show={true}
           message="You crossed the river! 🌊🐸"
@@ -132,12 +132,12 @@ function NumberRiver() {
 
   return (
     <div className="flex flex-col gap-6 pb-12 min-h-[80vh]">
-      <BackButton />
+      <Breadcrumbs />
 
       {/* Progress */}
       <div className="text-center">
         <h1 className="text-2xl sm:text-3xl font-extrabold text-garden-text">
-          🐸 Number River
+          Number River
         </h1>
         <p className="text-sm text-garden-text-light mt-1">
           Lily pad {currentIndex + 1} of {questions.length} — Hop across!

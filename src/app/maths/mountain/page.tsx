@@ -4,7 +4,7 @@ import { Suspense, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
-import BackButton from '@/components/ui/BackButton';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Button from '@/components/ui/Button';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
 import { Bear, Flag, Signpost, Owl } from '@/components/svg';
@@ -100,7 +100,7 @@ function MathMountain() {
   if (questions.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 py-12">
-        <BackButton />
+        <Breadcrumbs />
         <p className="text-garden-text-light text-lg">
           No questions to show — go back and pick some tables! 🔢
         </p>
@@ -111,7 +111,7 @@ function MathMountain() {
   if (finished) {
     return (
       <div className="flex flex-col items-center gap-6 py-12">
-        <BackButton />
+        <Breadcrumbs />
         <CelebrationOverlay
           show={true}
           message="You reached the summit! 🏔️⭐"
@@ -129,11 +129,11 @@ function MathMountain() {
 
   return (
     <div className="flex flex-col gap-4 pb-12">
-      <BackButton />
+      <Breadcrumbs />
 
       <div className="text-center">
         <h1 className="text-2xl sm:text-3xl font-extrabold text-garden-text">
-          🏔️ Math Mountain
+          Math Mountain
         </h1>
         <p className="text-sm text-garden-text-light mt-1">
           Stop {currentStop + 1} of {TOTAL_STOPS} — Keep climbing!
@@ -174,8 +174,12 @@ function MathMountain() {
           {/* Waypoints */}
           {Array.from({ length: TOTAL_STOPS }).map((_, i) => {
             const stopPercent = (i / (TOTAL_STOPS - 1)) * 100;
+            // Mountain triangle is centered, gets narrower toward top
             const bottom = 8 + (stopPercent * 0.82);
-            const leftOffset = 25 + Math.sin(i * 1.2) * 15;
+            // Calculate how wide the mountain is at this height (% from center)
+            const widthAtHeight = 50 - (stopPercent * 0.45);
+            // Zigzag left-right up the mountain, staying within the triangle
+            const leftOffset = 50 + (i % 2 === 0 ? -1 : 1) * (widthAtHeight * 0.5);
             const reached = i <= currentStop;
 
             return (
@@ -202,7 +206,7 @@ function MathMountain() {
           <motion.div
             animate={{
               bottom: `${8 + (progressPercent * 0.82)}%`,
-              left: `${25 + Math.sin(currentStop * 1.2) * 15 + 8}%`,
+              left: `${50 + (currentStop % 2 === 0 ? -1 : 1) * ((50 - progressPercent * 0.45) * 0.5) + 4}%`,
             }}
             transition={{ type: 'spring', damping: 15, stiffness: 100 }}
             className="absolute"

@@ -1,28 +1,8 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import Breadcrumbs from './Breadcrumbs';
 
 /**
- * An animated back button that navigates to the previous page.
- * Uses Framer Motion for a tap scale animation.
+ * @deprecated Use Breadcrumbs instead.
  */
-export default function BackButton() {
-  const router = useRouter();
-
-  return (
-    <motion.button
-      whileTap={{ scale: 0.93 }}
-      onClick={() => router.back()}
-      className="
-        inline-flex items-center gap-2 px-4 py-2
-        text-garden-text-light font-bold rounded-xl
-        hover:bg-primary-light/20 transition-colors
-        min-h-[44px] cursor-pointer
-      "
-    >
-      <span className="text-xl">←</span>
-      <span>Back</span>
-    </motion.button>
-  );
-}
+export default Breadcrumbs;

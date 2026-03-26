@@ -44,7 +44,7 @@ export default function GameCard({
       `}
     >
       <span className="text-5xl" role="img" aria-hidden="true">
-        {locked ? '🔒' : emoji}
+        {emoji}
       </span>
 
       <h3 className="text-xl font-extrabold text-garden-text">{title}</h3>

@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import BackButton from '@/components/ui/BackButton';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Button from '@/components/ui/Button';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
 import { playSound } from '@/lib/sounds';
@@ -93,11 +93,11 @@ export default function EntryPage() {
       animate={{ opacity: 1, y: 0 }}
       className="flex flex-col gap-6 max-w-2xl mx-auto"
     >
-      <BackButton />
+      <Breadcrumbs />
 
       <div className="text-center">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-garden-text">
-          ✏️ Add This Week&apos;s Words
+          Add This Week&apos;s Words
         </h1>
         <p className="mt-2 text-lg text-garden-text-light">
           Type your spelling words below and watch your garden grow!

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import GameCard from '@/components/ui/GameCard';
-import BackButton from '@/components/ui/BackButton';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Link from 'next/link';
 
@@ -111,7 +111,7 @@ export default function SpellingHub() {
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col items-center justify-center min-h-[60vh] gap-6"
       >
-        <BackButton />
+        <Breadcrumbs />
         <div className="game-card p-10 text-center max-w-md">
           <span className="text-6xl block mb-4">🌱</span>
           <h2 className="text-2xl font-extrabold text-garden-text mb-3">
@@ -139,12 +139,12 @@ export default function SpellingHub() {
       className="flex flex-col gap-8"
     >
       <motion.div variants={fadeUp} className="flex items-center gap-3">
-        <BackButton />
+        <Breadcrumbs />
       </motion.div>
 
       <motion.section variants={fadeUp} className="text-center">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-garden-text">
-          📚 Spelling Practice
+          Spelling Practice
         </h1>
         {list && (
           <div className="mt-3 inline-flex items-center gap-2 bg-primary-light/20 px-4 py-2 rounded-full">

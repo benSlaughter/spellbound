@@ -97,16 +97,9 @@ body {
   box-shadow:
     0 4px 6px -1px rgba(62, 39, 35, 0.08),
     0 2px 4px -2px rgba(62, 39, 35, 0.05);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+
 }
-.game-card:hover {
-  transform: translateY(-4px);
-  box-shadow:
-    0 12px 24px -4px rgba(62, 39, 35, 0.12),
-    0 4px 8px -2px rgba(62, 39, 35, 0.06);
-}
+
 
 .btn-primary {
   display: inline-flex;

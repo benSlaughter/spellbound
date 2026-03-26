@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import GameCard from '@/components/ui/GameCard';
-import BackButton from '@/components/ui/BackButton';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import type { Difficulty } from '@/lib/maths-helpers';
 
 const STORAGE_KEY = 'spellbound-maths-tables';
@@ -122,13 +122,13 @@ export default function MathsHub() {
       className="flex flex-col gap-8 pb-12"
     >
       <motion.div variants={fadeUp}>
-        <BackButton />
+        <Breadcrumbs />
       </motion.div>
 
       {/* Header */}
       <motion.section variants={fadeUp} className="text-center">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-garden-text">
-          🔢 Maths Garden
+          Maths Garden
         </h1>
         <p className="mt-2 text-garden-text-light text-lg">
           Pick your tables, choose a game, and have fun!

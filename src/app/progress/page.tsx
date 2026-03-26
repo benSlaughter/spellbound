@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Badge from '@/components/ui/Badge';
-import BackButton from '@/components/ui/BackButton';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { playSound } from '@/lib/sounds';
 import {
@@ -171,7 +171,9 @@ function GardenPlant({
   left: string;
   delay: number;
 }) {
-  const clampedHeight = Math.min(height, 80);
+  const clampedHeight = type === 'flower'
+    ? Math.min(height, 70)
+    : Math.min(height, 140);
 
   return (
     <motion.div
@@ -219,12 +221,13 @@ function Sun({ streakDays }: { streakDays: number }) {
 function Rainbow() {
   return (
     <motion.div
-      className="absolute top-[5%] left-[10%] select-none pointer-events-none"
-      initial={{ opacity: 0, scale: 0, x: -20 }}
-      animate={{ opacity: 0.85, scale: 1, x: 0 }}
+      className="absolute left-1/2 -translate-x-1/2 select-none pointer-events-none"
+      style={{ top: '52%' }}
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ opacity: 0.85, scale: 1 }}
       transition={{ delay: 1.5, type: 'spring', stiffness: 100, damping: 15 }}
     >
-      <SvgRainbow size={120} />
+      <SvgRainbow size={200} />
     </motion.div>
   );
 }
@@ -312,13 +315,13 @@ export default function ProgressPage() {
 
     const flowers = spellingTypes.map((s, i) => ({
       variant: SPELLING_FLOWERS[i % SPELLING_FLOWERS.length],
-      height: Math.min(80, 20 + s.total * 3),
+      height: Math.min(70, 40 + s.total * 3),
       left: `${12 + i * 14}%`,
     }));
 
     const plants = mathsTypes.map((s, i) => ({
       variant: MATHS_PLANTS[i % MATHS_PLANTS.length],
-      height: Math.min(80, 20 + s.total * 3),
+      height: Math.min(140, 80 + s.total * 3),
       left: `${55 + i * 12}%`,
     }));
 
@@ -333,24 +336,6 @@ export default function ProgressPage() {
     return { flowers, plants, butterflyCount, showBees, showRainbow };
   }, [progress, achievements]);
 
-  const encouragement = useMemo(() => {
-    if (!progress) return 'Welcome to your garden! Play some games to help it grow! 🌻';
-    const unlockedCount = achievements?.filter((a) => a.unlocked).length ?? 0;
-
-    if (progress.totalGamesPlayed === 0) {
-      return 'Welcome to your garden! Play some games to help it grow! 🌻';
-    }
-    if (progress.streakDays >= 3) {
-      return `You've been practising for ${progress.streakDays} days in a row! Keep it up! 🌟`;
-    }
-    if (unlockedCount >= 5) {
-      return 'Look at all your badges! You\'re a super learner! 🏆';
-    }
-    if (progress.streakDays > 0) {
-      return `You've been practising for ${progress.streakDays} day${progress.streakDays > 1 ? 's' : ''} in a row! Keep it up! 🌟`;
-    }
-    return 'Every time you play, your garden grows! 🌱';
-  }, [progress, achievements]);
 
   const isEmptyGarden =
     progress !== null && progress.totalGamesPlayed === 0;
@@ -373,7 +358,7 @@ export default function ProgressPage() {
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
         <span className="text-6xl">🌧️</span>
         <p className="text-garden-text font-bold text-xl text-center">{error}</p>
-        <BackButton />
+        <Breadcrumbs />
       </div>
     );
   }
@@ -387,9 +372,9 @@ export default function ProgressPage() {
     >
       {/* Header */}
       <motion.div variants={fadeUp} className="flex items-center gap-3">
-        <BackButton />
+        <Breadcrumbs />
         <h1 className="text-3xl sm:text-4xl font-extrabold text-garden-text">
-          My Garden <span className="inline-block">🌱</span>
+          My Garden
         </h1>
       </motion.div>
 
@@ -528,7 +513,7 @@ export default function ProgressPage() {
       {progress && (
         <motion.section variants={fadeUp}>
           <h2 className="text-xl font-bold text-garden-text mb-4">
-            How your garden is growing 🌻
+            How your garden is growing
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <StatCard
@@ -564,7 +549,7 @@ export default function ProgressPage() {
       {achievements && (
         <motion.section variants={fadeUp}>
           <h2 className="text-xl font-bold text-garden-text mb-4">
-            My Badges 🏅
+            My Badges
           </h2>
           <motion.div
             className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 sm:gap-6"
@@ -588,6 +573,7 @@ export default function ProgressPage() {
                     emoji={achievement.emoji}
                     title={achievement.title}
                     unlocked={achievement.unlocked}
+                    description={achievement.description}
                   />
                   {/* Tooltip for locked badges */}
                   {!achievement.unlocked && (
@@ -599,7 +585,7 @@ export default function ProgressPage() {
                       transition-opacity duration-200 pointer-events-none
                       shadow-md
                     ">
-                      Keep playing to unlock!
+                      {achievement.description || 'Keep playing to unlock!'}
                       <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-garden-text" />
                     </div>
                   )}
@@ -629,13 +615,7 @@ export default function ProgressPage() {
         </motion.section>
       )}
 
-      {/* ── Encouragement ── */}
-      <motion.div
-        variants={fadeUp}
-        className="game-card p-6 text-center bg-primary-light/10 border border-primary-light/30"
-      >
-        <p className="text-lg font-bold text-garden-text">{encouragement}</p>
-      </motion.div>
+
     </motion.div>
   );
 }
