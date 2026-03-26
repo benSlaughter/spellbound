@@ -79,16 +79,17 @@ export default function MathsHub() {
   const [selectedTables, setSelectedTables] = useState<number[]>(ALL_TABLES);
   const [enabledDifficulties, setEnabledDifficulties] = useState<string[]>(['seedling', 'sapling', 'tree', 'mighty_oak']);
   const [tablesLoaded, setTablesLoaded] = useState(false);
-  const [difficulty, setDifficulty] = useState<Difficulty>(() => {
-    if (typeof window === 'undefined') return 'sapling';
+  const [difficulty, setDifficulty] = useState<Difficulty>('sapling');
+
+  // Restore saved difficulty from localStorage after mount (avoids hydration mismatch)
+  useEffect(() => {
     try {
-      const savedDiff = localStorage.getItem(DIFF_KEY);
-      if (savedDiff && ['seedling', 'sapling', 'tree', 'mighty_oak'].includes(savedDiff)) {
-        return savedDiff as Difficulty;
+      const saved = localStorage.getItem(DIFF_KEY);
+      if (saved && ['seedling', 'sapling', 'tree', 'mighty_oak'].includes(saved)) {
+        setDifficulty(saved as Difficulty);
       }
     } catch { /* ignore */ }
-    return 'sapling';
-  });
+  }, []);
 
   useEffect(() => {
     fetch('/api/maths/tables')
@@ -99,19 +100,19 @@ export default function MathsHub() {
         }
         if (Array.isArray(data.difficulties) && data.difficulties.length > 0) {
           setEnabledDifficulties(data.difficulties);
-          // If current difficulty is not enabled, switch to first enabled
-          if (!data.difficulties.includes(difficulty)) {
-            setDifficulty(data.difficulties[0] as Difficulty);
-          }
         }
       })
       .catch(() => {})
       .finally(() => setTablesLoaded(true));
   }, []);
 
+  // Sync difficulty to localStorage and auto-correct if not enabled
   useEffect(() => {
+    if (tablesLoaded && !enabledDifficulties.includes(difficulty)) {
+      setDifficulty(enabledDifficulties[0] as Difficulty);
+    }
     localStorage.setItem(DIFF_KEY, difficulty);
-  }, [difficulty]);
+  }, [difficulty, tablesLoaded, enabledDifficulties]);
 
   const tablesParam = [...selectedTables].sort((a, b) => a - b).join(',');
   const queryString = `?tables=${tablesParam}&difficulty=${difficulty}`;
@@ -137,19 +138,14 @@ export default function MathsHub() {
         </p>
       </motion.section>
 
-      {/* Active tables note */}
-      {tablesLoaded && (
-        <motion.section variants={fadeUp} className="text-center">
-          <p className="text-sm text-garden-text-light">
-            Practising tables: {[...selectedTables].sort((a, b) => a - b).join(', ')}
-          </p>
-        </motion.section>
-      )}
-
       {/* Difficulty */}
       <motion.section variants={fadeUp} className="bg-garden-card rounded-2xl p-6 shadow-sm">
         <h2 className="text-xl font-bold text-garden-text mb-4">Difficulty Level</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className={`grid gap-3 ${
+          enabledDifficulties.length <= 2 ? 'grid-cols-1 sm:grid-cols-2' :
+          enabledDifficulties.length === 3 ? 'grid-cols-1 sm:grid-cols-3' :
+          'grid-cols-2 sm:grid-cols-4'
+        }`}>
           {DIFFICULTIES.filter((d) => enabledDifficulties.includes(d.key)).map((d) => {
             const active = difficulty === d.key;
             return (

@@ -198,8 +198,8 @@ function NumberBubbles() {
                   }}
                   exit={{ opacity: 0, scale: 1.5 }}
                   transition={{
-                    y: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' },
-                    x: { duration: 3, repeat: Infinity, ease: 'easeInOut' },
+                    y: { type: 'tween', duration: 2.5, repeat: Infinity, ease: 'easeInOut' },
+                    x: { type: 'tween', duration: 3, repeat: Infinity, ease: 'easeInOut' },
                     scale: { duration: 0.3 },
                     opacity: { duration: 0.3 },
                   }}

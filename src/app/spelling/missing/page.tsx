@@ -5,9 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
-import { playSound } from '@/lib/sounds';
+import Button from '@/components/ui/Button';
+import { playSound, speakWord } from '@/lib/sounds';
 import Link from 'next/link';
-import { Plant, PencilSimple, Lightbulb, Sparkle, Trophy } from '@phosphor-icons/react';
+import { Plant, PencilSimple, Lightbulb, Sparkle, Trophy, SpeakerHigh } from '@phosphor-icons/react';
 
 interface SpellingWord {
   id: number;
@@ -79,12 +80,12 @@ export default function MissingLettersPage() {
   };
 
   useEffect(() => {
-    fetch('/api/spellings?active=true')
+    const listId = new URLSearchParams(window.location.search).get('listId'); fetch(listId ? `/api/spellings/${listId}` : '/api/spellings?active=true')
       .then((res) => {
         if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
         return res.json();
       })
-      .then((data: SpellingList[]) => {
+      .then((raw) => { const data: SpellingList[] = Array.isArray(raw) ? raw : [raw];
         if (data.length > 0 && data[0].words.length > 0) {
           setList(data[0]);
           setSlots(generateBlanks(data[0].words[0].word));
@@ -144,7 +145,7 @@ export default function MissingLettersPage() {
             result: 'correct',
           }),
         })
-          .then(() => fetch('/api/achievements', { method: 'POST' }))
+          .then(() => fetch('/api/achievements', { method: 'POST', headers: { 'Content-Type': 'application/json' } }))
           .catch((err) => console.error('Failed to record progress:', err));
 
         setTimeout(() => {
@@ -238,7 +239,7 @@ export default function MissingLettersPage() {
                 animate={{
                   opacity: 1,
                   y: 0,
-                  scale: isCorrect ? [1, 1.15, 1] : 1,
+                  scale: isCorrect ? 1.15 : 1,
                   x: shakeIdx === slot.index ? [0, -6, 6, -6, 6, 0] : 0,
                 }}
                 transition={{
@@ -289,17 +290,18 @@ export default function MissingLettersPage() {
         </div>
       </div>
 
-      {/* Hint */}
-      {currentWord?.hint && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center"
-        >
-          <span className="inline-flex items-center gap-2 bg-secondary/20 px-4 py-2 rounded-full text-garden-text font-semibold">
-            <Lightbulb weight="duotone" size={20} color="#FFD54F" /> {currentWord.hint}
-          </span>
-        </motion.div>
+      {/* Hint + Hear word */}
+      {currentWord && !isCorrect && (
+        <div className="flex flex-col items-center gap-3">
+          {currentWord.hint && (
+            <span className="inline-flex items-center gap-2 bg-secondary/20 px-4 py-2 rounded-full text-garden-text font-semibold">
+              <Lightbulb weight="duotone" size={20} color="#FFD54F" /> {currentWord.hint}
+            </span>
+          )}
+          <Button variant="secondary" size="md" icon={<SpeakerHigh weight="duotone" size={20} />} onClick={() => speakWord(currentWord.word)}>
+            Hear word
+          </Button>
+        </div>
       )}
 
       {/* Encouragement */}
@@ -309,10 +311,10 @@ export default function MissingLettersPage() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
-            className="text-center"
+            className="text-center flex items-center justify-center gap-2"
           >
             <span className="text-3xl font-extrabold text-primary">{encouragement}</span>
-            <Sparkle weight="duotone" size={28} color="#FFD54F" className="ml-2" />
+            <Sparkle weight="duotone" size={28} color="#FFD54F" />
           </motion.div>
         )}
       </AnimatePresence>

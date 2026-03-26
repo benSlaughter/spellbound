@@ -26,13 +26,13 @@ export async function GET(request: NextRequest) {
     if (activeOnly) {
       lists = db
         .prepare(
-          "SELECT * FROM spelling_lists WHERE is_active = 1 AND archived = 0 ORDER BY created_at DESC"
+          "SELECT * FROM spelling_lists WHERE is_active = 1 AND archived = 0 ORDER BY created_at DESC, id DESC"
         )
         .all() as SpellingList[];
     } else {
       lists = db
         .prepare(
-          "SELECT * FROM spelling_lists WHERE archived = 0 ORDER BY created_at DESC"
+          "SELECT * FROM spelling_lists WHERE archived = 0 ORDER BY created_at DESC, id DESC LIMIT 5"
         )
         .all() as SpellingList[];
     }

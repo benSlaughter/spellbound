@@ -187,3 +187,14 @@ export function playSound(name: SoundName): void {
       break;
   }
 }
+
+/** Speaks a word aloud using the Web Speech API. */
+export function speakWord(word: string): void {
+  if (typeof window === 'undefined' || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(word);
+  utterance.rate = 0.75;
+  utterance.pitch = 1.0;
+  utterance.lang = 'en-GB';
+  window.speechSynthesis.speak(utterance);
+}

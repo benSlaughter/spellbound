@@ -238,7 +238,7 @@ export async function recordProgress(
       body: JSON.stringify({ activity_type: activityType, activity_ref: activityRef, result }),
     });
     if (!res.ok) console.error('Failed to record progress:', res.status);
-    await fetch('/api/achievements', { method: 'POST' });
+    await fetch('/api/achievements', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
   } catch (err) {
     console.error('Failed to record progress:', err);
   }

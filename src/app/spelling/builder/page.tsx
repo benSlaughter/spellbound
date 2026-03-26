@@ -85,12 +85,12 @@ export default function BuilderPage() {
   };
 
   useEffect(() => {
-    fetch('/api/spellings?active=true')
+    const listId = new URLSearchParams(window.location.search).get('listId'); fetch(listId ? `/api/spellings/${listId}` : '/api/spellings?active=true')
       .then((res) => {
         if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
         return res.json();
       })
-      .then((data: SpellingList[]) => {
+      .then((raw) => { const data: SpellingList[] = Array.isArray(raw) ? raw : [raw];
         if (data.length > 0 && data[0].words.length > 0) {
           setList(data[0]);
         } else {
@@ -157,7 +157,7 @@ export default function BuilderPage() {
             result,
           }),
         })
-          .then(() => fetch('/api/achievements', { method: 'POST' }))
+          .then(() => fetch('/api/achievements', { method: 'POST', headers: { 'Content-Type': 'application/json' } }))
           .catch((err) => console.error('Failed to record progress:', err));
 
         setTimeout(advanceToNext, 2000);
@@ -195,7 +195,7 @@ export default function BuilderPage() {
                 result: 'helped',
               }),
             })
-              .then(() => fetch('/api/achievements', { method: 'POST' }))
+              .then(() => fetch('/api/achievements', { method: 'POST', headers: { 'Content-Type': 'application/json' } }))
               .catch((err) => console.error('Failed to record progress:', err));
             setTimeout(advanceToNext, 2000);
           }
@@ -261,7 +261,7 @@ export default function BuilderPage() {
           className="flex justify-center"
           initial={{ scale: 0.9 }}
           animate={{ scale: [1, 1.05, 1] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+          transition={{ type: 'tween', duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
         >
           <Button
             variant="primary"
@@ -306,7 +306,7 @@ export default function BuilderPage() {
                 animate={{
                   opacity: 1,
                   y: 0,
-                  scale: isCorrect ? [1, 1.15, 1] : 1,
+                  scale: isCorrect ? 1.15 : 1,
                   x: shakePos && isCurrentPos ? [0, -5, 5, -5, 5, 0] : 0,
                 }}
                 transition={{
@@ -343,8 +343,7 @@ export default function BuilderPage() {
             exit={{ opacity: 0 }}
             className="text-center"
           >
-            <span className="text-3xl font-extrabold text-primary">{encouragement}</span>
-            <Sparkle weight="duotone" size={28} color="#FFD54F" className="ml-2" />
+
           </motion.div>
         )}
       </AnimatePresence>

@@ -82,12 +82,12 @@ export default function MemoryMatchPage() {
   const [totalPairs, setTotalPairs] = useState(0);
 
   useEffect(() => {
-    fetch('/api/spellings?active=true')
+    const listId = new URLSearchParams(window.location.search).get('listId'); fetch(listId ? `/api/spellings/${listId}` : '/api/spellings?active=true')
       .then((res) => {
         if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
         return res.json();
       })
-      .then((data: SpellingList[]) => {
+      .then((raw) => { const data: SpellingList[] = Array.isArray(raw) ? raw : [raw];
         if (data.length > 0 && data[0].words.length > 0) {
           setList(data[0]);
           // Set up cards
@@ -161,7 +161,7 @@ export default function MemoryMatchPage() {
                 result: 'correct',
               }),
             })
-              .then(() => fetch('/api/achievements', { method: 'POST' }))
+              .then(() => fetch('/api/achievements', { method: 'POST', headers: { 'Content-Type': 'application/json' } }))
               .catch((err) => console.error('Failed to record progress:', err));
 
             setTimeout(() => setMatchMessage(''), 1500);

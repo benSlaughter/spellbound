@@ -6,9 +6,9 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
 import Button from '@/components/ui/Button';
-import { playSound } from '@/lib/sounds';
+import { playSound, speakWord } from '@/lib/sounds';
 import Link from 'next/link';
-import { Plant, PencilSimple, Lightbulb, Sparkle, Trophy } from '@phosphor-icons/react';
+import { Plant, PencilSimple, Lightbulb, Sparkle, Trophy, SpeakerHigh } from '@phosphor-icons/react';
 
 interface SpellingWord {
   id: number;
@@ -94,6 +94,7 @@ export default function ScramblePage() {
   const [encouragement, setEncouragement] = useState('');
   const [showFinal, setShowFinal] = useState(false);
   const [revealedCount, setRevealedCount] = useState(0);
+  const [hintCount, setHintCount] = useState(0);
   const ctxRef = useRef<{ list: SpellingList; wordIndex: number } | null>(null);
   const hintRef = useRef(false);
 
@@ -111,15 +112,16 @@ export default function ScramblePage() {
     setUsedHint(false);
     setIsCorrect(false);
     setRevealedCount(0);
+    setHintCount(0);
   };
 
   useEffect(() => {
-    fetch('/api/spellings?active=true')
+    const listId = new URLSearchParams(window.location.search).get('listId'); fetch(listId ? `/api/spellings/${listId}` : '/api/spellings?active=true')
       .then((res) => {
         if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
         return res.json();
       })
-      .then((data: SpellingList[]) => {
+      .then((raw) => { const data: SpellingList[] = Array.isArray(raw) ? raw : [raw];
         if (data.length > 0 && data[0].words.length > 0) {
           setList(data[0]);
           // Initialize first word
@@ -155,7 +157,7 @@ export default function ScramblePage() {
         result,
       }),
     })
-      .then(() => fetch('/api/achievements', { method: 'POST' }))
+      .then(() => fetch('/api/achievements', { method: 'POST', headers: { 'Content-Type': 'application/json' } }))
       .catch((err) => console.error('Failed to record progress:', err));
 
     setTimeout(() => {
@@ -191,8 +193,9 @@ export default function ScramblePage() {
   };
 
   const useHint = () => {
-    if (!currentWord || isCorrect) return;
+    if (!currentWord || isCorrect || hintCount >= 3) return;
     setUsedHint(true);
+    setHintCount((prev) => prev + 1);
     playSound('pop');
 
     const word = currentWord.word;
@@ -278,7 +281,7 @@ export default function ScramblePage() {
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{
                   opacity: 1,
-                  scale: isCorrect ? [1, 1.2, 1] : 1,
+                  scale: isCorrect ? 1.15 : 1,
                   backgroundColor: isCorrect ? '#4CAF50' : undefined,
                 }}
                 exit={{ opacity: 0, scale: 0.5 }}
@@ -315,7 +318,7 @@ export default function ScramblePage() {
             initial={{ opacity: 0, scale: 0.8, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="text-center"
+            className="text-center flex items-center justify-center gap-2"
           >
             <span className="text-3xl font-extrabold text-primary">{encouragement}</span>
             <Sparkle weight="duotone" size={28} color="#FFD54F" className="ml-2" />
@@ -354,12 +357,22 @@ export default function ScramblePage() {
         </div>
       </div>
 
-      {/* Hint Button */}
-      {!isCorrect && (
-        <div className="flex justify-center">
-          <Button variant="secondary" size="md" icon={<Lightbulb weight="duotone" size={20} />} onClick={useHint}>
-            Hint
-          </Button>
+      {/* Word hint + audio */}
+      {currentWord && !isCorrect && (
+        <div className="flex flex-col items-center gap-3">
+          {currentWord.hint && (
+            <span className="inline-flex items-center gap-2 bg-secondary/20 px-4 py-2 rounded-full text-garden-text font-semibold">
+              <Lightbulb weight="duotone" size={20} color="#FFD54F" /> {currentWord.hint}
+            </span>
+          )}
+          <div className="flex gap-3">
+            <Button variant="secondary" size="md" icon={<SpeakerHigh weight="duotone" size={20} />} onClick={() => speakWord(currentWord.word)}>
+              Hear word
+            </Button>
+            <Button variant="secondary" size="md" icon={<Lightbulb weight="duotone" size={20} />} onClick={useHint} disabled={hintCount >= 3}>
+              Hint ({3 - hintCount})
+            </Button>
+          </div>
         </div>
       )}
 

@@ -57,16 +57,22 @@ function getDirectionDelta(dir: Direction): [number, number] {
 
 function generateWordSearch(words: string[]): { grid: CellData[][]; placed: PlacedWord[]; size: number } {
   const maxWordLen = Math.max(...words.map((w) => w.length));
-  const size = Math.max(10, Math.min(15, maxWordLen + 2, words.length + 4));
+  // Grid must be at least as wide as the longest word, plus padding
+  const size = Math.max(12, maxWordLen + 2, Math.ceil(Math.sqrt(words.length * maxWordLen)) + 2);
+  const capped = Math.min(size, 18);
   const directions: Direction[] = ['horizontal', 'vertical', 'diagonal-down', 'diagonal-up'];
 
   let bestResult: { grid: string[][]; placed: PlacedWord[] } | null = null;
 
-  // Retry the whole generation up to 5 times to place all words
-  for (let attempt = 0; attempt < 5; attempt++) {
-    const grid: string[][] = Array.from({ length: size }, () => Array(size).fill(''));
+  // Sort words longest-first so the hardest words get placed first
+  const sortedWords = [...words].sort((a, b) => b.length - a.length);
+
+  // Retry the whole generation up to 20 times to place all words
+  for (let attempt = 0; attempt < 20; attempt++) {
+    const grid: string[][] = Array.from({ length: capped }, () => Array(capped).fill(''));
     const placed: PlacedWord[] = [];
-    const shuffledWords = shuffleArray([...words]);
+    // Shuffle order slightly but keep longest first for better placement
+    const shuffledWords = attempt < 10 ? sortedWords : shuffleArray([...words]);
 
     let allPlaced = true;
     for (const word of shuffledWords) {
@@ -139,8 +145,8 @@ function generateWordSearch(words: string[]): { grid: CellData[][]; placed: Plac
 
   // Fill empty cells with random letters
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  for (let r = 0; r < size; r++) {
-    for (let c = 0; c < size; c++) {
+  for (let r = 0; r < capped; r++) {
+    for (let c = 0; c < capped; c++) {
       if (grid[r][c] === '') {
         grid[r][c] = alphabet[Math.floor(Math.random() * 26)];
       }
@@ -151,7 +157,7 @@ function generateWordSearch(words: string[]): { grid: CellData[][]; placed: Plac
     row.map((letter, c) => ({ letter, row: r, col: c }))
   );
 
-  return { grid: cellGrid, placed, size };
+  return { grid: cellGrid, placed, size: capped };
 }
 
 function getCellsBetween(
@@ -190,12 +196,12 @@ export default function WordSearchPage() {
   const [showFinal, setShowFinal] = useState(false);
 
   useEffect(() => {
-    fetch('/api/spellings?active=true')
+    const listId = new URLSearchParams(window.location.search).get('listId'); fetch(listId ? `/api/spellings/${listId}` : '/api/spellings?active=true')
       .then((res) => {
         if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
         return res.json();
       })
-      .then((data: SpellingList[]) => {
+      .then((raw) => { const data: SpellingList[] = Array.isArray(raw) ? raw : [raw];
         if (data.length > 0 && data[0].words.length > 0) {
           setList(data[0]);
           const words = data[0].words.map((w: SpellingWord) => w.word);
@@ -255,7 +261,7 @@ export default function WordSearchPage() {
               result: 'correct',
             }),
           })
-            .then(() => fetch('/api/achievements', { method: 'POST' }))
+            .then(() => fetch('/api/achievements', { method: 'POST', headers: { 'Content-Type': 'application/json' } }))
             .catch((err) => console.error('Failed to record progress:', err));
 
           if (newFound.size === placedWords.length) {
@@ -316,13 +322,13 @@ export default function WordSearchPage() {
     );
   }
 
-  const cellSize = gridSize <= 10 ? 'w-8 h-8 text-sm sm:w-10 sm:h-10 sm:text-base' : 'w-7 h-7 text-xs sm:w-8 sm:h-8 sm:text-sm';
+  const cellSize = gridSize <= 10 ? 'w-9 h-9 text-base sm:w-11 sm:h-11 sm:text-lg' : 'w-8 h-8 text-sm sm:w-10 sm:h-10 sm:text-base';
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col gap-5 max-w-3xl mx-auto"
+      className="flex flex-col gap-5 max-w-4xl mx-auto"
     >
       <div className="flex items-center justify-between">
         <Breadcrumbs />
@@ -340,7 +346,7 @@ export default function WordSearchPage() {
 
       <div className="flex flex-col lg:flex-row gap-5">
         {/* Grid */}
-        <div className="game-card p-3 sm:p-4 flex-shrink-0 overflow-x-auto">
+        <div className="game-card p-3 sm:p-4 flex justify-center overflow-x-auto">
           <div className="inline-grid gap-0.5" style={{ gridTemplateColumns: `repeat(${gridSize}, minmax(0, 1fr))` }}>
             {grid.flat().map((cell) => {
               const key = `${cell.row},${cell.col}`;
@@ -354,7 +360,7 @@ export default function WordSearchPage() {
                   onClick={() => handleCellClick(cell.row, cell.col)}
                   onMouseEnter={() => handleCellHover(cell.row, cell.col)}
                   whileTap={{ scale: 0.9 }}
-                  animate={isFound ? { scale: [1, 1.1, 1] } : {}}
+                  animate={isFound ? { scale: 1.1 } : {}}
                   className={`
                     ${cellSize} rounded-md font-bold cursor-pointer
                     flex items-center justify-center select-none
@@ -378,13 +384,13 @@ export default function WordSearchPage() {
         {/* Word List */}
         <div className="game-card p-4 flex-1">
           <h3 className="flex items-center gap-2 text-lg font-bold text-garden-text mb-3"><MagnifyingGlass weight="duotone" size={20} /> Find these words:</h3>
-          <div className="flex flex-wrap gap-2">
+          <div className="columns-1 gap-2 space-y-2">
             {wordList.map((word) => {
               const isFound = foundWords.has(word);
               return (
                 <motion.div
                   key={word}
-                  animate={isFound ? { scale: [1, 1.1, 1] } : {}}
+                  animate={isFound ? { scale: 1.1 } : {}}
                   className={`
                     px-3 py-1.5 rounded-full font-bold text-sm
                     ${isFound

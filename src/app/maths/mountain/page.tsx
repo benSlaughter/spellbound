@@ -173,13 +173,15 @@ function MathMountain() {
 
           {/* Waypoints */}
           {Array.from({ length: TOTAL_STOPS }).map((_, i) => {
-            const stopPercent = (i / (TOTAL_STOPS - 1)) * 100;
-            // Mountain triangle is centered, gets narrower toward top
-            const bottom = 8 + (stopPercent * 0.82);
-            // Calculate how wide the mountain is at this height (% from center)
-            const widthAtHeight = 50 - (stopPercent * 0.45);
-            // Zigzag left-right up the mountain, staying within the triangle
-            const leftOffset = 50 + (i % 2 === 0 ? -1 : 1) * (widthAtHeight * 0.5);
+            const t = i / (TOTAL_STOPS - 1); // 0 at bottom, 1 at top
+            const bottom = 4 + t * 86;
+            // Mountain narrows linearly; right-side markers pulled in more
+            const amplitude = (1 - t) * 18;
+            const isRight = i % 2 !== 0;
+            const sideOffset = isRight ? amplitude * 0.65 : amplitude;
+            const leftOffset = 50 + (isRight ? 1 : -1) * sideOffset;
+            // Right-side markers sit slightly lower
+            const adjustedBottom = isRight ? bottom - 2 : bottom;
             const reached = i <= currentStop;
 
             return (
@@ -187,7 +189,7 @@ function MathMountain() {
                 key={i}
                 className="absolute flex items-center justify-center"
                 style={{
-                  bottom: `${bottom}%`,
+                  bottom: `${adjustedBottom}%`,
                   left: `${leftOffset}%`,
                 }}
               >
@@ -205,8 +207,18 @@ function MathMountain() {
           {/* Character */}
           <motion.div
             animate={{
-              bottom: `${8 + (progressPercent * 0.82)}%`,
-              left: `${50 + (currentStop % 2 === 0 ? -1 : 1) * ((50 - progressPercent * 0.45) * 0.5) + 4}%`,
+              bottom: (() => {
+                const t = progressPercent / 100;
+                const b = 4 + t * 86;
+                return `${currentStop % 2 !== 0 ? b - 2 : b}%`;
+              })(),
+              left: (() => {
+                const t = progressPercent / 100;
+                const amp = (1 - t) * 18;
+                const isRight = currentStop % 2 !== 0;
+                const sideOff = isRight ? amp * 0.65 : amp;
+                return `${50 + (isRight ? 1 : -1) * sideOff}%`;
+              })(),
             }}
             transition={{ type: 'spring', damping: 15, stiffness: 100 }}
             className="absolute"

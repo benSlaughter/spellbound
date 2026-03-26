@@ -45,6 +45,20 @@ const fadeUp = {
 
 const games = [
   {
+    title: 'Word Search',
+    description: 'Find all the hidden words in the puzzle grid!',
+    emoji: <PuzzlePiece weight="duotone" size={48} color="#FF9800" />,
+    href: '/spelling/wordsearch',
+    color: 'bg-fun-orange/10 border-2 border-fun-orange/30',
+  },
+  {
+    title: 'Memory Match',
+    description: 'Flip the cards and find matching word pairs!',
+    emoji: <Cards weight="duotone" size={48} color="#9C27B0" />,
+    href: '/spelling/memory',
+    color: 'bg-fun-purple/10 border-2 border-fun-purple/30',
+  },
+  {
     title: 'Word Scramble',
     description: 'Unscramble the letters to spell the word!',
     emoji: <Shuffle weight="duotone" size={48} color="#4CAF50" />,
@@ -65,36 +79,29 @@ const games = [
     href: '/spelling/builder',
     color: 'bg-secondary/10 border-2 border-secondary/30',
   },
-  {
-    title: 'Word Search',
-    description: 'Find all the hidden words in the puzzle grid!',
-    emoji: <PuzzlePiece weight="duotone" size={48} color="#FF9800" />,
-    href: '/spelling/wordsearch',
-    color: 'bg-fun-orange/10 border-2 border-fun-orange/30',
-  },
-  {
-    title: 'Memory Match',
-    description: 'Flip the cards and find matching word pairs!',
-    emoji: <Cards weight="duotone" size={48} color="#9C27B0" />,
-    href: '/spelling/memory',
-    color: 'bg-fun-purple/10 border-2 border-fun-purple/30',
-  },
 ];
 
 export default function SpellingHub() {
+  const [allLists, setAllLists] = useState<SpellingList[]>([]);
   const [list, setList] = useState<SpellingList | null>(null);
   const [loading, setLoading] = useState(true);
   const [noList, setNoList] = useState(false);
 
   useEffect(() => {
-    fetch('/api/spellings?active=true')
+    fetch('/api/spellings')
       .then((res) => {
         if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
         return res.json();
       })
       .then((data: SpellingList[]) => {
-        if (data.length > 0 && data[0].words.length > 0) {
-          setList(data[0]);
+        if (data.length > 0) {
+          setAllLists(data);
+          const active = data.find((l) => l.is_active) || data[0];
+          if (active && active.words.length > 0) {
+            setList(active);
+          } else {
+            setNoList(true);
+          }
         } else {
           setNoList(true);
         }
@@ -102,6 +109,11 @@ export default function SpellingHub() {
       .catch(() => setNoList(true))
       .finally(() => setLoading(false));
   }, []);
+
+  function switchList(id: number) {
+    const selected = allLists.find((l) => l.id === id);
+    if (selected) setList(selected);
+  }
 
   if (loading) {
     return (
@@ -128,14 +140,8 @@ export default function SpellingHub() {
             No spelling words yet!
           </h2>
           <p className="text-garden-text-light text-lg mb-6">
-            Ask a grown-up to add some, or add them yourself!
+            Ask a grown-up to add some spelling words for you!
           </p>
-          <Link
-            href="/entry"
-            className="btn-primary text-lg px-8 py-3 no-underline inline-flex items-center gap-2"
-          >
-            <PencilSimple weight="duotone" size={20} /> Add My Words
-          </Link>
         </div>
       </motion.div>
     );
@@ -157,12 +163,27 @@ export default function SpellingHub() {
           Spelling Practice
         </h1>
         {list && (
-          <div className="mt-3 inline-flex items-center gap-2 bg-primary-light/20 px-4 py-2 rounded-full">
-            <Flower weight="duotone" size={20} color="#FFD54F" />
-            <span className="font-bold text-garden-text">{list.name}</span>
-            <span className="text-garden-text-light">
-              · {list.words.length} words
-            </span>
+          <div className="mt-3 flex flex-col items-center gap-3">
+            <div className="inline-flex items-center gap-2 bg-primary-light/20 px-4 py-2 rounded-full">
+              <Flower weight="duotone" size={20} color="#FFD54F" />
+              <span className="font-bold text-garden-text">{list.name}</span>
+              <span className="text-garden-text-light">
+                · {list.words.length} words
+              </span>
+            </div>
+            {allLists.length > 1 && (
+              <select
+                value={list.id}
+                onChange={(e) => switchList(Number(e.target.value))}
+                className="bg-white border-2 border-garden-border rounded-xl px-4 py-2 text-sm font-semibold text-garden-text cursor-pointer focus:outline-none focus:border-primary"
+              >
+                {allLists.map((l) => (
+                  <option key={l.id} value={l.id}>
+                    {l.name} ({l.words.length} words){l.is_active ? ' — current' : ''}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
         )}
       </motion.section>
@@ -171,18 +192,9 @@ export default function SpellingHub() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {games.map((game) => (
             <motion.div key={game.href} variants={fadeUp}>
-              <GameCard {...game} />
+              <GameCard {...game} href={list ? `${game.href}?listId=${list.id}` : game.href} />
             </motion.div>
           ))}
-          <motion.div variants={fadeUp}>
-            <GameCard
-              title="Add This Week's Words"
-              description="Type in your new spelling words for the week!"
-              emoji={<PencilSimple weight="duotone" size={48} color="#66BB6A" />}
-              href="/entry"
-              color="bg-secondary-light/10 border-2 border-secondary-light/30 border-dashed"
-            />
-          </motion.div>
         </div>
       </motion.section>
 

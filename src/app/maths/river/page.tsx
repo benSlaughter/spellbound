@@ -209,6 +209,7 @@ function NumberRiver() {
                   opacity: [0.3, 0.6, 0.3],
                 }}
                 transition={{
+                  type: 'tween',
                   duration: 3 + i,
                   repeat: Infinity,
                   ease: 'easeInOut',
@@ -237,8 +238,8 @@ function NumberRiver() {
                     }}
                     exit={{ opacity: 0, scale: 0 }}
                     transition={{
-                      y: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' },
-                      x: { duration: 3.5, repeat: Infinity, ease: 'easeInOut' },
+                      y: { type: 'tween', duration: 2.5, repeat: Infinity, ease: 'easeInOut' },
+                      x: { type: 'tween', duration: 3.5, repeat: Infinity, ease: 'easeInOut' },
                       opacity: { duration: 0.4 },
                       scale: { duration: 0.4 },
                     }}
