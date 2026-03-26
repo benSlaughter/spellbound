@@ -9,15 +9,11 @@ import { playSound } from '@/lib/sounds';
 import {
   Cloud as PhCloud,
   Butterfly as PhButterfly,
-  Bug as PhBug,
   Sun as PhSun,
   SunDim as PhSunDim,
   Rainbow as PhRainbow,
-  Flower as PhFlower,
-  FlowerLotus as PhFlowerLotus,
   FlowerTulip as PhFlowerTulip,
   Tree as PhTree,
-  TreePalm as PhTreePalm,
   TreeEvergreen as PhTreeEvergreen,
   Plant as PhPlant,
   CloudRain as PhCloudRain,
@@ -26,14 +22,13 @@ import {
   GameController as PhGameController,
   Fire as PhFire,
   Star as PhStar,
-  Gift as PhGift,
   MagicWand as PhMagicWand,
   Sparkle as PhSparkle,
   Trophy as PhTrophy,
   MusicNotes as PhMusicNotes,
   Medal as PhMedal,
-  type IconProps,
 } from '@phosphor-icons/react';
+import { SvgDaisy, SvgSunflower, SvgRose, SvgRainbowArc, SvgBee } from '@/components/svg';
 
 // ── Types ──
 
@@ -99,20 +94,20 @@ const popIn = {
 // ── Constants ──
 
 interface PlantDef {
-  Icon: ComponentType<IconProps>;
+  Icon: ComponentType<Record<string, unknown>>;
   color: string;
 }
 
 const SPELLING_FLOWERS: PlantDef[] = [
-  { Icon: PhFlower, color: '#E91E63' },
-  { Icon: PhFlowerLotus, color: '#FFD54F' },
+  { Icon: SvgDaisy, color: '#E91E63' },
+  { Icon: SvgSunflower, color: '#FFD54F' },
   { Icon: PhFlowerTulip, color: '#AB47BC' },
-  { Icon: PhFlower, color: '#FF8A65' },
+  { Icon: SvgRose, color: '#F06292' },
 ];
 
 const MATHS_PLANTS: PlantDef[] = [
-  { Icon: PhPlant, color: '#66BB6A' },
-  { Icon: PhTreePalm, color: '#8D6E63' },
+  { Icon: PhTreeEvergreen, color: '#43A047' },
+  { Icon: PhTree, color: '#81C784' },
   { Icon: PhTree, color: '#4CAF50' },
   { Icon: PhTreeEvergreen, color: '#2E7D32' },
 ];
@@ -202,7 +197,7 @@ function Bee({ index }: { index: number }) {
         x: { duration: 3 + index * 0.5, repeat: Infinity, ease: 'easeInOut' },
       }}
     >
-      <PhBug weight="duotone" size={28} color="#FFC107" />
+      <SvgBee size={28} color="#FFC107" />
     </motion.div>
   );
 }
@@ -263,12 +258,12 @@ function Rainbow() {
   return (
     <motion.div
       className="absolute left-1/2 -translate-x-1/2 select-none pointer-events-none"
-      style={{ top: '52%' }}
+      style={{ top: '18%' }}
       initial={{ opacity: 0, scale: 0 }}
       animate={{ opacity: 0.85, scale: 1 }}
       transition={{ delay: 1.5, type: 'spring', stiffness: 100, damping: 15 }}
     >
-      <PhRainbow weight="duotone" size={120} color="#E91E63" />
+      <SvgRainbowArc size={280} />
     </motion.div>
   );
 }
@@ -526,7 +521,7 @@ export default function ProgressPage() {
               animate={{ opacity: 0.7 }}
               transition={{ delay: 1.8 }}
             >
-              <PhPlant weight="duotone" size={24} color="#66BB6A" />
+              <SvgDaisy size={24} color="#E91E63" />
             </motion.div>
             <motion.div
               className="absolute bottom-[14%] right-[6%] select-none pointer-events-none"
@@ -534,7 +529,7 @@ export default function ProgressPage() {
               animate={{ opacity: 0.7 }}
               transition={{ delay: 2.0 }}
             >
-              <PhPlant weight="duotone" size={24} color="#66BB6A" />
+              <PhFlowerTulip weight="duotone" size={24} color="#AB47BC" />
             </motion.div>
             <motion.div
               className="absolute bottom-[15%] left-[48%] select-none pointer-events-none"
@@ -542,7 +537,7 @@ export default function ProgressPage() {
               animate={{ opacity: 0.6 }}
               transition={{ delay: 2.2 }}
             >
-              <PhPlant weight="duotone" size={20} color="#43A047" />
+              <SvgDaisy size={20} color="#FF8A65" />
             </motion.div>
           </>
         )}

@@ -19,268 +19,45 @@ import {
 } from '@/lib/maths-helpers';
 import {
   Rainbow,
-  Sun,
-  Cloud,
   Flower,
-  Butterfly,
-  Tree,
   TreeEvergreen,
-  TreePalm,
-  Plant,
-  Bug,
-  Bird,
-  Sparkle,
-  PuzzlePiece,
+  Drop,
+  PawPrint,
 } from '@phosphor-icons/react';
-import { Frog } from '@/components/svg';
-import { Bear } from '@/components/svg';
 
 const GRID_SIZE = 9; // 3x3
 
 interface HiddenPicture {
   name: string;
-  emoji: React.ReactNode;
-  bg: string;
-  render: () => React.ReactNode;
+  icon: React.ReactNode;
+  imagePath: string;
 }
 
 const PICTURES: HiddenPicture[] = [
   {
     name: 'Rainbow Meadow',
-    emoji: <Rainbow weight="duotone" size={72} color="#E91E63" />,
-    bg: '',
-    render: () => (
-      <>
-        {/* Sky gradient */}
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, #87CEEB 0%, #B3E5FC 50%, #E8F5E9 100%)' }} />
-
-        {/* Rolling hills */}
-        <div className="absolute rounded-[50%]" style={{ bottom: '-10%', left: '-10%', width: '70%', height: '45%', background: '#66BB6A' }} />
-        <div className="absolute rounded-[50%]" style={{ bottom: '-12%', right: '-10%', width: '75%', height: '42%', background: '#4CAF50' }} />
-        <div className="absolute rounded-[50%]" style={{ bottom: '-15%', left: '15%', width: '80%', height: '38%', background: '#43A047' }} />
-
-        {/* Rainbow arcing across, partially behind hills */}
-        <div className="absolute left-1/2 -translate-x-1/2 overflow-hidden" style={{ top: '15%', width: '100%', height: '65%' }}>
-          <div className="flex justify-center">
-            <Rainbow weight="duotone" size={120} color="#E91E63" />
-          </div>
-        </div>
-
-        {/* Sun */}
-        <div className="absolute" style={{ top: '5%', right: '6%' }}>
-          <Sun weight="duotone" size={72} color="#FFB300" />
-        </div>
-
-        {/* Flowers on the hills */}
-        <div className="absolute" style={{ bottom: '18%', left: '12%' }}>
-          <Flower weight="duotone" size={80} color="#FFD54F" />
-        </div>
-        <div className="absolute" style={{ bottom: '15%', right: '18%' }}>
-          <Flower weight="duotone" size={64} color="#AB47BC" />
-        </div>
-
-        {/* Butterfly */}
-        <div className="absolute" style={{ top: '30%', left: '65%' }}>
-          <Butterfly weight="duotone" size={40} color="#9C27B0" />
-        </div>
-      </>
-    ),
+    icon: <Rainbow weight="duotone" size={72} color="#E91E63" />,
+    imagePath: '/images/puzzles/rainbow-meadow.svg',
   },
   {
     name: 'Enchanted Forest',
-    emoji: <TreeEvergreen weight="duotone" size={72} color="#2E7D32" />,
-    bg: '',
-    render: () => (
-      <>
-        {/* Dark forest sky */}
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, #1B5E20 0%, #2E7D32 30%, #1B5E20 60%, #33691E 100%)' }} />
-
-        {/* Forest floor */}
-        <div className="absolute left-0 right-0 bottom-0" style={{ height: '18%', background: 'linear-gradient(180deg, #33691E 0%, #4E342E 50%, #3E2723 100%)' }} />
-
-        {/* Mist layer */}
-        <div className="absolute left-0 right-0" style={{ top: '10%', height: '15%', background: 'linear-gradient(180deg, transparent, rgba(255,255,255,0.08), transparent)' }} />
-
-        {/* Cloud peeking through canopy */}
-        <div className="absolute" style={{ top: '3%', right: '15%' }}>
-          <Cloud weight="duotone" size={48} color="#B0BEC5" />
-        </div>
-
-        {/* Trees layered back to front */}
-        <div className="absolute" style={{ bottom: '14%', right: '18%' }}>
-          <TreeEvergreen weight="duotone" size={100} color="#2E7D32" />
-        </div>
-        <div className="absolute" style={{ bottom: '14%', left: '22%' }}>
-          <Tree weight="duotone" size={120} color="#4CAF50" />
-        </div>
-        <div className="absolute" style={{ bottom: '12%', left: '8%' }}>
-          <Plant weight="duotone" size={60} color="#66BB6A" />
-        </div>
-
-        {/* Owl (Bird) perched near the oak */}
-        <div className="absolute" style={{ top: '22%', left: '38%' }}>
-          <Bird weight="duotone" size={48} color="#A1887F" />
-        </div>
-
-        {/* Ground sprouts */}
-        <div className="absolute" style={{ bottom: '14%', left: '45%' }}>
-          <Plant weight="duotone" size={28} color="#66BB6A" />
-        </div>
-        <div className="absolute" style={{ bottom: '13%', right: '35%' }}>
-          <Plant weight="duotone" size={22} color="#43A047" />
-        </div>
-        <div className="absolute" style={{ bottom: '15%', left: '60%' }}>
-          <Plant weight="duotone" size={20} color="#66BB6A" />
-        </div>
-      </>
-    ),
+    icon: <TreeEvergreen weight="duotone" size={72} color="#2E7D32" />,
+    imagePath: '/images/puzzles/enchanted-forest.svg',
   },
   {
-    name: 'Magical Pond',
-    emoji: <Frog variant="sitting" size={72} />,
-    bg: '',
-    render: () => (
-      <>
-        {/* Sky */}
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, #81D4FA 0%, #B3E5FC 40%, #4DB6AC 45%, #26A69A 60%, #00897B 100%)' }} />
-
-        {/* Reeds on left edge */}
-        <div className="absolute rounded-sm" style={{ bottom: '30%', left: '5%', width: '3px', height: '28%', background: '#2E7D32' }} />
-        <div className="absolute rounded-sm" style={{ bottom: '30%', left: '8%', width: '2px', height: '22%', background: '#388E3C' }} />
-        <div className="absolute rounded-sm" style={{ bottom: '30%', left: '10%', width: '3px', height: '25%', background: '#1B5E20' }} />
-
-        {/* Reeds on right edge */}
-        <div className="absolute rounded-sm" style={{ bottom: '30%', right: '6%', width: '3px', height: '26%', background: '#2E7D32' }} />
-        <div className="absolute rounded-sm" style={{ bottom: '30%', right: '9%', width: '2px', height: '20%', background: '#388E3C' }} />
-
-        {/* Water ripple circles */}
-        <div className="absolute rounded-full" style={{ bottom: '15%', left: '20%', width: '40px', height: '12px', border: '1px solid rgba(255,255,255,0.2)' }} />
-        <div className="absolute rounded-full" style={{ bottom: '8%', right: '25%', width: '30px', height: '8px', border: '1px solid rgba(255,255,255,0.15)' }} />
-        <div className="absolute rounded-full" style={{ bottom: '22%', right: '40%', width: '25px', height: '7px', border: '1px solid rgba(255,255,255,0.12)' }} />
-
-        {/* Lily pads using Plant icons */}
-        <div className="absolute" style={{ bottom: '25%', left: '25%' }}>
-          <Plant weight="duotone" size={64} color="#43A047" />
-        </div>
-        <div className="absolute" style={{ bottom: '18%', right: '22%' }}>
-          <Plant weight="duotone" size={48} color="#66BB6A" />
-        </div>
-
-        {/* Frog on a lily pad */}
-        <div className="absolute" style={{ bottom: '32%', left: '30%' }}>
-          <Frog variant="sitting" size={60} />
-        </div>
-
-        {/* Butterfly above */}
-        <div className="absolute" style={{ top: '15%', right: '25%' }}>
-          <Butterfly weight="duotone" size={36} color="#E91E63" />
-        </div>
-
-        {/* Grass bank at edges */}
-        <div className="absolute rounded-[50%]" style={{ bottom: '28%', left: '-5%', width: '30%', height: '20%', background: '#388E3C' }} />
-        <div className="absolute rounded-[50%]" style={{ bottom: '28%', right: '-5%', width: '30%', height: '20%', background: '#2E7D32' }} />
-      </>
-    ),
+    name: 'Pond Life',
+    icon: <Drop weight="duotone" size={72} color="#42A5F5" />,
+    imagePath: '/images/puzzles/pond-life.svg',
   },
   {
     name: 'Sunny Garden',
-    emoji: <Flower weight="duotone" size={72} color="#FFD54F" />,
-    bg: '',
-    render: () => (
-      <>
-        {/* Bright sky */}
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, #FFF9C4 0%, #FFECB3 25%, #C8E6C9 60%, #A5D6A7 100%)' }} />
-
-        {/* Green ground */}
-        <div className="absolute left-0 right-0 bottom-0" style={{ height: '30%', background: 'linear-gradient(180deg, #66BB6A 0%, #4CAF50 100%)' }} />
-
-        {/* Picket fence hints */}
-        <div className="absolute" style={{ bottom: '28%', left: '10%', width: '5px', height: '18%', background: 'white', borderRadius: '2px', opacity: 0.7 }} />
-        <div className="absolute" style={{ bottom: '28%', left: '16%', width: '5px', height: '18%', background: 'white', borderRadius: '2px', opacity: 0.7 }} />
-        <div className="absolute" style={{ bottom: '28%', left: '22%', width: '5px', height: '18%', background: 'white', borderRadius: '2px', opacity: 0.7 }} />
-        {/* Fence rail */}
-        <div className="absolute" style={{ bottom: '38%', left: '8%', width: '20%', height: '3px', background: 'white', opacity: 0.5 }} />
-
-        {/* Sun */}
-        <div className="absolute" style={{ top: '4%', right: '8%' }}>
-          <Sun weight="duotone" size={64} color="#FFB300" />
-        </div>
-
-        {/* Flowers — tall sunflower dominant center */}
-        <div className="absolute" style={{ bottom: '26%', left: '38%' }}>
-          <Flower weight="duotone" size={96} color="#FFD54F" />
-        </div>
-        <div className="absolute" style={{ bottom: '26%', left: '12%' }}>
-          <Flower weight="duotone" size={64} color="#E91E63" />
-        </div>
-        <div className="absolute" style={{ bottom: '26%', right: '12%' }}>
-          <Flower weight="duotone" size={72} color="#EF5350" />
-        </div>
-        <div className="absolute" style={{ bottom: '24%', left: '60%' }}>
-          <Flower weight="duotone" size={60} color="#AB47BC" />
-        </div>
-
-        {/* Bee near sunflower */}
-        <div className="absolute" style={{ top: '22%', left: '48%' }}>
-          <Bug weight="duotone" size={32} color="#FFC107" />
-        </div>
-
-        {/* Ground sprouts */}
-        <div className="absolute" style={{ bottom: '22%', left: '50%' }}>
-          <Plant weight="duotone" size={24} color="#66BB6A" />
-        </div>
-        <div className="absolute" style={{ bottom: '20%', right: '30%' }}>
-          <Plant weight="duotone" size={20} color="#43A047" />
-        </div>
-      </>
-    ),
+    icon: <Flower weight="duotone" size={72} color="#FFD54F" />,
+    imagePath: '/images/puzzles/sunny-garden.svg',
   },
   {
-    name: "Bear's Meadow",
-    emoji: <Bear size={72} />,
-    bg: '',
-    render: () => (
-      <>
-        {/* Blue sky */}
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, #90CAF9 0%, #BBDEFB 40%, #C8E6C9 70%, #A5D6A7 100%)' }} />
-
-        {/* Rolling green hills */}
-        <div className="absolute rounded-[50%]" style={{ bottom: '-8%', left: '-15%', width: '75%', height: '40%', background: '#66BB6A' }} />
-        <div className="absolute rounded-[50%]" style={{ bottom: '-10%', right: '-10%', width: '70%', height: '38%', background: '#4CAF50' }} />
-        <div className="absolute rounded-[50%]" style={{ bottom: '-14%', left: '20%', width: '80%', height: '35%', background: '#43A047' }} />
-
-        {/* Cloud */}
-        <div className="absolute" style={{ top: '5%', left: '15%' }}>
-          <Cloud weight="duotone" size={80} color="#B0BEC5" />
-        </div>
-
-        {/* Palm tree in background */}
-        <div className="absolute" style={{ bottom: '22%', left: '8%' }}>
-          <TreePalm weight="duotone" size={100} color="#8D6E63" />
-        </div>
-
-        {/* Bear — large, centered */}
-        <div className="absolute" style={{ bottom: '18%', left: '50%', transform: 'translateX(-50%)' }}>
-          <Bear size={70} />
-        </div>
-
-        {/* Foreground sprouts */}
-        <div className="absolute" style={{ bottom: '16%', left: '35%' }}>
-          <Plant weight="duotone" size={28} color="#66BB6A" />
-        </div>
-        <div className="absolute" style={{ bottom: '14%', right: '20%' }}>
-          <Plant weight="duotone" size={24} color="#43A047" />
-        </div>
-        <div className="absolute" style={{ bottom: '15%', right: '40%' }}>
-          <Plant weight="duotone" size={22} color="#66BB6A" />
-        </div>
-
-        {/* Butterfly */}
-        <div className="absolute" style={{ top: '25%', right: '18%' }}>
-          <Butterfly weight="duotone" size={32} color="#AB47BC" />
-        </div>
-      </>
-    ),
+    name: 'Animal Meadow',
+    icon: <PawPrint weight="duotone" size={72} color="#8D6E63" />,
+    imagePath: '/images/puzzles/animal-meadow.svg',
   },
 ];
 
@@ -407,10 +184,14 @@ function PuzzlePieces() {
 
       {/* Puzzle Grid */}
       <div className="mx-auto w-full max-w-sm">
-        <div className={`relative ${picture.bg} rounded-2xl overflow-hidden aspect-square`}>
+        <div className="relative rounded-2xl overflow-hidden aspect-square">
           {/* Hidden picture underneath */}
           <div className="absolute inset-0">
-            {picture.render()}
+            <img
+              src={picture.imagePath}
+              alt={picture.name}
+              className="w-full h-full object-cover"
+            />
           </div>
 
           {/* Puzzle pieces overlay */}
@@ -508,7 +289,7 @@ function PuzzlePieces() {
       <CelebrationOverlay
         show={showCelebration}
         message="You completed the puzzle!"
-        emoji={picture.emoji}
+        emoji={picture.icon}
         onDismiss={() => setShowCelebration(false)}
         navigateBack
         autoCloseMs={5000}
