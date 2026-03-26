@@ -77,6 +77,7 @@ const fadeUp = {
 
 export default function MathsHub() {
   const [selectedTables, setSelectedTables] = useState<number[]>(ALL_TABLES);
+  const [enabledDifficulties, setEnabledDifficulties] = useState<string[]>(['seedling', 'sapling', 'tree', 'mighty_oak']);
   const [tablesLoaded, setTablesLoaded] = useState(false);
   const [difficulty, setDifficulty] = useState<Difficulty>(() => {
     if (typeof window === 'undefined') return 'sapling';
@@ -92,9 +93,16 @@ export default function MathsHub() {
   useEffect(() => {
     fetch('/api/maths/tables')
       .then((res) => res.json())
-      .then((data: { tables: number[] }) => {
+      .then((data: { tables: number[]; difficulties: string[] }) => {
         if (Array.isArray(data.tables) && data.tables.length > 0) {
           setSelectedTables(data.tables);
+        }
+        if (Array.isArray(data.difficulties) && data.difficulties.length > 0) {
+          setEnabledDifficulties(data.difficulties);
+          // If current difficulty is not enabled, switch to first enabled
+          if (!data.difficulties.includes(difficulty)) {
+            setDifficulty(data.difficulties[0] as Difficulty);
+          }
         }
       })
       .catch(() => {})
@@ -142,7 +150,7 @@ export default function MathsHub() {
       <motion.section variants={fadeUp} className="bg-garden-card rounded-2xl p-6 shadow-sm">
         <h2 className="text-xl font-bold text-garden-text mb-4">Difficulty Level</h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {DIFFICULTIES.map((d) => {
+          {DIFFICULTIES.filter((d) => enabledDifficulties.includes(d.key)).map((d) => {
             const active = difficulty === d.key;
             return (
               <motion.button
