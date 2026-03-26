@@ -7,7 +7,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Button from '@/components/ui/Button';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
-import { Flag, Signpost, Bird, Mountains, Star, PersonSimpleHike } from '@phosphor-icons/react';
+import { Flag, Signpost, Mountains, Star, PersonSimpleHike } from '@phosphor-icons/react';
 import { playSound } from '@/lib/sounds';
 import {
   generateQuestions,
@@ -41,7 +41,6 @@ function MathMountain() {
   const [currentStop, setCurrentStop] = useState(0);
   const [wrongCount, setWrongCount] = useState(0);
   const [feedback, setFeedback] = useState<string | null>(null);
-  const [showOwl, setShowOwl] = useState(false);
   const [answered, setAnswered] = useState(false);
   const [finished, setFinished] = useState(false);
   const [answers, setAnswers] = useState<number[]>(() => {
@@ -61,11 +60,12 @@ function MathMountain() {
       setCurrentStop(nextIdx);
       setWrongCount(0);
       setFeedback(null);
-      setShowOwl(false);
       setAnswered(false);
       if (nextQ) setAnswers(makeShuffledAnswers(nextQ.answer, nextQ.wrongAnswers));
     }
   }, [currentStop, questions]);
+
+  const wrongMessages = ['Have another go!', 'Keep trying!', 'Nearly there!'];
 
   const handleAnswer = useCallback(
     (answer: number) => {
@@ -75,26 +75,18 @@ function MathMountain() {
         playSound('success');
         setFeedback(randomEncouragement());
         setAnswered(true);
-        const result = showOwl ? 'helped' : wrongCount > 0 ? 'helped' : 'correct';
+        const result = wrongCount > 0 ? 'helped' : 'correct';
         recordProgress('maths_mountain', question.ref, result);
         setTimeout(advanceToNext, 1200);
       } else {
         playSound('click');
         const newWrong = wrongCount + 1;
         setWrongCount(newWrong);
-
-        if (newWrong >= 2) {
-          setShowOwl(true);
-          setFeedback(`The answer is ${question.answer}!`);
-          recordProgress('maths_mountain', question.ref, 'helped');
-          setTimeout(advanceToNext, 2500);
-        } else {
-          setFeedback('Have another go!');
-          setTimeout(() => setFeedback(null), 1500);
-        }
+        setFeedback(wrongMessages[Math.min(newWrong - 1, wrongMessages.length - 1)]);
+        setTimeout(() => setFeedback(null), 1500);
       }
     },
-    [question, answered, wrongCount, showOwl, advanceToNext],
+    [question, answered, wrongCount, advanceToNext],
   );
 
   if (questions.length === 0) {
@@ -273,7 +265,6 @@ function MathMountain() {
                   exit={{ opacity: 0 }}
                   className="flex items-center justify-center gap-2"
                 >
-                  {showOwl && <Bird weight="duotone" size={36} color="#A1887F" />}
                   <p className="text-lg font-bold text-primary">{feedback}</p>
                 </motion.div>
               )}

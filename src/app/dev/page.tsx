@@ -1,9 +1,9 @@
 'use client';
 
-import { SvgDaisy, SvgSunflower, SvgRose, SvgRainbowArc, SvgBee } from '@/components/svg';
+import { SvgDaisy, SvgSunflower, SvgRose, SvgTulip, SvgBluebell, SvgDaffodil, SvgLavender, SvgRainbowArc, SvgBee } from '@/components/svg';
 import {
   Tree, TreeEvergreen, TreePalm, Plant,
-  Flower, FlowerLotus, FlowerTulip,
+  Flower, FlowerLotus,
   Butterfly, Bug, Bird,
   Sun, SunDim, Cloud, CloudSun, Rainbow,
   Star, Sparkle, Trophy, Flag, Signpost,
@@ -39,7 +39,10 @@ const ICONS: IconEntry[] = [
   { category: 'Phosphor Nature', name: 'Plant', render: <Plant weight="duotone" size={64} color="#66BB6A" /> },
   { category: 'Phosphor Nature', name: 'Flower', render: <Flower weight="duotone" size={64} color="#E91E63" /> },
   { category: 'Phosphor Nature', name: 'FlowerLotus', render: <FlowerLotus weight="duotone" size={64} color="#FFD54F" /> },
-  { category: 'Phosphor Nature', name: 'FlowerTulip', render: <FlowerTulip weight="duotone" size={64} color="#AB47BC" /> },
+  { category: 'Custom SVG', name: 'SvgTulip', render: <SvgTulip size={64} color="#AB47BC" /> },
+  { category: 'Custom SVG', name: 'SvgBluebell', render: <SvgBluebell size={64} /> },
+  { category: 'Custom SVG', name: 'SvgDaffodil', render: <SvgDaffodil size={64} /> },
+  { category: 'Custom SVG', name: 'SvgLavender', render: <SvgLavender size={64} /> },
   { category: 'Phosphor Nature', name: 'Leaf', render: <Leaf weight="duotone" size={64} color="#43A047" /> },
   { category: 'Phosphor Nature', name: 'Mountains', render: <Mountains weight="duotone" size={64} color="#78909C" /> },
   { category: 'Phosphor Nature', name: 'Drop', render: <Drop weight="duotone" size={64} color="#42A5F5" /> },

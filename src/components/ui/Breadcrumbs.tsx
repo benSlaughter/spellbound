@@ -24,6 +24,7 @@ const ROUTE_NAMES: Record<string, string> = {
   'spellings': 'Spellings',
   'settings': 'Settings',
   'tables': 'Times Tables',
+  'feedback': 'Feedback',
 };
 
 export default function Breadcrumbs() {

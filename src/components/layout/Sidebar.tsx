@@ -4,15 +4,16 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SvgTulip } from '@/components/svg';
 import {
   House,
   Books,
   Calculator,
   Plant,
+  ChatDots,
   Gear,
   Sparkle,
   Flower,
-  FlowerTulip,
   Leaf,
   FlowerLotus,
   X,
@@ -24,6 +25,7 @@ const navItems: { href: string; label: string; icon: ReactNode }[] = [
   { href: '/spelling', label: 'Spelling', icon: <Books weight="duotone" size={24} /> },
   { href: '/maths', label: 'Maths', icon: <Calculator weight="duotone" size={24} /> },
   { href: '/progress', label: 'My Garden', icon: <Plant weight="duotone" size={24} /> },
+  { href: '/feedback', label: 'Feedback', icon: <ChatDots weight="duotone" size={24} /> },
 ];
 
 const adminItem = { href: '/admin', label: 'Admin', icon: <Gear weight="duotone" size={20} /> };
@@ -98,7 +100,7 @@ export default function Sidebar() {
         {/* Decorative garden elements */}
         <div className="mt-auto pt-8 flex justify-center gap-2 opacity-60 select-none">
           <Flower weight="duotone" size={24} color="#FFD54F" />
-          <FlowerTulip weight="duotone" size={24} color="#E91E63" />
+          <SvgTulip size={24} color="#E91E63" />
           <Leaf weight="duotone" size={24} color="#66BB6A" />
           <FlowerLotus weight="duotone" size={24} color="#EF5350" />
         </div>
@@ -146,7 +148,7 @@ export default function Sidebar() {
               {navContent}
               <div className="mt-6 flex justify-center gap-2 opacity-60 select-none">
                 <Flower weight="duotone" size={24} color="#FFD54F" />
-                <FlowerTulip weight="duotone" size={24} color="#E91E63" />
+                <SvgTulip size={24} color="#E91E63" />
                 <Leaf weight="duotone" size={24} color="#66BB6A" />
               </div>
             </motion.aside>

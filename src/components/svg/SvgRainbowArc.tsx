@@ -15,13 +15,13 @@ export function SvgRainbowArc({ size = 200, className }: SvgRainbowArcProps) {
       className={className}
     >
       {RAINBOW_COLORS.map((color, i) => {
-        const r = 120 - i * 11;
+        const r = 120 - i * 8;
         return (
           <path
             key={i}
             d={`M ${128 - r} 136 A ${r} ${r} 0 0 1 ${128 + r} 136`}
             stroke={color}
-            strokeWidth={11}
+            strokeWidth={8}
             strokeLinecap="round"
             fill="none"
           />

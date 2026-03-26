@@ -92,3 +92,11 @@ CREATE INDEX IF NOT EXISTS idx_progress_created ON progress(created_at);
 CREATE INDEX IF NOT EXISTS idx_spelling_lists_profile_active ON spelling_lists(profile_id, is_active);
 CREATE INDEX IF NOT EXISTS idx_spelling_words_list ON spelling_words(list_id);
 CREATE INDEX IF NOT EXISTS idx_achievements_profile ON achievements(profile_id);
+
+-- Student feedback messages. Public submission,
+-- admin-only viewing. Simple text feedback with timestamp.
+CREATE TABLE IF NOT EXISTS feedback (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  message TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);

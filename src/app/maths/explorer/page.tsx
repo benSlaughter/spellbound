@@ -66,6 +66,8 @@ function TimesTableExplorer() {
   const [mode, setMode] = useState<Mode>('explore');
   const [hoverCell, setHoverCell] = useState<{ row: number; col: number } | null>(null);
   const [practiceCell, setPracticeCell] = useState<{ row: number; col: number } | null>(null);
+  const [practiceWrongCount, setPracticeWrongCount] = useState(0);
+  const [practiceFeedback, setPracticeFeedback] = useState<string | null>(null);
   const [revealedCells, setRevealedCells] = useState<Set<string>>(new Set());
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebMsg, setCelebMsg] = useState('');
@@ -85,11 +87,15 @@ function TimesTableExplorer() {
     if (mode === 'practice' && isHidden(row, col)) {
       playSound('click');
       setPracticeCell({ row, col });
+      setPracticeWrongCount(0);
+      setPracticeFeedback(null);
       const correct = row * col;
       const wrong = generateWrongAnswers(correct, row, col);
       setPracticeAnswers(shuffleArray([correct, ...wrong]));
     }
   };
+
+  const wrongMessages = ['Try again!', 'Keep trying!', 'Nearly there!'];
 
   const handleAnswer = (answer: number, row: number, col: number) => {
     const correct = row * col;
@@ -97,11 +103,17 @@ function TimesTableExplorer() {
       playSound('success');
       setRevealedCells((prev) => new Set(prev).add(`${row}-${col}`));
       setPracticeCell(null);
+      setPracticeFeedback(null);
       setCelebMsg(randomEncouragement());
       setShowCelebration(true);
-      recordProgress('maths_explorer', `${row}x${col}`, 'correct');
+      const result = practiceWrongCount > 0 ? 'helped' : 'correct';
+      recordProgress('maths_explorer', `${row}x${col}`, result);
     } else {
       playSound('pop');
+      const newWrong = practiceWrongCount + 1;
+      setPracticeWrongCount(newWrong);
+      setPracticeFeedback(wrongMessages[Math.min(newWrong - 1, wrongMessages.length - 1)]);
+      setTimeout(() => setPracticeFeedback(null), 1500);
     }
   };
 
@@ -286,6 +298,18 @@ function TimesTableExplorer() {
                     </Button>
                   ))}
               </div>
+              <AnimatePresence>
+                {practiceFeedback && (
+                  <motion.p
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="mt-3 text-lg font-bold text-primary"
+                  >
+                    {practiceFeedback}
+                  </motion.p>
+                )}
+              </AnimatePresence>
               <button
                 onClick={() => setPracticeCell(null)}
                 className="mt-3 text-garden-text-light font-bold text-sm cursor-pointer"

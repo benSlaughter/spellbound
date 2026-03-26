@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -72,16 +72,19 @@ export default function PuzzlePiecesPage() {
 function PuzzlePieces() {
   const searchParams = useSearchParams();
 
-  const [pictureIndex] = useState(
-    () => Math.floor(Math.random() * PICTURES.length),
-  );
-  const picture = PICTURES[pictureIndex];
+  const [pictureIndex, setPictureIndex] = useState(0);
+  const [questions, setQuestions] = useState<MathQuestion[]>([]);
+  const [ready, setReady] = useState(false);
 
-  const [questions] = useState(() => {
+  useEffect(() => {
+    setPictureIndex(Math.floor(Math.random() * PICTURES.length));
     const tables = parseTablesParam(searchParams.get('tables'));
     const difficulty = parseDifficultyParam(searchParams.get('difficulty'));
-    return generateQuestions(tables, difficulty, GRID_SIZE);
-  });
+    setQuestions(generateQuestions(tables, difficulty, GRID_SIZE));
+    setReady(true);
+  }, [searchParams]);
+
+  const picture = PICTURES[pictureIndex];
 
   const [revealedPieces, setRevealedPieces] = useState<Set<number>>(new Set());
   const [activePiece, setActivePiece] = useState<number | null>(null);
@@ -103,13 +106,15 @@ function PuzzlePieces() {
     if (q) setAnswers(makeShuffledAnswers(q.answer, q.wrongAnswers));
   }
 
+  const wrongMessages = ['Try again!', 'Keep trying!', 'Nearly there!'];
+
   function handleAnswer(answer: number) {
     if (!activeQuestion || activePiece === null) return;
 
     if (answer === activeQuestion.answer) {
       playSound('success');
       setFeedback(randomEncouragement());
-      const result = wrongCount >= 2 ? 'helped' : wrongCount > 0 ? 'helped' : 'correct';
+      const result = wrongCount > 0 ? 'helped' : 'correct';
       recordProgress('maths_puzzle', activeQuestion.ref, result);
 
       const newRevealed = new Set(revealedPieces);
@@ -128,27 +133,17 @@ function PuzzlePieces() {
       playSound('click');
       const newWrong = wrongCount + 1;
       setWrongCount(newWrong);
-
-      if (newWrong >= 2) {
-        setFeedback(`The answer is ${activeQuestion.answer}!`);
-        recordProgress('maths_puzzle', activeQuestion.ref, 'helped');
-        const newRevealed = new Set(revealedPieces);
-        newRevealed.add(activePiece);
-        setRevealedPieces(newRevealed);
-
-        setTimeout(() => {
-          setActivePiece(null);
-          setFeedback(null);
-          if (newRevealed.size === GRID_SIZE) {
-            playSound('achievement');
-            setShowCelebration(true);
-          }
-        }, 2000);
-      } else {
-        setFeedback('Try again!');
-        setTimeout(() => setFeedback(null), 1500);
-      }
+      setFeedback(wrongMessages[Math.min(newWrong - 1, wrongMessages.length - 1)]);
+      setTimeout(() => setFeedback(null), 1500);
     }
+  }
+
+  if (!ready) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   if (questions.length === 0) {
@@ -184,13 +179,14 @@ function PuzzlePieces() {
 
       {/* Puzzle Grid */}
       <div className="mx-auto w-full max-w-sm">
-        <div className="relative rounded-2xl overflow-hidden aspect-square">
+        <div className="relative rounded-2xl overflow-hidden aspect-square bg-green-100">
           {/* Hidden picture underneath */}
           <div className="absolute inset-0">
             <img
               src={picture.imagePath}
               alt={picture.name}
               className="w-full h-full object-cover"
+              style={{ minWidth: '100%', minHeight: '100%' }}
             />
           </div>
 
@@ -204,30 +200,30 @@ function PuzzlePieces() {
               const q = questions[i];
 
               return (
-                <AnimatePresence key={i}>
+                <motion.button
+                  key={i}
+                  animate={{ opacity: revealed ? 0 : 1 }}
+                  transition={{ duration: 0.5 }}
+                  onClick={() => !revealed && handlePieceClick(i)}
+                  disabled={revealed}
+                  className={`
+                    rounded-xl flex items-center justify-center
+                    text-sm font-bold select-none
+                    min-h-[60px]
+                    ${revealed
+                      ? 'pointer-events-none'
+                      : activePiece === i
+                      ? 'bg-secondary ring-2 ring-secondary-dark text-garden-text cursor-pointer'
+                      : 'bg-garden-card/95 hover:bg-secondary-light/60 text-garden-text-light shadow-sm cursor-pointer'
+                    }
+                  `}
+                >
                   {!revealed && (
-                    <motion.button
-                      initial={{ opacity: 1 }}
-                      exit={{ opacity: 0, scale: 0.5, rotateY: 90 }}
-                      transition={{ duration: 0.5 }}
-                      onClick={() => handlePieceClick(i)}
-                      className={`
-                        rounded-xl flex items-center justify-center
-                        text-sm font-bold cursor-pointer select-none
-                        transition-all min-h-[60px]
-                        ${
-                          activePiece === i
-                            ? 'bg-secondary ring-2 ring-secondary-dark text-garden-text'
-                            : 'bg-garden-card/95 hover:bg-secondary-light/60 text-garden-text-light shadow-sm'
-                        }
-                      `}
-                    >
-                      <span className="text-xs sm:text-sm leading-tight text-center px-1">
-                        {q?.question || '?'}
-                      </span>
-                    </motion.button>
+                    <span className="text-xs sm:text-sm leading-tight text-center px-1">
+                      {q?.question || '?'}
+                    </span>
                   )}
-                </AnimatePresence>
+                </motion.button>
               );
             })}
           </div>

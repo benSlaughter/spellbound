@@ -1,5 +1,9 @@
 export { SvgDaisy } from './SvgDaisy';
 export { SvgSunflower } from './SvgSunflower';
 export { SvgRose } from './SvgRose';
+export { SvgTulip } from './SvgTulip';
+export { SvgBluebell } from './SvgBluebell';
+export { SvgDaffodil } from './SvgDaffodil';
+export { SvgLavender } from './SvgLavender';
 export { SvgRainbowArc } from './SvgRainbowArc';
 export { SvgBee } from './SvgBee';

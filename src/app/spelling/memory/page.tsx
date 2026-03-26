@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
+import { SvgTulip } from '@/components/svg';
 import { playSound } from '@/lib/sounds';
 import Link from 'next/link';
 import {
@@ -12,7 +13,6 @@ import {
   PencilSimple,
   Sparkle,
   Flower,
-  FlowerTulip,
   FlowerLotus,
   Butterfly,
   Clover,
@@ -56,7 +56,7 @@ function shuffleArray<T>(arr: T[]): T[] {
 
 const CARD_BACKS: ReactNode[] = [
   <Flower key="f1" weight="duotone" size={32} color="#E91E63" />,
-  <FlowerTulip key="ft" weight="duotone" size={32} color="#AB47BC" />,
+  <SvgTulip key="ft" size={32} color="#AB47BC" />,
   <FlowerLotus key="fl" weight="duotone" size={32} color="#FFD54F" />,
   <Butterfly key="b" weight="duotone" size={32} color="#9C27B0" />,
   <Clover key="c" weight="duotone" size={32} color="#66BB6A" />,

@@ -382,24 +382,23 @@ export default function WordSearchPage() {
         </div>
 
         {/* Word List */}
-        <div className="game-card p-4 flex-1">
+        <div className="game-card p-4 flex-1 overflow-visible">
           <h3 className="flex items-center gap-2 text-lg font-bold text-garden-text mb-3"><MagnifyingGlass weight="duotone" size={20} /> Find these words:</h3>
-          <div className="columns-1 gap-2 space-y-2">
+          <div className="flex flex-col gap-2">
             {wordList.map((word) => {
               const isFound = foundWords.has(word);
               return (
-                <motion.div
+                <div
                   key={word}
-                  animate={isFound ? { scale: 1.1 } : {}}
                   className={`
-                    px-3 py-1.5 rounded-full font-bold text-sm
+                    px-3 py-1.5 rounded-full font-bold text-sm transition-all duration-300
                     ${isFound
                       ? 'bg-primary/20 text-primary line-through'
                       : 'bg-garden-card border border-garden-border text-garden-text'}
                   `}
                 >
-                  {isFound ? <><CheckCircle weight="duotone" size={16} className="inline mr-1" /></> : ''}{word}
-                </motion.div>
+                  {isFound ? <CheckCircle weight="duotone" size={16} className="inline mr-1" /> : ''}{word}
+                </div>
               );
             })}
           </div>

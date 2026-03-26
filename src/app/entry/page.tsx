@@ -11,7 +11,6 @@ import {
   Plant,
   Leaf,
   Flower,
-  FlowerTulip,
   FlowerLotus,
   Clover,
   Butterfly,
@@ -21,13 +20,14 @@ import {
   ClipboardText,
   Sparkle,
 } from '@phosphor-icons/react';
+import { SvgTulip } from '@/components/svg';
 
 const PLANT_ICONS: ReactNode[] = [
   <Plant key="p" weight="duotone" size={18} color="#66BB6A" />,
   <Leaf key="l" weight="duotone" size={18} color="#43A047" />,
   <Clover key="c" weight="duotone" size={18} color="#66BB6A" />,
   <Flower key="f1" weight="duotone" size={18} color="#E91E63" />,
-  <FlowerTulip key="ft" weight="duotone" size={18} color="#AB47BC" />,
+  <SvgTulip key="ft" size={18} color="#AB47BC" />,
   <FlowerLotus key="fl" weight="duotone" size={18} color="#FFD54F" />,
   <Butterfly key="b" weight="duotone" size={18} color="#9C27B0" />,
   <TreeEvergreen key="te" weight="duotone" size={18} color="#2E7D32" />,

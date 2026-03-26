@@ -12,7 +12,6 @@ import {
   Sun as PhSun,
   SunDim as PhSunDim,
   Rainbow as PhRainbow,
-  FlowerTulip as PhFlowerTulip,
   Tree as PhTree,
   TreeEvergreen as PhTreeEvergreen,
   Plant as PhPlant,
@@ -28,7 +27,7 @@ import {
   MusicNotes as PhMusicNotes,
   Medal as PhMedal,
 } from '@phosphor-icons/react';
-import { SvgDaisy, SvgSunflower, SvgRose, SvgRainbowArc, SvgBee } from '@/components/svg';
+import { SvgDaisy, SvgSunflower, SvgRose, SvgTulip, SvgBluebell, SvgDaffodil, SvgLavender, SvgRainbowArc, SvgBee } from '@/components/svg';
 
 // ── Types ──
 
@@ -101,8 +100,11 @@ interface PlantDef {
 const SPELLING_FLOWERS: PlantDef[] = [
   { Icon: SvgDaisy, color: '#E91E63' },
   { Icon: SvgSunflower, color: '#FFD54F' },
-  { Icon: PhFlowerTulip, color: '#AB47BC' },
-  { Icon: SvgRose, color: '#F06292' },
+  { Icon: SvgTulip, color: '#AB47BC' },
+  { Icon: SvgBluebell, color: '#5C6BC0' },
+  { Icon: SvgDaffodil, color: '#FFD54F' },
+  { Icon: SvgLavender, color: '#9575CD' },
+  { Icon: SvgRose, color: '#EF5350' },
 ];
 
 const MATHS_PLANTS: PlantDef[] = [
@@ -533,7 +535,7 @@ export default function ProgressPage() {
               animate={{ opacity: 0.7 }}
               transition={{ delay: 1.8 }}
             >
-              <SvgDaisy size={36} color="#E91E63" />
+              <SvgBluebell size={36} color="#5C6BC0" />
             </motion.div>
             <motion.div
               className="absolute bottom-[14%] right-[6%] select-none pointer-events-none"
@@ -542,7 +544,7 @@ export default function ProgressPage() {
               animate={{ opacity: 0.7 }}
               transition={{ delay: 2.0 }}
             >
-              <PhFlowerTulip weight="duotone" size={36} color="#AB47BC" />
+              <SvgLavender size={36} color="#9575CD" />
             </motion.div>
             <motion.div
               className="absolute bottom-[15%] left-[48%] select-none pointer-events-none"
@@ -551,7 +553,7 @@ export default function ProgressPage() {
               animate={{ opacity: 0.6 }}
               transition={{ delay: 2.2 }}
             >
-              <SvgDaisy size={32} color="#FF8A65" />
+              <SvgDaffodil size={32} color="#FFD54F" />
             </motion.div>
           </>
         )}

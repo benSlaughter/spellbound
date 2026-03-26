@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { PencilSimple, ChartBar, Gear, Calculator } from "@phosphor-icons/react";
+import { PencilSimple, ChartBar, Gear, Calculator, ChatDots } from "@phosphor-icons/react";
 
 export default function AdminDashboard() {
   return (
@@ -55,6 +55,23 @@ export default function AdminDashboard() {
               </h2>
               <p className="text-sm text-stone-500">
                 Choose which times tables to practise
+              </p>
+            </div>
+          </div>
+        </Link>
+
+        <Link
+          href="/admin/feedback"
+          className="bg-white rounded-xl p-6 shadow-sm border border-stone-200 hover:border-green-300 hover:shadow-md transition-all group"
+        >
+          <div className="flex items-center gap-4">
+            <div className="text-3xl text-green-700"><ChatDots weight="duotone" size={36} /></div>
+            <div>
+              <h2 className="text-lg font-semibold text-stone-800 group-hover:text-green-700 transition-colors">
+                Feedback
+              </h2>
+              <p className="text-sm text-stone-500">
+                View student feedback and suggestions
               </p>
             </div>
           </div>

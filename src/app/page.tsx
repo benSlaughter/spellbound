@@ -2,7 +2,8 @@
 
 import { motion } from 'framer-motion';
 import GameCard from '@/components/ui/GameCard';
-import { Plant, Tree, Flower, FlowerLotus, TreeEvergreen, Lightbulb, Books, Calculator, Trophy } from '@phosphor-icons/react';
+import { Plant, Tree, TreeEvergreen, Lightbulb, Books, Calculator, Trophy } from '@phosphor-icons/react';
+import { SvgDaisy, SvgTulip, SvgBluebell, SvgDaffodil, SvgLavender } from '@/components/svg';
 
 const stagger = {
   hidden: { opacity: 0 },
@@ -106,11 +107,13 @@ export default function Home() {
           Keep learning to grow beautiful flowers and unlock achievements!
         </p>
         <div className="flex justify-center items-end gap-4 opacity-50 select-none">
-          <Plant weight="duotone" size={28} color="#66BB6A" />
+          <SvgBluebell size={28} />
           <Tree weight="duotone" size={44} color="#4CAF50" />
-          <Flower weight="duotone" size={38} color="#E91E63" />
-          <FlowerLotus weight="duotone" size={42} color="#FFD54F" />
+          <SvgDaisy size={38} color="#E91E63" />
+          <SvgDaffodil size={42} />
           <TreeEvergreen weight="duotone" size={48} color="#2E7D32" />
+          <SvgTulip size={36} color="#AB47BC" />
+          <SvgLavender size={34} />
         </div>
         <p className="mt-3 text-sm text-garden-text-light">
           Complete activities to watch your garden bloom!
