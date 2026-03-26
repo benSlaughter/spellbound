@@ -1,14 +1,2 @@
-export { Flower } from './Flower';
-export { Tree } from './Tree';
-export { Butterfly } from './Butterfly';
-export { Bee } from './Bee';
-export { Cloud } from './Cloud';
-export { Sun } from './Sun';
-export { Rainbow } from './Rainbow';
 export { Frog } from './Frog';
 export { Bear } from './Bear';
-export { Owl } from './Owl';
-export { Flag } from './Flag';
-export { Signpost } from './Signpost';
-export { LilyPad } from './LilyPad';
-export { Sprout } from './Sprout';

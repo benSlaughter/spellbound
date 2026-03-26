@@ -1,21 +1,27 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, type ComponentType } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Badge from '@/components/ui/Badge';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { playSound } from '@/lib/sounds';
 import {
-  Cloud as SvgCloud,
-  Butterfly as SvgButterfly,
-  Bee as SvgBee,
-  Sun as SvgSun,
-  Rainbow as SvgRainbow,
-  Flower as SvgFlower,
-  Tree as SvgTree,
-  Sprout as SvgSprout,
-} from '@/components/svg';
+  Cloud as PhCloud,
+  Butterfly as PhButterfly,
+  Bug as PhBug,
+  Sun as PhSun,
+  SunDim as PhSunDim,
+  Rainbow as PhRainbow,
+  Flower as PhFlower,
+  FlowerLotus as PhFlowerLotus,
+  FlowerTulip as PhFlowerTulip,
+  Tree as PhTree,
+  TreePalm as PhTreePalm,
+  TreeEvergreen as PhTreeEvergreen,
+  Plant as PhPlant,
+  type IconProps,
+} from '@phosphor-icons/react';
 
 // ── Types ──
 
@@ -62,11 +68,24 @@ const popIn = {
 
 // ── Constants ──
 
-type FlowerVariant = 'daisy' | 'sunflower' | 'tulip' | 'rose';
-type TreeVariant = 'sapling' | 'palm' | 'oak' | 'pine';
+interface PlantDef {
+  Icon: ComponentType<IconProps>;
+  color: string;
+}
 
-const SPELLING_FLOWERS: FlowerVariant[] = ['daisy', 'sunflower', 'tulip', 'rose'];
-const MATHS_PLANTS: TreeVariant[] = ['sapling', 'palm', 'oak', 'pine'];
+const SPELLING_FLOWERS: PlantDef[] = [
+  { Icon: PhFlower, color: '#E91E63' },
+  { Icon: PhFlowerLotus, color: '#FFD54F' },
+  { Icon: PhFlowerTulip, color: '#AB47BC' },
+  { Icon: PhFlower, color: '#FF8A65' },
+];
+
+const MATHS_PLANTS: PlantDef[] = [
+  { Icon: PhPlant, color: '#66BB6A' },
+  { Icon: PhTreePalm, color: '#8D6E63' },
+  { Icon: PhTree, color: '#4CAF50' },
+  { Icon: PhTreeEvergreen, color: '#2E7D32' },
+];
 
 const CLOUD_POSITIONS = [
   { top: '8%', delay: 0, duration: 22 },
@@ -90,7 +109,7 @@ function Cloud({ top, delay, duration }: { top: string; delay: number; duration:
         ease: 'linear',
       }}
     >
-      <SvgCloud variant="medium" />
+      <PhCloud weight="duotone" size={64} color="#B0BEC5" />
     </motion.div>
   );
 }
@@ -124,7 +143,7 @@ function Butterfly({ index }: { index: number }) {
         x: { duration: 4 + index * 0.7, repeat: Infinity, ease: 'easeInOut' },
       }}
     >
-      <SvgButterfly color={colors[index % colors.length]} size={28} />
+      <PhButterfly weight="duotone" size={32} color={colors[index % colors.length]} />
     </motion.div>
   );
 }
@@ -153,27 +172,23 @@ function Bee({ index }: { index: number }) {
         x: { duration: 3 + index * 0.5, repeat: Infinity, ease: 'easeInOut' },
       }}
     >
-      <SvgBee size={24} />
+      <PhBug weight="duotone" size={28} color="#FFC107" />
     </motion.div>
   );
 }
 
 function GardenPlant({
-  variant,
-  type,
-  height,
+  plantDef,
+  size,
   left,
   delay,
 }: {
-  variant: string;
-  type: 'flower' | 'tree';
-  height: number;
+  plantDef: PlantDef;
+  size: number;
   left: string;
   delay: number;
 }) {
-  const clampedHeight = type === 'flower'
-    ? Math.min(height, 70)
-    : Math.min(height, 140);
+  const { Icon, color } = plantDef;
 
   return (
     <motion.div
@@ -188,20 +203,16 @@ function GardenPlant({
         animate={{ scale: 1 }}
         transition={{ delay: delay + 0.3, type: 'spring', stiffness: 300 }}
       >
-        {type === 'flower' ? (
-          <SvgFlower variant={variant as FlowerVariant} height={clampedHeight} />
-        ) : (
-          <SvgTree variant={variant as TreeVariant} height={clampedHeight} />
-        )}
+        <Icon weight="duotone" size={size} color={color} />
       </motion.div>
     </motion.div>
   );
 }
 
 function Sun({ streakDays }: { streakDays: number }) {
-  // Map streak: 0 days → 0.3, 5+ days → 1.0
   const intensity = Math.min(1, 0.3 + streakDays * 0.14);
   const glowSize = Math.min(20, 8 + streakDays * 2);
+  const SunIcon = intensity < 0.5 ? PhSunDim : PhSun;
 
   return (
     <motion.div
@@ -213,7 +224,7 @@ function Sun({ streakDays }: { streakDays: number }) {
         filter: `drop-shadow(0 0 ${glowSize}px rgba(255, 200, 0, ${intensity}))`,
       }}
     >
-      <SvgSun intensity={intensity} size={60} />
+      <SunIcon weight="duotone" size={72} color="#FFB300" />
     </motion.div>
   );
 }
@@ -227,7 +238,7 @@ function Rainbow() {
       animate={{ opacity: 0.85, scale: 1 }}
       transition={{ delay: 1.5, type: 'spring', stiffness: 100, damping: 15 }}
     >
-      <SvgRainbow size={200} />
+      <PhRainbow weight="duotone" size={120} color="#E91E63" />
     </motion.div>
   );
 }
@@ -314,14 +325,14 @@ export default function ProgressPage() {
     );
 
     const flowers = spellingTypes.map((s, i) => ({
-      variant: SPELLING_FLOWERS[i % SPELLING_FLOWERS.length],
-      height: Math.min(70, 40 + s.total * 3),
+      plantDef: SPELLING_FLOWERS[i % SPELLING_FLOWERS.length],
+      size: Math.min(70, 40 + s.total * 3),
       left: `${12 + i * 14}%`,
     }));
 
     const plants = mathsTypes.map((s, i) => ({
-      variant: MATHS_PLANTS[i % MATHS_PLANTS.length],
-      height: Math.min(140, 80 + s.total * 3),
+      plantDef: MATHS_PLANTS[i % MATHS_PLANTS.length],
+      size: Math.min(120, 60 + s.total * 3),
       left: `${55 + i * 12}%`,
     }));
 
@@ -426,9 +437,8 @@ export default function ProgressPage() {
         {gardenElements.flowers.map((flower, i) => (
           <GardenPlant
             key={`flower-${i}`}
-            variant={flower.variant}
-            type="flower"
-            height={flower.height}
+            plantDef={flower.plantDef}
+            size={flower.size}
             left={flower.left}
             delay={0.5 + i * 0.15}
           />
@@ -438,9 +448,8 @@ export default function ProgressPage() {
         {gardenElements.plants.map((plant, i) => (
           <GardenPlant
             key={`plant-${i}`}
-            variant={plant.variant}
-            type="tree"
-            height={plant.height}
+            plantDef={plant.plantDef}
+            size={plant.size}
             left={plant.left}
             delay={0.8 + i * 0.15}
           />
@@ -487,7 +496,7 @@ export default function ProgressPage() {
               animate={{ opacity: 0.7 }}
               transition={{ delay: 1.8 }}
             >
-              <SvgSprout size={20} />
+              <PhPlant weight="duotone" size={24} color="#66BB6A" />
             </motion.div>
             <motion.div
               className="absolute bottom-[14%] right-[6%] select-none pointer-events-none"
@@ -495,7 +504,7 @@ export default function ProgressPage() {
               animate={{ opacity: 0.7 }}
               transition={{ delay: 2.0 }}
             >
-              <SvgSprout size={20} />
+              <PhPlant weight="duotone" size={24} color="#66BB6A" />
             </motion.div>
             <motion.div
               className="absolute bottom-[15%] left-[48%] select-none pointer-events-none"
@@ -503,7 +512,7 @@ export default function ProgressPage() {
               animate={{ opacity: 0.6 }}
               transition={{ delay: 2.2 }}
             >
-              <SvgSprout size={16} />
+              <PhPlant weight="duotone" size={20} color="#43A047" />
             </motion.div>
           </>
         )}

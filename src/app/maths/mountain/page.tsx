@@ -7,7 +7,8 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Button from '@/components/ui/Button';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
-import { Bear, Flag, Signpost, Owl } from '@/components/svg';
+import { Bear } from '@/components/svg';
+import { Flag, Signpost, Bird } from '@phosphor-icons/react';
 import { playSound } from '@/lib/sounds';
 import {
   generateQuestions,
@@ -217,7 +218,7 @@ function MathMountain() {
 
           {/* Flag at top */}
           <div className="absolute top-1 left-1/2 -translate-x-1/2">
-            <Flag size={24} />
+            <Flag weight="duotone" size={28} color="#EF5350" />
           </div>
         </div>
       </div>
@@ -231,7 +232,7 @@ function MathMountain() {
           className="mx-auto bg-white rounded-2xl shadow-md px-8 py-6 text-center max-w-sm w-full"
         >
           {/* Signpost */}
-          <div className="mb-2 flex justify-center"><Signpost size={36} /></div>
+          <div className="mb-2 flex justify-center"><Signpost weight="duotone" size={40} color="#8D6E63" /></div>
           <p className="text-2xl font-extrabold text-garden-text mb-4">
             {question.question} = ?
           </p>
@@ -261,7 +262,7 @@ function MathMountain() {
                   exit={{ opacity: 0 }}
                   className="flex items-center justify-center gap-2"
                 >
-                  {showOwl && <Owl size={32} />}
+                  {showOwl && <Bird weight="duotone" size={36} color="#A1887F" />}
                   <p className="text-lg font-bold text-primary">{feedback}</p>
                 </motion.div>
               )}

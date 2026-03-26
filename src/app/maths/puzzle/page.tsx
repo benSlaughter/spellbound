@@ -24,13 +24,14 @@ import {
   Flower,
   Butterfly,
   Tree,
-  Owl,
-  Sprout,
-  Frog,
-  LilyPad,
-  Bee,
-  Bear,
-} from '@/components/svg';
+  TreeEvergreen,
+  TreePalm,
+  Plant,
+  Bug,
+  Bird,
+} from '@phosphor-icons/react';
+import { Frog } from '@/components/svg';
+import { Bear } from '@/components/svg';
 
 const GRID_SIZE = 9; // 3x3
 
@@ -59,26 +60,26 @@ const PICTURES: HiddenPicture[] = [
         {/* Rainbow arcing across, partially behind hills */}
         <div className="absolute left-1/2 -translate-x-1/2 overflow-hidden" style={{ top: '15%', width: '100%', height: '65%' }}>
           <div className="flex justify-center">
-            <Rainbow size={250} />
+            <Rainbow weight="duotone" size={120} color="#E91E63" />
           </div>
         </div>
 
         {/* Sun */}
         <div className="absolute" style={{ top: '5%', right: '6%' }}>
-          <Sun size={70} intensity={0.9} />
+          <Sun weight="duotone" size={72} color="#FFB300" />
         </div>
 
         {/* Flowers on the hills */}
         <div className="absolute" style={{ bottom: '18%', left: '12%' }}>
-          <Flower variant="sunflower" height={80} />
+          <Flower weight="duotone" size={80} color="#FFD54F" />
         </div>
         <div className="absolute" style={{ bottom: '15%', right: '18%' }}>
-          <Flower variant="tulip" height={60} />
+          <Flower weight="duotone" size={64} color="#AB47BC" />
         </div>
 
         {/* Butterfly */}
         <div className="absolute" style={{ top: '30%', left: '65%' }}>
-          <Butterfly size={35} />
+          <Butterfly weight="duotone" size={40} color="#9C27B0" />
         </div>
       </>
     ),
@@ -100,34 +101,34 @@ const PICTURES: HiddenPicture[] = [
 
         {/* Cloud peeking through canopy */}
         <div className="absolute" style={{ top: '3%', right: '15%' }}>
-          <Cloud variant="small" />
+          <Cloud weight="duotone" size={48} color="#B0BEC5" />
         </div>
 
         {/* Trees layered back to front */}
         <div className="absolute" style={{ bottom: '14%', right: '18%' }}>
-          <Tree variant="pine" height={130} />
+          <TreeEvergreen weight="duotone" size={100} color="#2E7D32" />
         </div>
         <div className="absolute" style={{ bottom: '14%', left: '22%' }}>
-          <Tree variant="oak" height={160} />
+          <Tree weight="duotone" size={120} color="#4CAF50" />
         </div>
         <div className="absolute" style={{ bottom: '12%', left: '8%' }}>
-          <Tree variant="sapling" height={70} />
+          <Plant weight="duotone" size={60} color="#66BB6A" />
         </div>
 
-        {/* Owl perched near the oak */}
+        {/* Owl (Bird) perched near the oak */}
         <div className="absolute" style={{ top: '22%', left: '38%' }}>
-          <Owl size={48} />
+          <Bird weight="duotone" size={48} color="#A1887F" />
         </div>
 
         {/* Ground sprouts */}
         <div className="absolute" style={{ bottom: '14%', left: '45%' }}>
-          <Sprout size={22} />
+          <Plant weight="duotone" size={28} color="#66BB6A" />
         </div>
         <div className="absolute" style={{ bottom: '13%', right: '35%' }}>
-          <Sprout size={18} />
+          <Plant weight="duotone" size={22} color="#43A047" />
         </div>
         <div className="absolute" style={{ bottom: '15%', left: '60%' }}>
-          <Sprout size={16} />
+          <Plant weight="duotone" size={20} color="#66BB6A" />
         </div>
       </>
     ),
@@ -155,12 +156,12 @@ const PICTURES: HiddenPicture[] = [
         <div className="absolute rounded-full" style={{ bottom: '8%', right: '25%', width: '30px', height: '8px', border: '1px solid rgba(255,255,255,0.15)' }} />
         <div className="absolute rounded-full" style={{ bottom: '22%', right: '40%', width: '25px', height: '7px', border: '1px solid rgba(255,255,255,0.12)' }} />
 
-        {/* Lily pads */}
+        {/* Lily pads using Plant icons */}
         <div className="absolute" style={{ bottom: '25%', left: '25%' }}>
-          <LilyPad size={90} showFlower />
+          <Plant weight="duotone" size={64} color="#43A047" />
         </div>
         <div className="absolute" style={{ bottom: '18%', right: '22%' }}>
-          <LilyPad size={60} />
+          <Plant weight="duotone" size={48} color="#66BB6A" />
         </div>
 
         {/* Frog on a lily pad */}
@@ -170,7 +171,7 @@ const PICTURES: HiddenPicture[] = [
 
         {/* Butterfly above */}
         <div className="absolute" style={{ top: '15%', right: '25%' }}>
-          <Butterfly size={30} />
+          <Butterfly weight="duotone" size={36} color="#E91E63" />
         </div>
 
         {/* Grass bank at edges */}
@@ -200,34 +201,34 @@ const PICTURES: HiddenPicture[] = [
 
         {/* Sun */}
         <div className="absolute" style={{ top: '4%', right: '8%' }}>
-          <Sun size={55} intensity={0.8} />
+          <Sun weight="duotone" size={64} color="#FFB300" />
         </div>
 
         {/* Flowers — tall sunflower dominant center */}
         <div className="absolute" style={{ bottom: '26%', left: '38%' }}>
-          <Flower variant="sunflower" height={100} />
+          <Flower weight="duotone" size={96} color="#FFD54F" />
         </div>
         <div className="absolute" style={{ bottom: '26%', left: '12%' }}>
-          <Flower variant="daisy" height={65} />
+          <Flower weight="duotone" size={64} color="#E91E63" />
         </div>
         <div className="absolute" style={{ bottom: '26%', right: '12%' }}>
-          <Flower variant="rose" height={70} />
+          <Flower weight="duotone" size={72} color="#EF5350" />
         </div>
         <div className="absolute" style={{ bottom: '24%', left: '60%' }}>
-          <Flower variant="tulip" height={60} />
+          <Flower weight="duotone" size={60} color="#AB47BC" />
         </div>
 
         {/* Bee near sunflower */}
         <div className="absolute" style={{ top: '22%', left: '48%' }}>
-          <Bee size={30} />
+          <Bug weight="duotone" size={32} color="#FFC107" />
         </div>
 
         {/* Ground sprouts */}
         <div className="absolute" style={{ bottom: '22%', left: '50%' }}>
-          <Sprout size={20} />
+          <Plant weight="duotone" size={24} color="#66BB6A" />
         </div>
         <div className="absolute" style={{ bottom: '20%', right: '30%' }}>
-          <Sprout size={16} />
+          <Plant weight="duotone" size={20} color="#43A047" />
         </div>
       </>
     ),
@@ -248,12 +249,12 @@ const PICTURES: HiddenPicture[] = [
 
         {/* Cloud */}
         <div className="absolute" style={{ top: '5%', left: '15%' }}>
-          <Cloud variant="large" />
+          <Cloud weight="duotone" size={80} color="#B0BEC5" />
         </div>
 
         {/* Palm tree in background */}
         <div className="absolute" style={{ bottom: '22%', left: '8%' }}>
-          <Tree variant="palm" height={120} />
+          <TreePalm weight="duotone" size={100} color="#8D6E63" />
         </div>
 
         {/* Bear — large, centered */}
@@ -263,18 +264,18 @@ const PICTURES: HiddenPicture[] = [
 
         {/* Foreground sprouts */}
         <div className="absolute" style={{ bottom: '16%', left: '35%' }}>
-          <Sprout size={24} />
+          <Plant weight="duotone" size={28} color="#66BB6A" />
         </div>
         <div className="absolute" style={{ bottom: '14%', right: '20%' }}>
-          <Sprout size={20} />
+          <Plant weight="duotone" size={24} color="#43A047" />
         </div>
         <div className="absolute" style={{ bottom: '15%', right: '40%' }}>
-          <Sprout size={18} />
+          <Plant weight="duotone" size={22} color="#66BB6A" />
         </div>
 
         {/* Butterfly */}
         <div className="absolute" style={{ top: '25%', right: '18%' }}>
-          <Butterfly size={28} color="#AB47BC" />
+          <Butterfly weight="duotone" size={32} color="#AB47BC" />
         </div>
       </>
     ),
