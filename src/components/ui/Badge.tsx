@@ -1,11 +1,40 @@
 'use client';
 
+import { type ReactNode } from 'react';
 import { motion } from 'framer-motion';
+import {
+  Question,
+  Plant,
+  MagicWand,
+  Sparkle,
+  Calculator,
+  Star,
+  Butterfly,
+  Rainbow,
+  Trophy,
+  MusicNotes,
+  Medal,
+  type IconProps,
+} from '@phosphor-icons/react';
+import { type ComponentType } from 'react';
+
+const ICON_MAP: Record<string, ComponentType<IconProps>> = {
+  Plant,
+  MagicWand,
+  Sparkle,
+  Calculator,
+  Star,
+  Butterfly,
+  Rainbow,
+  Trophy,
+  MusicNotes,
+  Medal,
+};
 
 /** Props for the Badge component. */
 export interface BadgeProps {
-  /** Emoji icon displayed on the badge when unlocked */
-  emoji: string;
+  /** Phosphor icon name string or ReactNode displayed on the badge when unlocked */
+  emoji: ReactNode;
   /** Display title shown below the badge */
   title: string;
   /** Whether the achievement has been earned (default: false) */
@@ -14,8 +43,16 @@ export interface BadgeProps {
   description?: string;
 }
 
+function renderIcon(emoji: ReactNode): ReactNode {
+  if (typeof emoji === 'string' && ICON_MAP[emoji]) {
+    const Icon = ICON_MAP[emoji];
+    return <Icon size={32} weight="duotone" />;
+  }
+  return emoji;
+}
+
 /**
- * A circular achievement badge that shows an emoji when unlocked
+ * A circular achievement badge that shows an icon when unlocked
  * or a "?" when locked. Includes a spring animation on unlock.
  */
 export default function Badge({ emoji, title, unlocked = false, description }: BadgeProps) {
@@ -34,7 +71,7 @@ export default function Badge({ emoji, title, unlocked = false, description }: B
     >
       <div
         className={`
-          w-16 h-16 rounded-full flex items-center justify-center text-3xl
+          w-16 h-16 rounded-full flex items-center justify-center
           ${
             unlocked
               ? 'bg-secondary shadow-lg ring-4 ring-secondary-light'
@@ -43,7 +80,7 @@ export default function Badge({ emoji, title, unlocked = false, description }: B
         `}
         {...(!unlocked && { title: description || title })}
       >
-        {unlocked ? emoji : '?'}
+        {unlocked ? renderIcon(emoji) : <Question weight="duotone" size={32} />}
       </div>
       <span
         className={`text-xs font-bold text-center leading-tight ${

@@ -8,6 +8,7 @@ import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
 import Button from '@/components/ui/Button';
 import { playSound } from '@/lib/sounds';
 import Link from 'next/link';
+import { Plant, PencilSimple, SpeakerHigh, Lightbulb, Sparkle, Trophy } from '@phosphor-icons/react';
 
 interface SpellingWord {
   id: number;
@@ -221,11 +222,11 @@ export default function BuilderPage() {
       >
         <Breadcrumbs />
         <div className="game-card p-10 text-center max-w-md">
-          <span className="text-6xl block mb-4">🌱</span>
+          <span className="text-6xl block mb-4"><Plant weight="duotone" size={64} color="#66BB6A" /></span>
           <h2 className="text-2xl font-extrabold text-garden-text mb-3">No words to practise!</h2>
           <p className="text-garden-text-light text-lg mb-6">Add some spelling words first!</p>
-          <Link href="/entry" className="btn-primary text-lg px-8 py-3 no-underline">
-            ✏️ Add Words
+          <Link href="/entry" className="btn-primary text-lg px-8 py-3 no-underline inline-flex items-center gap-2">
+            <PencilSimple weight="duotone" size={20} /> Add Words
           </Link>
         </div>
       </motion.div>
@@ -265,7 +266,7 @@ export default function BuilderPage() {
           <Button
             variant="primary"
             size="lg"
-            emoji="🔊"
+            icon={<SpeakerHigh weight="duotone" size={20} />}
             onClick={handleFirstListen}
             className="text-xl px-8 py-4"
           >
@@ -277,7 +278,7 @@ export default function BuilderPage() {
           <Button
             variant="primary"
             size="lg"
-            emoji="🔊"
+            icon={<SpeakerHigh weight="duotone" size={20} />}
             onClick={() => currentWord && speakWord(currentWord.word)}
           >
             Hear the word
@@ -288,7 +289,7 @@ export default function BuilderPage() {
       {/* Hint */}
       <div className="text-center">
         <span className="inline-flex items-center gap-2 bg-secondary/20 px-4 py-2 rounded-full text-garden-text font-semibold">
-          💡 {currentWord?.hint || 'Can you spell this word?'}
+          <Lightbulb weight="duotone" size={20} color="#FFD54F" /> {currentWord?.hint || 'Can you spell this word?'}
         </span>
       </div>
 
@@ -343,7 +344,7 @@ export default function BuilderPage() {
             className="text-center"
           >
             <span className="text-3xl font-extrabold text-primary">{encouragement}</span>
-            <span className="text-3xl ml-2">🌟</span>
+            <Sparkle weight="duotone" size={28} color="#FFD54F" className="ml-2" />
           </motion.div>
         )}
       </AnimatePresence>
@@ -383,15 +384,15 @@ export default function BuilderPage() {
           animate={{ opacity: 1 }}
           className="text-center text-garden-text-light font-semibold"
         >
-          {wrongAttempts === 1 && 'Not quite — try again! 🌸'}
-          {wrongAttempts === 2 && "One more try, you've got this! 💪"}
+          {wrongAttempts === 1 && 'Not quite — try again!'}
+          {wrongAttempts === 2 && "One more try, you've got this!"}
         </motion.p>
       )}
 
       <CelebrationOverlay
         show={showFinal}
-        message="You practised all your words! 🌟"
-        emoji="🏆"
+        message="You practised all your words!"
+        emoji={<Trophy weight="duotone" size={72} color="#FFD54F" />}
         onDismiss={() => setShowFinal(false)}
         navigateBack
       />

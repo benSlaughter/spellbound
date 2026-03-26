@@ -2,17 +2,31 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  House,
+  Books,
+  Calculator,
+  Plant,
+  Gear,
+  Sparkle,
+  Flower,
+  FlowerTulip,
+  Leaf,
+  FlowerLotus,
+  X,
+  List,
+} from '@phosphor-icons/react';
 
-const navItems = [
-  { href: '/', label: 'Home', emoji: '🏡' },
-  { href: '/spelling', label: 'Spelling', emoji: '📚' },
-  { href: '/maths', label: 'Maths', emoji: '🔢' },
-  { href: '/progress', label: 'My Garden', emoji: '🌱' },
+const navItems: { href: string; label: string; icon: ReactNode }[] = [
+  { href: '/', label: 'Home', icon: <House weight="duotone" size={24} /> },
+  { href: '/spelling', label: 'Spelling', icon: <Books weight="duotone" size={24} /> },
+  { href: '/maths', label: 'Maths', icon: <Calculator weight="duotone" size={24} /> },
+  { href: '/progress', label: 'My Garden', icon: <Plant weight="duotone" size={24} /> },
 ];
 
-const adminItem = { href: '/admin', label: 'Admin', emoji: '⚙️' };
+const adminItem = { href: '/admin', label: 'Admin', icon: <Gear weight="duotone" size={20} /> };
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -38,8 +52,8 @@ export default function Sidebar() {
             }
           `}
         >
-          <span className="text-2xl" role="img" aria-hidden="true">
-            {item.emoji}
+          <span className="flex items-center" aria-hidden="true">
+            {item.icon}
           </span>
           <span>{item.label}</span>
         </Link>
@@ -60,8 +74,8 @@ export default function Sidebar() {
           }
         `}
       >
-        <span className="text-lg" role="img" aria-hidden="true">
-          {adminItem.emoji}
+        <span className="flex items-center" aria-hidden="true">
+          {adminItem.icon}
         </span>
         <span>{adminItem.label}</span>
       </Link>
@@ -73,7 +87,7 @@ export default function Sidebar() {
       {/* Desktop sidebar */}
       <aside className="hidden md:flex md:flex-col md:w-64 md:min-h-screen bg-garden-card border-r border-garden-border p-4">
         <Link href="/" className="flex items-center gap-2 px-4 py-3 mb-6">
-          <span className="text-3xl">🌟</span>
+          <Sparkle weight="duotone" size={28} color="#FFD54F" />
           <h1 className="text-2xl font-extrabold text-primary-dark tracking-tight">
             SpellBound
           </h1>
@@ -82,11 +96,11 @@ export default function Sidebar() {
         {navContent}
 
         {/* Decorative garden elements */}
-        <div className="mt-auto pt-8 flex justify-center gap-2 text-2xl opacity-60 select-none">
-          <span>🌻</span>
-          <span>🌷</span>
-          <span>🌿</span>
-          <span>🍄</span>
+        <div className="mt-auto pt-8 flex justify-center gap-2 opacity-60 select-none">
+          <Flower weight="duotone" size={24} color="#FFD54F" />
+          <FlowerTulip weight="duotone" size={24} color="#E91E63" />
+          <Leaf weight="duotone" size={24} color="#66BB6A" />
+          <FlowerLotus weight="duotone" size={24} color="#EF5350" />
         </div>
       </aside>
 
@@ -94,7 +108,7 @@ export default function Sidebar() {
       <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-garden-card border-b border-garden-border">
         <div className="flex items-center justify-between px-4 py-3">
           <Link href="/" className="flex items-center gap-2">
-            <span className="text-2xl">🌟</span>
+            <Sparkle weight="duotone" size={24} color="#FFD54F" />
             <h1 className="text-xl font-extrabold text-primary-dark">
               SpellBound
             </h1>
@@ -104,7 +118,7 @@ export default function Sidebar() {
             className="p-2 rounded-xl hover:bg-primary-light/20 min-w-[44px] min-h-[44px] flex items-center justify-center"
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
           >
-            <span className="text-2xl">{mobileOpen ? '✕' : '☰'}</span>
+            {mobileOpen ? <X weight="bold" size={24} /> : <List weight="bold" size={24} />}
           </button>
         </div>
       </div>
@@ -130,10 +144,10 @@ export default function Sidebar() {
               style={{ top: '60px' }}
             >
               {navContent}
-              <div className="mt-6 flex justify-center gap-2 text-2xl opacity-60 select-none">
-                <span>🌻</span>
-                <span>🌷</span>
-                <span>🌿</span>
+              <div className="mt-6 flex justify-center gap-2 opacity-60 select-none">
+                <Flower weight="duotone" size={24} color="#FFD54F" />
+                <FlowerTulip weight="duotone" size={24} color="#E91E63" />
+                <Leaf weight="duotone" size={24} color="#66BB6A" />
               </div>
             </motion.aside>
           </>

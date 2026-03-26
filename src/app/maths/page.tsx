@@ -1,56 +1,67 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import GameCard from '@/components/ui/GameCard';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import type { Difficulty } from '@/lib/maths-helpers';
+import {
+  Plant,
+  Leaf,
+  Tree,
+  TreeEvergreen,
+  MagnifyingGlass,
+  Drop,
+  Mountains,
+  PuzzlePiece,
+  FishSimple,
+} from '@phosphor-icons/react';
 
 const STORAGE_KEY = 'spellbound-maths-tables';
 const DIFF_KEY = 'spellbound-maths-difficulty';
 
 const ALL_TABLES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-const DIFFICULTIES: { key: Difficulty; label: string; emoji: string; desc: string }[] = [
-  { key: 'seedling', label: 'Seedling', emoji: '🌱', desc: 'Multiplication 1-6' },
-  { key: 'sapling', label: 'Sapling', emoji: '🌿', desc: 'Multiplication 1-12' },
-  { key: 'tree', label: 'Tree', emoji: '🌳', desc: 'Multiply & divide mixed' },
-  { key: 'mighty_oak', label: 'Mighty Oak', emoji: '🌲', desc: 'Division focus' },
+const DIFFICULTIES: { key: Difficulty; label: string; icon: ReactNode; desc: string }[] = [
+  { key: 'seedling', label: 'Seedling', icon: <Plant weight="duotone" size={24} color="#66BB6A" />, desc: 'Multiplication 1-6' },
+  { key: 'sapling', label: 'Sapling', icon: <Leaf weight="duotone" size={24} color="#43A047" />, desc: 'Multiplication 1-12' },
+  { key: 'tree', label: 'Tree', icon: <Tree weight="duotone" size={24} color="#4CAF50" />, desc: 'Multiply & divide mixed' },
+  { key: 'mighty_oak', label: 'Mighty Oak', icon: <TreeEvergreen weight="duotone" size={24} color="#2E7D32" />, desc: 'Division focus' },
 ];
 
 const GAMES = [
   {
     title: 'Times Table Explorer',
     description: 'Explore the whole multiplication grid — tap to discover patterns!',
-    emoji: '🔍',
+    emoji: <MagnifyingGlass weight="duotone" size={48} color="#4CAF50" />,
     path: 'explorer',
     color: 'bg-primary-light/30',
   },
   {
     title: 'Number Bubbles',
     description: 'Pop the bubble with the right answer — splish splash!',
-    emoji: '🫧',
+    emoji: <Drop weight="duotone" size={48} color="#2196F3" />,
     path: 'bubbles',
     color: 'bg-accent-light/30',
   },
   {
     title: 'Math Mountain',
     description: 'Climb to the snowy peak by answering questions along the way!',
-    emoji: '🏔️',
+    emoji: <Mountains weight="duotone" size={48} color="#8D6E63" />,
     path: 'mountain',
     color: 'bg-secondary-light/30',
   },
   {
     title: 'Puzzle Pieces',
     description: 'Solve maths puzzles to reveal a hidden picture!',
-    emoji: '🧩',
+    emoji: <PuzzlePiece weight="duotone" size={48} color="#9C27B0" />,
     path: 'puzzle',
     color: 'bg-fun-purple/20',
   },
   {
     title: 'Number River',
     description: 'Hop across lily pads to cross the river — pick the right one!',
-    emoji: '🐸',
+    emoji: <FishSimple weight="duotone" size={48} color="#4CAF50" />,
     path: 'river',
     color: 'bg-primary/20',
   },
@@ -201,7 +212,7 @@ export default function MathsHub() {
                   }
                 `}
               >
-                <span className="text-2xl">{d.emoji}</span>
+                <span className="flex items-center justify-center">{d.icon}</span>
                 <span className="font-bold text-sm">{d.label}</span>
                 <span className="text-xs opacity-70">{d.desc}</span>
               </motion.button>

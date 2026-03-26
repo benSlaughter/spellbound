@@ -10,7 +10,7 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "SpellBound 🌟 — Magical Learning Garden",
+  title: "SpellBound — Magical Learning Garden",
   description:
     "A fun, colourful learning app for spelling and maths — grow your knowledge garden!",
 };

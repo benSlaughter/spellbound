@@ -29,6 +29,8 @@ import {
   Plant,
   Bug,
   Bird,
+  Sparkle,
+  PuzzlePiece,
 } from '@phosphor-icons/react';
 import { Frog } from '@/components/svg';
 import { Bear } from '@/components/svg';
@@ -37,7 +39,7 @@ const GRID_SIZE = 9; // 3x3
 
 interface HiddenPicture {
   name: string;
-  emoji: string;
+  emoji: React.ReactNode;
   bg: string;
   render: () => React.ReactNode;
 }
@@ -45,7 +47,7 @@ interface HiddenPicture {
 const PICTURES: HiddenPicture[] = [
   {
     name: 'Rainbow Meadow',
-    emoji: '🌈',
+    emoji: <Rainbow weight="duotone" size={72} color="#E91E63" />,
     bg: '',
     render: () => (
       <>
@@ -86,7 +88,7 @@ const PICTURES: HiddenPicture[] = [
   },
   {
     name: 'Enchanted Forest',
-    emoji: '🌲',
+    emoji: <TreeEvergreen weight="duotone" size={72} color="#2E7D32" />,
     bg: '',
     render: () => (
       <>
@@ -135,7 +137,7 @@ const PICTURES: HiddenPicture[] = [
   },
   {
     name: 'Magical Pond',
-    emoji: '🐸',
+    emoji: <Frog variant="sitting" size={72} />,
     bg: '',
     render: () => (
       <>
@@ -182,7 +184,7 @@ const PICTURES: HiddenPicture[] = [
   },
   {
     name: 'Sunny Garden',
-    emoji: '🌻',
+    emoji: <Flower weight="duotone" size={72} color="#FFD54F" />,
     bg: '',
     render: () => (
       <>
@@ -235,7 +237,7 @@ const PICTURES: HiddenPicture[] = [
   },
   {
     name: "Bear's Meadow",
-    emoji: '🐻',
+    emoji: <Bear size={72} />,
     bg: '',
     render: () => (
       <>
@@ -351,7 +353,7 @@ function PuzzlePieces() {
       setWrongCount(newWrong);
 
       if (newWrong >= 2) {
-        setFeedback(`The answer is ${activeQuestion.answer}! 🌟`);
+        setFeedback(`The answer is ${activeQuestion.answer}!`);
         recordProgress('maths_puzzle', activeQuestion.ref, 'helped');
         const newRevealed = new Set(revealedPieces);
         newRevealed.add(activePiece);
@@ -366,7 +368,7 @@ function PuzzlePieces() {
           }
         }, 2000);
       } else {
-        setFeedback('Try again! 💪');
+        setFeedback('Try again!');
         setTimeout(() => setFeedback(null), 1500);
       }
     }
@@ -377,7 +379,7 @@ function PuzzlePieces() {
       <div className="flex flex-col items-center gap-4 py-12">
         <Breadcrumbs />
         <p className="text-garden-text-light text-lg">
-          No questions to show — go back and pick some tables! 🔢
+          No questions to show — go back and pick some tables!
         </p>
       </div>
     );
@@ -400,7 +402,7 @@ function PuzzlePieces() {
 
       {/* Progress */}
       <div className="text-center text-sm font-bold text-garden-text-light">
-        {revealedPieces.size} of {GRID_SIZE} pieces revealed ✨
+        {revealedPieces.size} of {GRID_SIZE} pieces revealed
       </div>
 
       {/* Puzzle Grid */}
@@ -505,7 +507,7 @@ function PuzzlePieces() {
 
       <CelebrationOverlay
         show={showCelebration}
-        message="You completed the puzzle! 🧩"
+        message="You completed the puzzle!"
         emoji={picture.emoji}
         onDismiss={() => setShowCelebration(false)}
         navigateBack

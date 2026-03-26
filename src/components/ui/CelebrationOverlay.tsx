@@ -1,24 +1,43 @@
 'use client';
 
+import { type ReactNode } from 'react';
 import { useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Star,
+  Sparkle,
+  Flower,
+  Butterfly,
+  Heart,
+  Rainbow,
+  Trophy,
+} from '@phosphor-icons/react';
 
 const MESSAGES = [
-  'Amazing! 🎉',
-  'Fantastic! 🌟',
-  'You did it! 🏆',
-  'Brilliant! ✨',
-  'Keep Going! 🚀',
-  'Super Star! ⭐',
-  'Well Done! 🎊',
+  'Amazing!',
+  'Fantastic!',
+  'You did it!',
+  'Brilliant!',
+  'Keep Going!',
+  'Super Star!',
+  'Well Done!',
 ];
 
-const PARTICLE_EMOJIS = ['🎉', '⭐', '🌟', '✨', '🎊', '🌸', '🦋', '🌈'];
+const PARTICLE_ICONS: ReactNode[] = [
+  <Star key="star" weight="duotone" size={20} color="#FFD54F" />,
+  <Sparkle key="sparkle" weight="duotone" size={20} color="#FFD54F" />,
+  <Flower key="flower" weight="duotone" size={20} color="#E91E63" />,
+  <Butterfly key="butterfly" weight="duotone" size={20} color="#9C27B0" />,
+  <Heart key="heart" weight="duotone" size={20} color="#EF5350" />,
+  <Rainbow key="rainbow" weight="duotone" size={20} color="#E91E63" />,
+  <Star key="star2" weight="fill" size={20} color="#FFC107" />,
+  <Sparkle key="sparkle2" weight="fill" size={20} color="#FF9800" />,
+];
 
 interface ConfettiPiece {
   id: number;
-  emoji: string;
+  icon: ReactNode;
   x: number;
   delay: number;
   duration: number;
@@ -27,7 +46,7 @@ interface ConfettiPiece {
 function makeConfetti(count: number): ConfettiPiece[] {
   return Array.from({ length: count }, (_, i) => ({
     id: i,
-    emoji: PARTICLE_EMOJIS[i % PARTICLE_EMOJIS.length],
+    icon: PARTICLE_ICONS[i % PARTICLE_ICONS.length],
     x: Math.random() * 100,
     delay: Math.random() * 0.6,
     duration: 1.5 + Math.random() * 1.5,
@@ -38,8 +57,8 @@ function makeConfetti(count: number): ConfettiPiece[] {
 export interface CelebrationOverlayProps {
   /** Whether to show the overlay */
   show: boolean;
-  /** Large emoji displayed in the centre (default: '🏆') */
-  emoji?: string;
+  /** Large icon displayed in the centre (default: Trophy) */
+  emoji?: ReactNode;
   /** Congratulatory message text */
   message?: string;
   /** Callback when the overlay is dismissed (click or auto-close) */
@@ -56,7 +75,7 @@ export interface CelebrationOverlayProps {
  */
 export default function CelebrationOverlay({
   show,
-  emoji = '🏆',
+  emoji = <Trophy weight="duotone" size={72} color="#FFD54F" />,
   message,
   onDismiss,
   autoCloseMs = 3000,
@@ -105,10 +124,10 @@ export default function CelebrationOverlay({
                 delay: piece.delay,
                 ease: 'easeOut',
               }}
-              className="fixed top-0 text-2xl pointer-events-none select-none"
+              className="fixed top-0 pointer-events-none select-none"
               style={{ left: `${piece.x}%` }}
             >
-              {piece.emoji}
+              {piece.icon}
             </motion.span>
           ))}
 
@@ -120,7 +139,7 @@ export default function CelebrationOverlay({
             transition={{ type: 'spring', damping: 12, stiffness: 200 }}
             className="flex flex-col items-center gap-4 bg-white rounded-3xl p-10 shadow-2xl"
           >
-            <span className="text-7xl">{emoji}</span>
+            <span className="flex items-center justify-center">{emoji}</span>
             <p className="text-2xl font-extrabold text-garden-text">
               {displayMessage}
             </p>

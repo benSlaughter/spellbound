@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import GameCard from '@/components/ui/GameCard';
-import { Plant, Tree, Flower, FlowerLotus, TreeEvergreen } from '@phosphor-icons/react';
+import { Plant, Tree, Flower, FlowerLotus, TreeEvergreen, Lightbulb, Books, Calculator, Trophy } from '@phosphor-icons/react';
 
 const stagger = {
   hidden: { opacity: 0 },
@@ -18,10 +18,10 @@ const fadeUp = {
 };
 
 const SUGGESTIONS = [
-  'Why not try some spelling practice? 📝',
-  'Ready for a maths challenge? 🔢',
-  'Your garden is waiting to grow! 🌻',
-  'Practice makes perfect — let\'s go! 🚀',
+  'Why not try some spelling practice?',
+  'Ready for a maths challenge?',
+  'Your garden is waiting to grow!',
+  'Practice makes perfect — let\'s go!',
 ];
 
 export default function Home() {
@@ -49,7 +49,7 @@ export default function Home() {
         variants={fadeUp}
         className="game-card p-5 flex items-center gap-4 bg-secondary-light/30 border border-secondary/30"
       >
-        <span className="text-3xl">💡</span>
+        <Lightbulb weight="duotone" size={28} color="#FFD54F" />
         <div>
           <p className="font-bold text-garden-text">Today&apos;s idea</p>
           <p className="text-garden-text-light">{suggestion}</p>
@@ -65,28 +65,28 @@ export default function Home() {
           <GameCard
             title="Spelling"
             description="Practice your weekly words and build your vocabulary garden!"
-            emoji="📚"
+            emoji={<Books weight="duotone" size={48} color="#4CAF50" />}
             href="/spelling"
             color="bg-primary-light/10 border-2 border-primary-light/30"
           />
           <GameCard
             title="Maths"
             description="Master your times tables and earn golden stars!"
-            emoji="🔢"
+            emoji={<Calculator weight="duotone" size={48} color="#FF9800" />}
             href="/maths"
             color="bg-accent-light/10 border-2 border-accent-light/30"
           />
           <GameCard
             title="My Garden"
             description="See how much your learning garden has grown!"
-            emoji="🌱"
+            emoji={<Plant weight="duotone" size={48} color="#66BB6A" />}
             href="/progress"
             color="bg-secondary/10 border-2 border-secondary/30"
           />
           <GameCard
             title="Challenges"
             description="Coming soon — special missions to test your skills!"
-            emoji="🏆"
+            emoji={<Trophy weight="duotone" size={48} color="#FF9800" />}
             href="/challenges"
             color="bg-fun-orange/10 border-2 border-fun-orange/30"
             locked
@@ -122,7 +122,7 @@ export default function Home() {
         variants={fadeUp}
         className="text-center text-garden-text-light font-semibold text-lg pb-4"
       >
-        You&apos;re doing brilliantly — every little bit counts! 🌈
+        You&apos;re doing brilliantly — every little bit counts!
       </motion.p>
     </motion.div>
   );

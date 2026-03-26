@@ -7,6 +7,23 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
 import { playSound } from '@/lib/sounds';
 import Link from 'next/link';
+import {
+  Plant,
+  PencilSimple,
+  Sparkle,
+  Flower,
+  FlowerTulip,
+  FlowerLotus,
+  Butterfly,
+  Clover,
+  Leaf,
+  TreeEvergreen,
+  Tree,
+  Heart,
+  Star,
+  Cards,
+} from '@phosphor-icons/react';
+import { type ReactNode } from 'react';
 
 interface SpellingWord {
   id: number;
@@ -37,7 +54,20 @@ function shuffleArray<T>(arr: T[]): T[] {
   return shuffled;
 }
 
-const CARD_BACKS = ['🌸', '🌺', '🌻', '🌷', '🌹', '🪻', '🌼', '💮', '🏵️', '🌿', '🍃', '🌱'];
+const CARD_BACKS: ReactNode[] = [
+  <Flower key="f1" weight="duotone" size={32} color="#E91E63" />,
+  <FlowerTulip key="ft" weight="duotone" size={32} color="#AB47BC" />,
+  <FlowerLotus key="fl" weight="duotone" size={32} color="#FFD54F" />,
+  <Butterfly key="b" weight="duotone" size={32} color="#9C27B0" />,
+  <Clover key="c" weight="duotone" size={32} color="#66BB6A" />,
+  <Leaf key="l" weight="duotone" size={32} color="#43A047" />,
+  <Heart key="h" weight="duotone" size={32} color="#EF5350" />,
+  <Star key="s" weight="duotone" size={32} color="#FFD54F" />,
+  <TreeEvergreen key="te" weight="duotone" size={32} color="#2E7D32" />,
+  <Tree key="t" weight="duotone" size={32} color="#4CAF50" />,
+  <Sparkle key="m" weight="duotone" size={32} color="#EF5350" />,
+  <Plant key="p" weight="duotone" size={32} color="#66BB6A" />,
+];
 
 export default function MemoryMatchPage() {
   const [list, setList] = useState<SpellingList | null>(null);
@@ -109,7 +139,7 @@ export default function MemoryMatchPage() {
           // Match!
           setTimeout(() => {
             playSound('success');
-            setMatchMessage('Matched! 🌟');
+            setMatchMessage('Matched!');
             const newMatched = new Set(matchedPairs);
             newMatched.add(first.pairId);
             setMatchedPairs(newMatched);
@@ -171,11 +201,11 @@ export default function MemoryMatchPage() {
       >
         <Breadcrumbs />
         <div className="game-card p-10 text-center max-w-md">
-          <span className="text-6xl block mb-4">🌱</span>
+          <span className="text-6xl block mb-4"><Plant weight="duotone" size={64} color="#66BB6A" /></span>
           <h2 className="text-2xl font-extrabold text-garden-text mb-3">No words to practise!</h2>
           <p className="text-garden-text-light text-lg mb-6">Add some spelling words first!</p>
-          <Link href="/entry" className="btn-primary text-lg px-8 py-3 no-underline">
-            ✏️ Add Words
+          <Link href="/entry" className="btn-primary text-lg px-8 py-3 no-underline inline-flex items-center gap-2">
+            <PencilSimple weight="duotone" size={20} /> Add Words
           </Link>
         </div>
       </motion.div>
@@ -273,9 +303,9 @@ export default function MemoryMatchPage() {
                     <motion.span
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      className="absolute top-1 right-1 text-lg"
+                      className="absolute top-1 right-1"
                     >
-                      ✨
+                      <Sparkle weight="duotone" size={18} color="#FFD54F" />
                     </motion.span>
                   )}
                 </div>
@@ -287,8 +317,8 @@ export default function MemoryMatchPage() {
 
       <CelebrationOverlay
         show={showFinal}
-        message="You matched all the pairs! 🌟"
-        emoji="🃏"
+        message="You matched all the pairs!"
+        emoji={<Cards weight="duotone" size={72} color="#9C27B0" />}
         onDismiss={() => setShowFinal(false)}
         navigateBack
       />

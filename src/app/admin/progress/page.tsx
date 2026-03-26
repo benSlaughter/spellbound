@@ -1,6 +1,32 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, type ComponentType } from "react";
+import {
+  Plant,
+  MagicWand,
+  Sparkle,
+  Calculator,
+  Star,
+  Butterfly,
+  Rainbow,
+  Trophy,
+  MusicNotes,
+  Medal,
+  type IconProps,
+} from "@phosphor-icons/react";
+
+const ICON_MAP: Record<string, ComponentType<IconProps>> = {
+  Plant,
+  MagicWand,
+  Sparkle,
+  Calculator,
+  Star,
+  Butterfly,
+  Rainbow,
+  Trophy,
+  MusicNotes,
+  Medal,
+};
 
 interface ProgressEntry {
   id: number;
@@ -188,7 +214,11 @@ export default function ProgressPage() {
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-xl">{a.emoji}</span>
+                  <span className="text-xl">
+                    {ICON_MAP[a.emoji]
+                      ? (() => { const Icon = ICON_MAP[a.emoji]; return <Icon size={24} weight="duotone" />; })()
+                      : a.emoji}
+                  </span>
                   <div>
                     <div className="font-medium text-stone-800 text-sm">
                       {a.title}

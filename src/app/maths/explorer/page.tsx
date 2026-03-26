@@ -14,6 +14,7 @@ import {
   recordProgress,
   shuffleArray,
 } from '@/lib/maths-helpers';
+import { Eye, PencilSimple, Sparkle, Star } from '@phosphor-icons/react';
 
 function generateWrongAnswers(correct: number, row: number, col: number): number[] {
   const candidates = new Set<number>();
@@ -138,9 +139,9 @@ function TimesTableExplorer() {
               playSound('click');
             }}
           >
-            {m === 'explore' && '👀 Explore'}
-            {m === 'practice' && '✏️ Practice'}
-            {m === 'pattern' && '✨ Patterns'}
+            {m === 'explore' && <><Eye weight="duotone" size={16} className="inline mr-1" /> Explore</>}
+            {m === 'practice' && <><PencilSimple weight="duotone" size={16} className="inline mr-1" /> Practice</>}
+            {m === 'pattern' && <><Sparkle weight="duotone" size={16} className="inline mr-1" /> Patterns</>}
           </Button>
         ))}
       </div>
@@ -299,7 +300,7 @@ function TimesTableExplorer() {
       <CelebrationOverlay
         show={showCelebration}
         message={celebMsg}
-        emoji="⭐"
+        emoji={<Star weight="duotone" size={72} color="#FFD54F" />}
         onDismiss={() => setShowCelebration(false)}
         autoCloseMs={1500}
       />

@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { type ReactNode } from 'react';
+import { Lock } from '@phosphor-icons/react';
 
 /** Props for the GameCard component. */
 export interface GameCardProps {
@@ -9,8 +11,8 @@ export interface GameCardProps {
   title: string;
   /** Short description of the game */
   description: string;
-  /** Emoji icon for the game */
-  emoji: string;
+  /** Icon for the game (Phosphor icon or other React node) */
+  emoji: ReactNode;
   /** URL to navigate to when clicked */
   href: string;
   /** Tailwind background colour class (e.g. 'bg-primary-light') */
@@ -43,7 +45,7 @@ export default function GameCard({
         ${color}
       `}
     >
-      <span className="text-5xl" role="img" aria-hidden="true">
+      <span className="flex items-center justify-center" aria-hidden="true">
         {emoji}
       </span>
 
@@ -55,7 +57,7 @@ export default function GameCard({
 
       {locked && (
         <div className="absolute inset-0 bg-white/40 flex items-center justify-center rounded-2xl">
-          <span className="text-4xl">🔒</span>
+          <Lock weight="duotone" size={48} color="#9E9E9E" />
         </div>
       )}
     </motion.div>

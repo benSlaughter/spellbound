@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo, type ComponentType } from 'react';
+import { useEffect, useState, useMemo, type ComponentType, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Badge from '@/components/ui/Badge';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
@@ -20,6 +20,18 @@ import {
   TreePalm as PhTreePalm,
   TreeEvergreen as PhTreeEvergreen,
   Plant as PhPlant,
+  CloudRain as PhCloudRain,
+  Calculator as PhCalculator,
+  CalendarDots as PhCalendarDots,
+  GameController as PhGameController,
+  Fire as PhFire,
+  Star as PhStar,
+  Gift as PhGift,
+  MagicWand as PhMagicWand,
+  Sparkle as PhSparkle,
+  Trophy as PhTrophy,
+  MusicNotes as PhMusicNotes,
+  Medal as PhMedal,
   type IconProps,
 } from '@phosphor-icons/react';
 
@@ -44,6 +56,24 @@ interface AchievementData {
   emoji: string;
   unlocked: boolean;
   unlocked_at: string | null;
+}
+
+/** Maps icon name strings from achievements API to Phosphor icon ReactNodes */
+const ICON_MAP: Record<string, ReactNode> = {
+  Plant: <PhPlant weight="duotone" size={32} color="#66BB6A" />,
+  MagicWand: <PhMagicWand weight="duotone" size={32} color="#9C27B0" />,
+  Sparkle: <PhSparkle weight="duotone" size={32} color="#FFD54F" />,
+  Calculator: <PhCalculator weight="duotone" size={32} color="#FF9800" />,
+  Star: <PhStar weight="duotone" size={32} color="#FFD54F" />,
+  Butterfly: <PhButterfly weight="duotone" size={32} color="#9C27B0" />,
+  Rainbow: <PhRainbow weight="duotone" size={32} color="#E91E63" />,
+  Trophy: <PhTrophy weight="duotone" size={32} color="#FFD54F" />,
+  MusicNotes: <PhMusicNotes weight="duotone" size={32} color="#2196F3" />,
+  Medal: <PhMedal weight="duotone" size={32} color="#FF9800" />,
+};
+
+function achievementIcon(emoji: string): ReactNode {
+  return ICON_MAP[emoji] ?? <PhStar weight="duotone" size={32} color="#FFD54F" />;
 }
 
 // ── Animation variants ──
@@ -244,16 +274,16 @@ function Rainbow() {
 }
 
 function StatCard({
-  emoji,
+  icon,
   label,
   value,
   extra,
   delay,
 }: {
-  emoji: string;
+  icon: ReactNode;
   label: string;
   value: number;
-  extra?: string;
+  extra?: ReactNode;
   delay: number;
 }) {
   return (
@@ -263,13 +293,13 @@ function StatCard({
       whileHover={{ scale: 1.02 }}
       transition={{ delay }}
     >
-      <span className="text-3xl">{emoji}</span>
+      <span className="flex items-center justify-center">{icon}</span>
       <div className="flex-1 min-w-0">
         <p className="text-2xl font-extrabold text-garden-text">{value}</p>
         <p className="text-sm font-bold text-garden-text-light">{label}</p>
       </div>
       {extra && (
-        <span className="text-xl">{extra}</span>
+        <span className="flex items-center">{extra}</span>
       )}
     </motion.div>
   );
@@ -304,7 +334,7 @@ export default function ProgressPage() {
         setAchievements(achievementsData);
         playSound('pop');
       } catch {
-        setError('Could not load your garden. Try again soon! 🌧️');
+        setError('Could not load your garden. Try again soon!');
       } finally {
         setLoading(false);
       }
@@ -367,7 +397,7 @@ export default function ProgressPage() {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <span className="text-6xl">🌧️</span>
+        <PhCloudRain weight="duotone" size={64} color="#78909C" />
         <p className="text-garden-text font-bold text-xl text-center">{error}</p>
         <Breadcrumbs />
       </div>
@@ -477,7 +507,7 @@ export default function ProgressPage() {
             >
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl px-6 py-4 text-center shadow-md max-w-xs">
                 <p className="text-xl font-extrabold text-garden-text mb-1">
-                  Your garden is ready! 🌱
+                  Your garden is ready!
                 </p>
                 <p className="text-garden-text-light font-semibold text-sm">
                   Play some games to grow flowers and plants here!
@@ -526,26 +556,26 @@ export default function ProgressPage() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <StatCard
-              emoji="🌱"
+              icon={<PhPlant weight="duotone" size={28} color="#66BB6A" />}
               label="words practised"
               value={progress.wordsPractised}
               delay={0}
             />
             <StatCard
-              emoji="🔢"
+              icon={<PhCalculator weight="duotone" size={28} color="#FF9800" />}
               label="maths facts explored"
               value={progress.mathsPractised}
               delay={0.05}
             />
             <StatCard
-              emoji="📅"
+              icon={<PhCalendarDots weight="duotone" size={28} color="#2196F3" />}
               label={`day streak${progress.streakDays !== 1 ? '' : ''}`}
               value={progress.streakDays}
-              extra={progress.streakDays > 3 ? '🔥' : progress.streakDays > 0 ? '⭐' : undefined}
+              extra={progress.streakDays > 3 ? <PhFire weight="duotone" size={24} color="#FF5722" /> : progress.streakDays > 0 ? <PhStar weight="fill" size={24} color="#FFD54F" /> : undefined}
               delay={0.1}
             />
             <StatCard
-              emoji="🎮"
+              icon={<PhGameController weight="duotone" size={28} color="#9C27B0" />}
               label="games played"
               value={progress.totalGamesPlayed}
               delay={0.15}
@@ -579,7 +609,7 @@ export default function ProgressPage() {
               >
                 <div className="relative group">
                   <Badge
-                    emoji={achievement.emoji}
+                    emoji={achievementIcon(achievement.emoji)}
                     title={achievement.title}
                     unlocked={achievement.unlocked}
                     description={achievement.description}
@@ -618,7 +648,7 @@ export default function ProgressPage() {
               variants={fadeUp}
               className="text-center text-garden-text-light mt-4 font-semibold"
             >
-              Play some games to start earning badges! Each one is a surprise! 🎁
+              Play some games to start earning badges! Each one is a surprise!
             </motion.p>
           )}
         </motion.section>

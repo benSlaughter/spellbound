@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { Star } from '@phosphor-icons/react';
 
 /** Props for the ProgressStars component. */
 export interface ProgressStarsProps {
@@ -12,10 +13,10 @@ export interface ProgressStarsProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-const sizes = {
-  sm: 'text-lg',
-  md: 'text-2xl',
-  lg: 'text-4xl',
+const iconSizes = {
+  sm: 20,
+  md: 28,
+  lg: 40,
 };
 
 /**
@@ -43,9 +44,9 @@ export default function ProgressStars({
               damping: 15,
               delay: i * 0.1,
             }}
-            className={`${sizes[size]} select-none ${isFilled ? '' : 'opacity-30 grayscale'}`}
+            className={`select-none ${isFilled ? '' : 'opacity-30 grayscale'}`}
           >
-            ⭐
+            <Star weight={isFilled ? 'fill' : 'duotone'} size={iconSizes[size]} color="#FFD54F" />
           </motion.span>
         );
       })}

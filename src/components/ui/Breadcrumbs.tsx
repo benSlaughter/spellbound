@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { CaretRight } from '@phosphor-icons/react';
 
 const ROUTE_NAMES: Record<string, string> = {
   '': 'Home',
@@ -46,7 +47,7 @@ export default function Breadcrumbs() {
         return (
           <span key={crumb.href} className="flex items-center gap-1.5">
             {i > 0 && (
-              <span className="text-garden-text-light/60 select-none">›</span>
+              <CaretRight weight="bold" size={14} className="text-garden-text-light/60 select-none" />
             )}
             {isLast ? (
               <span className="font-bold text-garden-text">{crumb.label}</span>

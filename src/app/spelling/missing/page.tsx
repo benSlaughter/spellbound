@@ -7,6 +7,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
 import { playSound } from '@/lib/sounds';
 import Link from 'next/link';
+import { Plant, PencilSimple, Lightbulb, Sparkle, Trophy } from '@phosphor-icons/react';
 
 interface SpellingWord {
   id: number;
@@ -192,11 +193,11 @@ export default function MissingLettersPage() {
       >
         <Breadcrumbs />
         <div className="game-card p-10 text-center max-w-md">
-          <span className="text-6xl block mb-4">🌱</span>
+          <span className="text-6xl block mb-4"><Plant weight="duotone" size={64} color="#66BB6A" /></span>
           <h2 className="text-2xl font-extrabold text-garden-text mb-3">No words to practise!</h2>
           <p className="text-garden-text-light text-lg mb-6">Add some spelling words first!</p>
-          <Link href="/entry" className="btn-primary text-lg px-8 py-3 no-underline">
-            ✏️ Add Words
+          <Link href="/entry" className="btn-primary text-lg px-8 py-3 no-underline inline-flex items-center gap-2">
+            <PencilSimple weight="duotone" size={20} /> Add Words
           </Link>
         </div>
       </motion.div>
@@ -296,7 +297,7 @@ export default function MissingLettersPage() {
           className="text-center"
         >
           <span className="inline-flex items-center gap-2 bg-secondary/20 px-4 py-2 rounded-full text-garden-text font-semibold">
-            💡 {currentWord.hint}
+            <Lightbulb weight="duotone" size={20} color="#FFD54F" /> {currentWord.hint}
           </span>
         </motion.div>
       )}
@@ -311,15 +312,15 @@ export default function MissingLettersPage() {
             className="text-center"
           >
             <span className="text-3xl font-extrabold text-primary">{encouragement}</span>
-            <span className="text-3xl ml-2">🌟</span>
+            <Sparkle weight="duotone" size={28} color="#FFD54F" className="ml-2" />
           </motion.div>
         )}
       </AnimatePresence>
 
       <CelebrationOverlay
         show={showFinal}
-        message="You practised all your words! 🌟"
-        emoji="🏆"
+        message="You practised all your words!"
+        emoji={<Trophy weight="duotone" size={72} color="#FFD54F" />}
         onDismiss={() => setShowFinal(false)}
         navigateBack
       />

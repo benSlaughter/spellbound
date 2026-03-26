@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { PencilSimple, ChartBar, Gear } from "@phosphor-icons/react";
 
 export default function AdminDashboard() {
   return (
@@ -13,7 +14,7 @@ export default function AdminDashboard() {
           className="bg-white rounded-xl p-6 shadow-sm border border-stone-200 hover:border-green-300 hover:shadow-md transition-all group"
         >
           <div className="flex items-center gap-4">
-            <div className="text-3xl">📝</div>
+            <div className="text-3xl text-green-700"><PencilSimple weight="duotone" size={36} /></div>
             <div>
               <h2 className="text-lg font-semibold text-stone-800 group-hover:text-green-700 transition-colors">
                 Manage Spellings
@@ -30,7 +31,7 @@ export default function AdminDashboard() {
           className="bg-white rounded-xl p-6 shadow-sm border border-stone-200 hover:border-green-300 hover:shadow-md transition-all group"
         >
           <div className="flex items-center gap-4">
-            <div className="text-3xl">📊</div>
+            <div className="text-3xl text-green-700"><ChartBar weight="duotone" size={36} /></div>
             <div>
               <h2 className="text-lg font-semibold text-stone-800 group-hover:text-green-700 transition-colors">
                 View Progress
@@ -47,7 +48,7 @@ export default function AdminDashboard() {
           className="bg-white rounded-xl p-6 shadow-sm border border-stone-200 hover:border-green-300 hover:shadow-md transition-all group"
         >
           <div className="flex items-center gap-4">
-            <div className="text-3xl">⚙️</div>
+            <div className="text-3xl text-green-700"><Gear weight="duotone" size={36} /></div>
             <div>
               <h2 className="text-lg font-semibold text-stone-800 group-hover:text-green-700 transition-colors">
                 Settings

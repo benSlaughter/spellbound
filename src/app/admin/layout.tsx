@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { Leaf, Lock } from "@phosphor-icons/react";
 
 export default function AdminLayout({
   children,
@@ -81,8 +82,9 @@ export default function AdminLayout({
           className="bg-white rounded-xl shadow-lg p-8 w-full max-w-sm"
         >
           <div className="flex flex-col items-center mb-6">
-            <div className="text-4xl mb-2" aria-hidden="true">
-              🌿🔒
+            <div className="text-4xl mb-2 flex items-center justify-center gap-1" aria-hidden="true">
+              <Leaf weight="duotone" size={40} className="text-green-700" />
+              <Lock weight="duotone" size={40} className="text-stone-600" />
             </div>
             <h1 className="text-xl font-semibold text-stone-800">
               Admin Access
@@ -137,7 +139,7 @@ export default function AdminLayout({
             href="/admin"
             className="text-lg font-semibold text-stone-800 hover:text-green-700 transition-colors"
           >
-            🌿 Admin
+            <Leaf weight="duotone" size={20} className="inline text-green-700" /> Admin
           </a>
         </div>
         <button

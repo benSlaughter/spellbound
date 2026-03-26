@@ -8,7 +8,7 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Button from '@/components/ui/Button';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
 import { Bear } from '@/components/svg';
-import { Flag, Signpost, Bird } from '@phosphor-icons/react';
+import { Flag, Signpost, Bird, Mountains, Star } from '@phosphor-icons/react';
 import { playSound } from '@/lib/sounds';
 import {
   generateQuestions,
@@ -86,11 +86,11 @@ function MathMountain() {
 
         if (newWrong >= 2) {
           setShowOwl(true);
-          setFeedback(`The answer is ${question.answer}! 🦉`);
+          setFeedback(`The answer is ${question.answer}!`);
           recordProgress('maths_mountain', question.ref, 'helped');
           setTimeout(advanceToNext, 2500);
         } else {
-          setFeedback('Have another go! 💪');
+          setFeedback('Have another go!');
           setTimeout(() => setFeedback(null), 1500);
         }
       }
@@ -103,7 +103,7 @@ function MathMountain() {
       <div className="flex flex-col items-center gap-4 py-12">
         <Breadcrumbs />
         <p className="text-garden-text-light text-lg">
-          No questions to show — go back and pick some tables! 🔢
+          No questions to show — go back and pick some tables!
         </p>
       </div>
     );
@@ -115,8 +115,8 @@ function MathMountain() {
         <Breadcrumbs />
         <CelebrationOverlay
           show={true}
-          message="You reached the summit! 🏔️⭐"
-          emoji="🏔️"
+          message="You reached the summit!"
+          emoji={<Mountains weight="duotone" size={72} color="#8D6E63" />}
           onDismiss={() => setFinished(false)}
           navigateBack
           autoCloseMs={5000}

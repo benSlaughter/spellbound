@@ -15,15 +15,15 @@ describe('Button', () => {
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 
-  it('renders emoji when provided', () => {
-    render(<Button emoji="🎉">Party</Button>);
-    expect(screen.getByText('🎉')).toBeInTheDocument();
+  it('renders icon when provided', () => {
+    render(<Button icon={<span data-testid="party-icon">party</span>}>Party</Button>);
+    expect(screen.getByTestId('party-icon')).toBeInTheDocument();
   });
 
-  it('does not render emoji span when not provided', () => {
-    const { container } = render(<Button>No Emoji</Button>);
-    const emojiSpan = container.querySelector('[role="img"]');
-    expect(emojiSpan).toBeNull();
+  it('does not render icon span when not provided', () => {
+    const { container } = render(<Button>No Icon</Button>);
+    const iconSpan = container.querySelector('[aria-hidden="true"]');
+    expect(iconSpan).toBeNull();
   });
 
   it('applies primary variant styles by default', () => {

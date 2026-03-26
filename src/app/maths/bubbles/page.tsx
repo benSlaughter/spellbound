@@ -16,6 +16,7 @@ import {
   makeShuffledAnswers,
   type MathQuestion,
 } from '@/lib/maths-helpers';
+import { Drop, Check, HandFist } from '@phosphor-icons/react';
 
 const TOTAL_QUESTIONS = 10;
 
@@ -103,7 +104,7 @@ function NumberBubbles() {
       } else {
         playSound('click');
         setWrongCount((c) => c + 1);
-        setFeedback('Try again! 💪');
+        setFeedback('Try again!');
         setTimeout(() => setFeedback(null), 1500);
       }
     },
@@ -115,7 +116,7 @@ function NumberBubbles() {
       <div className="flex flex-col items-center gap-4 py-12">
         <Breadcrumbs />
         <p className="text-garden-text-light text-lg">
-          No questions to show — go back and pick some tables! 🔢
+          No questions to show — go back and pick some tables!
         </p>
       </div>
     );
@@ -127,8 +128,8 @@ function NumberBubbles() {
         <Breadcrumbs />
         <CelebrationOverlay
           show={true}
-          message="You popped all the bubbles! 🫧"
-          emoji="🫧"
+          message="You popped all the bubbles!"
+          emoji={<Drop weight="duotone" size={72} color="#2196F3" />}
           onDismiss={() => setFinished(false)}
           navigateBack
           autoCloseMs={5000}
@@ -144,7 +145,7 @@ function NumberBubbles() {
       {/* Progress */}
       <div className="text-center">
         <span className="text-sm font-bold text-garden-text-light">
-          Bubble {currentIndex + 1} of {questions.length} 🫧
+          Bubble {currentIndex + 1} of {questions.length}
         </span>
       </div>
 
@@ -218,7 +219,7 @@ function NumberBubbles() {
                 >
                   {/* Bubble shine */}
                   <span className="absolute top-2 left-3 w-5 h-3 bg-white/40 rounded-full rotate-[-30deg]" />
-                  {isPopped ? '✓' : ans}
+                  {isPopped ? <Check weight="bold" size={24} /> : ans}
                 </motion.button>
               );
             })}

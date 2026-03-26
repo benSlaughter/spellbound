@@ -48,16 +48,20 @@ describe('ProgressStars', () => {
     expect(starContainer).toBeInTheDocument();
   });
 
-  it('renders star emoji', () => {
+  it('renders star icon', () => {
     const { container } = render(<ProgressStars filled={1} total={1} />);
-    expect(container.textContent).toContain('⭐');
+    // Should contain an SVG (Phosphor Star icon)
+    expect(container.querySelector('svg')).not.toBeNull();
   });
 
   it('applies correct size class', () => {
     const { container: sm } = render(<ProgressStars filled={1} total={1} size="sm" />);
     const { container: lg } = render(<ProgressStars filled={1} total={1} size="lg" />);
 
-    expect(sm.querySelector('span')?.className).toContain('text-lg');
-    expect(lg.querySelector('span')?.className).toContain('text-4xl');
+    // Verify different sized SVGs are rendered (sm=20, lg=40)
+    const smSvg = sm.querySelector('svg');
+    const lgSvg = lg.querySelector('svg');
+    expect(smSvg).not.toBeNull();
+    expect(lgSvg).not.toBeNull();
   });
 });

@@ -6,6 +6,16 @@ import GameCard from '@/components/ui/GameCard';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Link from 'next/link';
+import {
+  Shuffle,
+  MagnifyingGlass,
+  SpeakerHigh,
+  PuzzlePiece,
+  Cards,
+  PencilSimple,
+  Plant,
+  Flower,
+} from '@phosphor-icons/react';
 
 interface SpellingWord {
   id: number;
@@ -37,35 +47,35 @@ const games = [
   {
     title: 'Word Scramble',
     description: 'Unscramble the letters to spell the word!',
-    emoji: '🔀',
+    emoji: <Shuffle weight="duotone" size={48} color="#4CAF50" />,
     href: '/spelling/scramble',
     color: 'bg-primary-light/10 border-2 border-primary-light/30',
   },
   {
     title: 'Missing Letters',
     description: 'Fill in the missing letters to complete each word!',
-    emoji: '🔍',
+    emoji: <MagnifyingGlass weight="duotone" size={48} color="#FF9800" />,
     href: '/spelling/missing',
     color: 'bg-accent-light/10 border-2 border-accent-light/30',
   },
   {
     title: 'Word Builder',
     description: 'Listen to the word and build it letter by letter!',
-    emoji: '🔊',
+    emoji: <SpeakerHigh weight="duotone" size={48} color="#FFD54F" />,
     href: '/spelling/builder',
     color: 'bg-secondary/10 border-2 border-secondary/30',
   },
   {
     title: 'Word Search',
     description: 'Find all the hidden words in the puzzle grid!',
-    emoji: '🧩',
+    emoji: <PuzzlePiece weight="duotone" size={48} color="#FF9800" />,
     href: '/spelling/wordsearch',
     color: 'bg-fun-orange/10 border-2 border-fun-orange/30',
   },
   {
     title: 'Memory Match',
     description: 'Flip the cards and find matching word pairs!',
-    emoji: '🃏',
+    emoji: <Cards weight="duotone" size={48} color="#9C27B0" />,
     href: '/spelling/memory',
     color: 'bg-fun-purple/10 border-2 border-fun-purple/30',
   },
@@ -113,18 +123,18 @@ export default function SpellingHub() {
       >
         <Breadcrumbs />
         <div className="game-card p-10 text-center max-w-md">
-          <span className="text-6xl block mb-4">🌱</span>
+          <span className="text-6xl block mb-4"><Plant weight="duotone" size={64} color="#66BB6A" /></span>
           <h2 className="text-2xl font-extrabold text-garden-text mb-3">
             No spelling words yet!
           </h2>
           <p className="text-garden-text-light text-lg mb-6">
-            Ask a grown-up to add some, or add them yourself! 📝
+            Ask a grown-up to add some, or add them yourself!
           </p>
           <Link
             href="/entry"
-            className="btn-primary text-lg px-8 py-3 no-underline"
+            className="btn-primary text-lg px-8 py-3 no-underline inline-flex items-center gap-2"
           >
-            ✏️ Add My Words
+            <PencilSimple weight="duotone" size={20} /> Add My Words
           </Link>
         </div>
       </motion.div>
@@ -148,7 +158,7 @@ export default function SpellingHub() {
         </h1>
         {list && (
           <div className="mt-3 inline-flex items-center gap-2 bg-primary-light/20 px-4 py-2 rounded-full">
-            <span className="text-lg">🌻</span>
+            <Flower weight="duotone" size={20} color="#FFD54F" />
             <span className="font-bold text-garden-text">{list.name}</span>
             <span className="text-garden-text-light">
               · {list.words.length} words
@@ -168,7 +178,7 @@ export default function SpellingHub() {
             <GameCard
               title="Add This Week's Words"
               description="Type in your new spelling words for the week!"
-              emoji="✏️"
+              emoji={<PencilSimple weight="duotone" size={48} color="#66BB6A" />}
               href="/entry"
               color="bg-secondary-light/10 border-2 border-secondary-light/30 border-dashed"
             />
@@ -180,7 +190,7 @@ export default function SpellingHub() {
         variants={fadeUp}
         className="text-center text-garden-text-light font-semibold text-lg pb-4"
       >
-        Pick a game and have fun practising! 🌈
+        Pick a game and have fun practising!
       </motion.p>
     </motion.div>
   );

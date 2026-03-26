@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type ButtonHTMLAttributes } from 'react';
+import { useState, type ButtonHTMLAttributes, type ReactNode } from 'react';
 import { motion } from 'framer-motion';
 
 const FUN_COLORS = ['bg-fun-orange', 'bg-fun-purple', 'bg-fun-pink'] as const;
@@ -24,8 +24,8 @@ export interface ButtonProps
   variant?: keyof typeof variantClasses;
   /** Button size: 'sm', 'md', or 'lg' (default: 'lg') */
   size?: keyof typeof sizeClasses;
-  /** Optional emoji displayed before the button text */
-  emoji?: string;
+  /** Optional icon displayed before the button text */
+  icon?: ReactNode;
 }
 
 /**
@@ -35,7 +35,7 @@ export interface ButtonProps
 export default function Button({
   variant = 'primary',
   size = 'lg',
-  emoji,
+  icon,
   children,
   className = '',
   ...props
@@ -66,9 +66,9 @@ export default function Button({
       onClick={handleClick}
       {...(props as React.ComponentProps<typeof motion.button>)}
     >
-      {emoji && (
-        <span className="text-xl" role="img" aria-hidden="true">
-          {emoji}
+      {icon && (
+        <span className="inline-flex items-center" aria-hidden="true">
+          {icon}
         </span>
       )}
       {children}

@@ -91,9 +91,9 @@ function NumberRiver() {
         setWrongCount(newWrong);
 
         if (newWrong >= 2) {
-          setFeedback('Look for the glowing pad! 💚');
+          setFeedback('Look for the glowing pad!');
         } else {
-          setFeedback('Try another pad! 🌿');
+          setFeedback('Try another pad!');
         }
         setTimeout(() => {
           if (newWrong < 2) setFeedback(null);
@@ -108,7 +108,7 @@ function NumberRiver() {
       <div className="flex flex-col items-center gap-4 py-12">
         <Breadcrumbs />
         <p className="text-garden-text-light text-lg">
-          No questions to show — go back and pick some tables! 🔢
+          No questions to show — go back and pick some tables!
         </p>
       </div>
     );
@@ -120,8 +120,8 @@ function NumberRiver() {
         <Breadcrumbs />
         <CelebrationOverlay
           show={true}
-          message="You crossed the river! 🌊🐸"
-          emoji="🐸"
+          message="You crossed the river!"
+          emoji={<Frog variant="jumping" size={72} />}
           onDismiss={() => setFinished(false)}
           navigateBack
           autoCloseMs={5000}

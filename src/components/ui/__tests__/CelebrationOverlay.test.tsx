@@ -15,20 +15,20 @@ describe('CelebrationOverlay', () => {
     render(
       <CelebrationOverlay
         show={true}
-        emoji="🏆"
+        emoji={<span data-testid="trophy-icon">trophy</span>}
         message="Great job!"
         onDismiss={() => {}}
       />
     );
     expect(screen.getByText('Great job!')).toBeInTheDocument();
-    expect(screen.getByText('🏆')).toBeInTheDocument();
+    expect(screen.getByTestId('trophy-icon')).toBeInTheDocument();
   });
 
   it('does not render when show=false', () => {
     render(
       <CelebrationOverlay
         show={false}
-        emoji="🏆"
+        emoji={<span data-testid="trophy-icon">trophy</span>}
         message="Great job!"
         onDismiss={() => {}}
       />
@@ -41,7 +41,7 @@ describe('CelebrationOverlay', () => {
     render(
       <CelebrationOverlay
         show={true}
-        emoji="🏆"
+        emoji={<span data-testid="trophy-icon">trophy</span>}
         message="Click me!"
         onDismiss={onDismiss}
       />
@@ -56,7 +56,7 @@ describe('CelebrationOverlay', () => {
     render(
       <CelebrationOverlay
         show={true}
-        emoji="🎉"
+        emoji={<span data-testid="confetti-icon">confetti</span>}
         message="Auto close"
         onDismiss={onDismiss}
         autoCloseMs={2000}
@@ -76,15 +76,16 @@ describe('CelebrationOverlay', () => {
     render(
       <CelebrationOverlay show={true} onDismiss={() => {}} />
     );
-    // Default message is MESSAGES[0] = 'Amazing! 🎉'
-    expect(screen.getByText('Amazing! 🎉')).toBeInTheDocument();
+    // Default message is MESSAGES[0] = 'Amazing!'
+    expect(screen.getByText('Amazing!')).toBeInTheDocument();
   });
 
-  it('uses default emoji when emoji prop is not provided', () => {
-    render(
+  it('uses default Trophy icon when emoji prop is not provided', () => {
+    const { container } = render(
       <CelebrationOverlay show={true} onDismiss={() => {}} />
     );
-    expect(screen.getByText('🏆')).toBeInTheDocument();
+    // Default emoji renders a Trophy Phosphor icon
+    expect(container.querySelector('svg')).not.toBeNull();
   });
 
   it('clears timeout when unmounted', () => {
@@ -92,7 +93,7 @@ describe('CelebrationOverlay', () => {
     const { unmount } = render(
       <CelebrationOverlay
         show={true}
-        emoji="🎉"
+        emoji={<span data-testid="confetti-icon">confetti</span>}
         message="Unmount"
         onDismiss={onDismiss}
         autoCloseMs={5000}

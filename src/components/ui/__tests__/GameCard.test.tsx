@@ -6,7 +6,7 @@ describe('GameCard', () => {
   const defaultProps = {
     title: 'Spelling Bee',
     description: 'Practice your spelling words',
-    emoji: '🐝',
+    emoji: <span data-testid="bee-icon">bee</span>,
     href: '/spelling',
     color: 'bg-yellow-100',
   };
@@ -21,9 +21,9 @@ describe('GameCard', () => {
     expect(screen.getByText('Practice your spelling words')).toBeInTheDocument();
   });
 
-  it('renders emoji', () => {
+  it('renders icon', () => {
     render(<GameCard {...defaultProps} />);
-    expect(screen.getByText('🐝')).toBeInTheDocument();
+    expect(screen.getByTestId('bee-icon')).toBeInTheDocument();
   });
 
   it('links to correct href when not locked', () => {
@@ -33,16 +33,18 @@ describe('GameCard', () => {
   });
 
   it('shows locked state when locked=true', () => {
-    render(<GameCard {...defaultProps} locked={true} />);
-    // Should show lock emoji instead of the game emoji
-    const locks = screen.getAllByText('🔒');
-    expect(locks.length).toBeGreaterThanOrEqual(1);
+    const { container } = render(<GameCard {...defaultProps} locked={true} />);
+    // Should show Lock icon (SVG)
+    const lockIcon = container.querySelector('svg');
+    expect(lockIcon).not.toBeNull();
     // Should not be a link when locked
     expect(screen.queryByRole('link')).toBeNull();
   });
 
   it('does not show lock when not locked', () => {
-    render(<GameCard {...defaultProps} locked={false} />);
-    expect(screen.queryByText('🔒')).toBeNull();
+    const { container } = render(<GameCard {...defaultProps} locked={false} />);
+    // No lock overlay
+    const overlay = container.querySelector('.bg-white\\/40');
+    expect(overlay).toBeNull();
   });
 });

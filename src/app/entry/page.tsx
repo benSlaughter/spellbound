@@ -1,14 +1,39 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Button from '@/components/ui/Button';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
 import { playSound } from '@/lib/sounds';
+import {
+  Plant,
+  Leaf,
+  Flower,
+  FlowerTulip,
+  FlowerLotus,
+  Clover,
+  Butterfly,
+  TreeEvergreen,
+  Tree,
+  X,
+  ClipboardText,
+  Sparkle,
+} from '@phosphor-icons/react';
 
-const PLANT_EMOJIS = ['🌱', '🌿', '🍃', '🌸', '🌺', '🌻', '🌷', '🌹', '🪻', '🌼'];
+const PLANT_ICONS: ReactNode[] = [
+  <Plant key="p" weight="duotone" size={18} color="#66BB6A" />,
+  <Leaf key="l" weight="duotone" size={18} color="#43A047" />,
+  <Clover key="c" weight="duotone" size={18} color="#66BB6A" />,
+  <Flower key="f1" weight="duotone" size={18} color="#E91E63" />,
+  <FlowerTulip key="ft" weight="duotone" size={18} color="#AB47BC" />,
+  <FlowerLotus key="fl" weight="duotone" size={18} color="#FFD54F" />,
+  <Butterfly key="b" weight="duotone" size={18} color="#9C27B0" />,
+  <TreeEvergreen key="te" weight="duotone" size={18} color="#2E7D32" />,
+  <Tree key="t" weight="duotone" size={18} color="#4CAF50" />,
+  <Sparkle key="m" weight="duotone" size={18} color="#EF5350" />,
+];
 
 const TAG_COLORS = [
   'bg-primary-light/30 border-primary-light',
@@ -32,7 +57,7 @@ export default function EntryPage() {
     const trimmed = currentWord.trim().toLowerCase();
     if (!trimmed) return;
     if (words.includes(trimmed)) {
-      setError('You already added that word! Try another one 🌸');
+      setError('You already added that word! Try another one');
       return;
     }
     setWords((prev) => [...prev, trimmed]);
@@ -56,11 +81,11 @@ export default function EntryPage() {
 
   const saveWords = async () => {
     if (!listName.trim()) {
-      setError('Give your list a name first! 📝');
+      setError('Give your list a name first!');
       return;
     }
     if (words.length < 3) {
-      setError('Add at least 3 words to your list! 🌱');
+      setError('Add at least 3 words to your list!');
       return;
     }
 
@@ -82,7 +107,7 @@ export default function EntryPage() {
       playSound('achievement');
       setShowCelebration(true);
     } catch {
-      setError('Oops! Something went wrong. Try again! 🌧️');
+      setError('Oops! Something went wrong. Try again!');
       setSaving(false);
     }
   };
@@ -108,9 +133,9 @@ export default function EntryPage() {
       <div className="game-card p-6">
         <label
           htmlFor="list-name"
-          className="block text-lg font-bold text-garden-text mb-2"
+          className="flex items-center gap-2 text-lg font-bold text-garden-text mb-2"
         >
-          📋 List Name
+          <ClipboardText weight="duotone" size={20} color="#2196F3" /> List Name
         </label>
         <input
           id="list-name"
@@ -128,9 +153,9 @@ export default function EntryPage() {
       <div className="game-card p-6">
         <label
           htmlFor="word-input"
-          className="block text-lg font-bold text-garden-text mb-2"
+          className="flex items-center gap-2 text-lg font-bold text-garden-text mb-2"
         >
-          🌱 Type a word
+          <Plant weight="duotone" size={20} color="#66BB6A" /> Type a word
         </label>
         <div className="flex gap-3">
           <input
@@ -150,7 +175,7 @@ export default function EntryPage() {
           <Button
             variant="primary"
             size="lg"
-            emoji="🌱"
+            icon={<Plant weight="duotone" size={20} />}
             onClick={addWord}
             disabled={!currentWord.trim()}
           >
@@ -175,12 +200,12 @@ export default function EntryPage() {
 
       {/* Word Tags */}
       <div className="game-card p-6 min-h-[120px]">
-        <h3 className="text-lg font-bold text-garden-text mb-3">
-          🌿 Your Words ({words.length})
+        <h3 className="flex items-center gap-2 text-lg font-bold text-garden-text mb-3">
+          <Leaf weight="duotone" size={20} color="#43A047" /> Your Words ({words.length})
         </h3>
         {words.length === 0 ? (
           <p className="text-garden-text-light text-center py-4">
-            Your word garden is empty — start adding words above! 🌱
+            Your word garden is empty — start adding words above!
           </p>
         ) : (
           <div className="flex flex-wrap gap-3">
@@ -198,7 +223,7 @@ export default function EntryPage() {
                     ${TAG_COLORS[index % TAG_COLORS.length]}
                   `}
                 >
-                  <span>{PLANT_EMOJIS[index % PLANT_EMOJIS.length]}</span>
+                  <span>{PLANT_ICONS[index % PLANT_ICONS.length]}</span>
                   <span>{word}</span>
                   <button
                     onClick={() => removeWord(word)}
@@ -207,7 +232,7 @@ export default function EntryPage() {
                                hover:bg-error/30 transition-colors cursor-pointer"
                     aria-label={`Remove ${word}`}
                   >
-                    ✕
+                    <X weight="bold" size={14} />
                   </button>
                 </motion.div>
               ))}
@@ -221,7 +246,7 @@ export default function EntryPage() {
         <Button
           variant="primary"
           size="lg"
-          emoji="🌻"
+          icon={<Flower weight="duotone" size={20} />}
           onClick={saveWords}
           disabled={saving}
           className="text-xl px-10 py-4"
@@ -237,14 +262,14 @@ export default function EntryPage() {
           animate={{ opacity: 1 }}
           className="text-center text-garden-text-light font-semibold"
         >
-          Add {3 - words.length} more word{3 - words.length > 1 ? 's' : ''} to save your list! 🌸
+          Add {3 - words.length} more word{3 - words.length > 1 ? 's' : ''} to save your list!
         </motion.p>
       )}
 
       <CelebrationOverlay
         show={showCelebration}
-        message="Your words are saved! Let's go practise! 🌟"
-        emoji="🌻"
+        message="Your words are saved! Let's go practise!"
+        emoji={<Sparkle weight="duotone" size={72} color="#FFD54F" />}
         onDismiss={() => router.push('/spelling')}
         autoCloseMs={3000}
       />

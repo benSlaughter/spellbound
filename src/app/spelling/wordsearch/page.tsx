@@ -7,6 +7,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
 import { playSound } from '@/lib/sounds';
 import Link from 'next/link';
+import { Plant, PencilSimple, MagnifyingGlass, CheckCircle, PuzzlePiece, Sparkle } from '@phosphor-icons/react';
 
 interface SpellingWord {
   id: number;
@@ -304,11 +305,11 @@ export default function WordSearchPage() {
       >
         <Breadcrumbs />
         <div className="game-card p-10 text-center max-w-md">
-          <span className="text-6xl block mb-4">🌱</span>
+          <span className="text-6xl block mb-4"><Plant weight="duotone" size={64} color="#66BB6A" /></span>
           <h2 className="text-2xl font-extrabold text-garden-text mb-3">No words to practise!</h2>
           <p className="text-garden-text-light text-lg mb-6">Add some spelling words first!</p>
-          <Link href="/entry" className="btn-primary text-lg px-8 py-3 no-underline">
-            ✏️ Add Words
+          <Link href="/entry" className="btn-primary text-lg px-8 py-3 no-underline inline-flex items-center gap-2">
+            <PencilSimple weight="duotone" size={20} /> Add Words
           </Link>
         </div>
       </motion.div>
@@ -376,7 +377,7 @@ export default function WordSearchPage() {
 
         {/* Word List */}
         <div className="game-card p-4 flex-1">
-          <h3 className="text-lg font-bold text-garden-text mb-3">🔎 Find these words:</h3>
+          <h3 className="flex items-center gap-2 text-lg font-bold text-garden-text mb-3"><MagnifyingGlass weight="duotone" size={20} /> Find these words:</h3>
           <div className="flex flex-wrap gap-2">
             {wordList.map((word) => {
               const isFound = foundWords.has(word);
@@ -391,7 +392,7 @@ export default function WordSearchPage() {
                       : 'bg-garden-card border border-garden-border text-garden-text'}
                   `}
                 >
-                  {isFound ? '✅ ' : ''}{word}
+                  {isFound ? <><CheckCircle weight="duotone" size={16} className="inline mr-1" /></> : ''}{word}
                 </motion.div>
               );
             })}
@@ -401,8 +402,8 @@ export default function WordSearchPage() {
 
       <CelebrationOverlay
         show={showFinal}
-        message="You found all the words! 🌟"
-        emoji="🧩"
+        message="You found all the words!"
+        emoji={<PuzzlePiece weight="duotone" size={72} color="#FF9800" />}
         onDismiss={() => setShowFinal(false)}
         navigateBack
       />
