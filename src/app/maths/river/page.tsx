@@ -261,15 +261,6 @@ function NumberRiver() {
                     <span className="absolute w-12 h-[2px] bg-green-700/20 rounded top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45" />
                     <span className="absolute w-12 h-[2px] bg-green-700/20 rounded top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-45" />
                     <span className="relative z-10">{ans}</span>
-                    {isCorrectPad && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="absolute -top-5"
-                      >
-                        <Fish weight="duotone" size={32} color="#4CAF50" />
-                      </motion.div>
-                    )}
                   </motion.button>
                 );
               })}

@@ -258,12 +258,12 @@ function Rainbow() {
   return (
     <motion.div
       className="absolute left-1/2 -translate-x-1/2 select-none pointer-events-none"
-      style={{ top: '25%', zIndex: 0 }}
+      style={{ top: '10%', zIndex: 0 }}
       initial={{ opacity: 0, scale: 0 }}
       animate={{ opacity: 0.7, scale: 1 }}
       transition={{ delay: 1.5, type: 'spring', stiffness: 100, damping: 15 }}
     >
-      <SvgRainbowArc size={500} />
+      <SvgRainbowArc size={700} />
     </motion.div>
   );
 }
