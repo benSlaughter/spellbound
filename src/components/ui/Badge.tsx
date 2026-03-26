@@ -66,7 +66,7 @@ export default function Badge({ emoji, title, unlocked = false, description, unl
 
   return (
     <>
-      <motion.div
+      <motion.button
         initial={unlocked ? { scale: 0 } : false}
         animate={unlocked ? { scale: 1 } : undefined}
         transition={
@@ -96,7 +96,7 @@ export default function Badge({ emoji, title, unlocked = false, description, unl
         >
           {title}
         </span>
-      </motion.div>
+      </motion.button>
 
       {/* Detail modal */}
       <AnimatePresence>

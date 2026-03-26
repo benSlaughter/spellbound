@@ -225,12 +225,12 @@ export default function EntryPage() {
                   <span>{word}</span>
                   <button
                     onClick={() => removeWord(word)}
-                    className="ml-1 w-7 h-7 rounded-full bg-error/20 text-error
+                    className="ml-1 w-10 h-10 rounded-full bg-error/20 text-error
                                flex items-center justify-center text-sm font-bold
                                hover:bg-error/30 transition-colors cursor-pointer"
                     aria-label={`Remove ${word}`}
                   >
-                    <X weight="bold" size={14} />
+                    <X weight="bold" size={18} />
                   </button>
                 </motion.div>
               ))}

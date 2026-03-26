@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Suspense, useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -92,6 +92,12 @@ function PuzzlePieces() {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
   const [answers, setAnswers] = useState<number[]>([]);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clean up timers on unmount
+  useEffect(() => {
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, []);
 
   const activeQuestion: MathQuestion | undefined =
     activePiece !== null ? questions[activePiece] : undefined;
@@ -121,7 +127,7 @@ function PuzzlePieces() {
       newRevealed.add(activePiece);
       setRevealedPieces(newRevealed);
 
-      setTimeout(() => {
+      timerRef.current = setTimeout(() => {
         setActivePiece(null);
         setFeedback(null);
         if (newRevealed.size === GRID_SIZE) {
@@ -134,7 +140,7 @@ function PuzzlePieces() {
       const newWrong = wrongCount + 1;
       setWrongCount(newWrong);
       setFeedback(wrongMessages[Math.min(newWrong - 1, wrongMessages.length - 1)]);
-      setTimeout(() => setFeedback(null), 1500);
+      timerRef.current = setTimeout(() => setFeedback(null), 1500);
     }
   }
 

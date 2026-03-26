@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState, useEffect, useCallback } from 'react';
+import { Suspense, useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -43,6 +43,12 @@ function MathMaze() {
   const [correctDoor, setCorrectDoor] = useState<number | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [finished, setFinished] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clean up timers on unmount
+  useEffect(() => {
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, []);
 
   // Generate questions client-side to avoid hydration mismatch
   useEffect(() => {
@@ -89,13 +95,13 @@ function MathMaze() {
         setFeedback(null);
         const result = wrongCount > 0 ? 'helped' : 'correct';
         recordProgress('maths_maze', room.question.ref, result);
-        setTimeout(advanceToNext, 1200);
+        timerRef.current = setTimeout(advanceToNext, 1200);
       } else {
         playSound('pop');
         setShakingDoor(doorIndex);
         setWrongCount((c) => c + 1);
         setFeedback('Try another door!');
-        setTimeout(() => {
+        timerRef.current = setTimeout(() => {
           setShakingDoor(null);
           setDisabledDoors((prev) => new Set(prev).add(doorIndex));
         }, 600);

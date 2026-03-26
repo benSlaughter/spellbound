@@ -126,6 +126,16 @@ function SpellCatcher() {
   const [letters, setLetters] = useState<FallingLetter[]>([]);
   const [encouragement, setEncouragement] = useState<string | null>(null);
   const encouragementTimer = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clean up speech and timers on unmount
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis?.cancel();
+      if (encouragementTimer.current) clearTimeout(encouragementTimer.current);
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   // Fetch spelling list
   useEffect(() => {
@@ -204,7 +214,7 @@ function SpellCatcher() {
             )
             .catch((err) => console.error('Failed to record progress:', err));
 
-          setTimeout(advanceToNext, 2500);
+          timerRef.current = setTimeout(advanceToNext, 2500);
         } else {
           setEncouragement(getEncouragement());
           if (encouragementTimer.current) clearTimeout(encouragementTimer.current);
@@ -223,13 +233,6 @@ function SpellCatcher() {
     },
     [currentWord, wordUpper, nextLetterIndex, caughtCount, wrongCount, showWordComplete, advanceToNext]
   );
-
-  // Clean up timer
-  useEffect(() => {
-    return () => {
-      if (encouragementTimer.current) clearTimeout(encouragementTimer.current);
-    };
-  }, []);
 
   /* ── Render states ── */
 
@@ -383,6 +386,7 @@ function SpellCatcher() {
             key={fl.id}
             onClick={() => handleLetterClick(fl)}
             disabled={showWordComplete}
+            aria-label={"Letter " + fl.letter}
             className="absolute cursor-pointer select-none focus:outline-none"
             style={{
               left: `${fl.x}%`,

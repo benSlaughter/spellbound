@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState, useCallback } from 'react';
+import { Suspense, useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -47,6 +47,12 @@ function MathMountain() {
     const q = questions[0];
     return q ? makeShuffledAnswers(q.answer, q.wrongAnswers) : [];
   });
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clean up timers on unmount
+  useEffect(() => {
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, []);
 
   const question: MathQuestion | undefined = questions[currentStop];
 
@@ -77,13 +83,13 @@ function MathMountain() {
         setAnswered(true);
         const result = wrongCount > 0 ? 'helped' : 'correct';
         recordProgress('maths_mountain', question.ref, result);
-        setTimeout(advanceToNext, 1200);
+        timerRef.current = setTimeout(advanceToNext, 1200);
       } else {
         playSound('click');
         const newWrong = wrongCount + 1;
         setWrongCount(newWrong);
         setFeedback(wrongMessages[Math.min(newWrong - 1, wrongMessages.length - 1)]);
-        setTimeout(() => setFeedback(null), 1500);
+        timerRef.current = setTimeout(() => setFeedback(null), 1500);
       }
     },
     [question, answered, wrongCount, advanceToNext],

@@ -68,6 +68,15 @@ export default function MissingLettersPage() {
   const [showFinal, setShowFinal] = useState(false);
   const inputRefs = useRef<Map<number, HTMLInputElement>>(new Map());
   const ctxRef = useRef<{ list: SpellingList; wordIndex: number } | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clean up speech and timers on unmount
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis?.cancel();
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (list) ctxRef.current = { list, wordIndex };
@@ -148,7 +157,7 @@ export default function MissingLettersPage() {
           .then(() => fetch('/api/achievements', { method: 'POST', headers: { 'Content-Type': 'application/json' } }))
           .catch((err) => console.error('Failed to record progress:', err));
 
-        setTimeout(() => {
+        timerRef.current = setTimeout(() => {
           const ctx = ctxRef.current;
           if (ctx && ctx.wordIndex < ctx.list.words.length - 1) {
             const nextIdx = ctx.wordIndex + 1;
@@ -170,7 +179,7 @@ export default function MissingLettersPage() {
       }
     } else {
       setShakeIdx(slotIndex);
-      setTimeout(() => setShakeIdx(null), 500);
+      timerRef.current = setTimeout(() => setShakeIdx(null), 500);
       const ref = inputRefs.current.get(slotIndex);
       if (ref) ref.value = '';
     }

@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState, useCallback } from 'react';
+import { Suspense, useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -54,6 +54,12 @@ function NumberRiver() {
     const q = questions[0];
     return q ? makeShuffledAnswers(q.answer, q.wrongAnswers) : [];
   });
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clean up timers on unmount
+  useEffect(() => {
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, []);
 
   const question: MathQuestion | undefined = questions[currentIndex];
 
@@ -84,7 +90,7 @@ function NumberRiver() {
         setFeedback(randomEncouragement());
         const result = wrongCount > 0 ? 'helped' : 'correct';
         recordProgress('maths_river', question.ref, result);
-        setTimeout(nextQuestion, 1500);
+        timerRef.current = setTimeout(nextQuestion, 1500);
       } else {
         playSound('click');
         const newWrong = wrongCount + 1;
@@ -95,7 +101,7 @@ function NumberRiver() {
         } else {
           setFeedback('Try another pad!');
         }
-        setTimeout(() => {
+        timerRef.current = setTimeout(() => {
           if (newWrong < 2) setFeedback(null);
         }, 1500);
       }
@@ -249,6 +255,7 @@ function NumberRiver() {
                     whileTap={{ scale: 0.85 }}
                     onClick={() => handleLilyTap(ans)}
                     disabled={tappedPad !== null}
+                    aria-label={"Answer " + ans}
                     className={`
                       w-28 h-28 sm:w-32 sm:h-32
                       rounded-full bg-gradient-to-br ${LILY_COLORS[i % LILY_COLORS.length]}

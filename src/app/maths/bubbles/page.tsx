@@ -92,6 +92,7 @@ function NumberBubbles() {
 
   const question: MathQuestion | undefined = questions[currentIndex];
   const feedbackTimer = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const nextQuestion = useCallback(() => {
     if (currentIndex + 1 >= questions.length) {
@@ -118,7 +119,7 @@ function NumberBubbles() {
         setFeedback(randomEncouragement());
         setBubbles((prev) => prev.map((b) => b.id === bubble.id ? { ...b, popped: true } : b));
         recordProgress('maths_bubbles', question.ref, wrongCount > 0 ? 'helped' : 'correct');
-        setTimeout(nextQuestion, 1200);
+        timerRef.current = setTimeout(nextQuestion, 1200);
       } else {
         playSound('pop');
         setWrongCount((c) => c + 1);
@@ -133,7 +134,10 @@ function NumberBubbles() {
 
   // Clean up timer
   useEffect(() => {
-    return () => { if (feedbackTimer.current) clearTimeout(feedbackTimer.current); };
+    return () => {
+      if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
   }, []);
 
   if (!ready) {
@@ -233,6 +237,7 @@ function NumberBubbles() {
               <button
                 key={bubble.id}
                 onClick={() => handleBubbleTap(bubble)}
+                aria-label={"Answer " + bubble.value}
                 className="absolute cursor-pointer select-none active:scale-90"
                 style={{
                   left: `${bubble.x}%`,

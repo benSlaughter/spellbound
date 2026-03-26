@@ -136,6 +136,12 @@ function Wordal() {
   const [shake, setShake] = useState(false);
 
   const gameContainerRef = useRef<HTMLDivElement>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clean up timers on unmount
+  useEffect(() => {
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, []);
 
   // Fetch spelling list
   useEffect(() => {
@@ -218,7 +224,7 @@ function Wordal() {
     if (currentGuess.length !== wordLength) {
       setShake(true);
       playSound('pop');
-      setTimeout(() => setShake(false), 500);
+      timerRef.current = setTimeout(() => setShake(false), 500);
       return;
     }
 
@@ -229,7 +235,7 @@ function Wordal() {
 
     // After reveal animation completes
     const revealDuration = wordLength * 150 + 500;
-    setTimeout(() => {
+    timerRef.current = setTimeout(() => {
       setRevealingRow(null);
       updateKeyStatuses(results);
 
@@ -257,8 +263,8 @@ function Wordal() {
           )
           .catch((err) => console.error('Failed to record progress:', err));
 
-        setTimeout(() => setShowCelebration(true), 300);
-        setTimeout(() => {
+        timerRef.current = setTimeout(() => setShowCelebration(true), 300);
+        timerRef.current = setTimeout(() => {
           setShowCelebration(false);
           setShowResult(true);
         }, 2500);
@@ -285,7 +291,7 @@ function Wordal() {
           )
           .catch((err) => console.error('Failed to record progress:', err));
 
-        setTimeout(() => setShowResult(true), 800);
+        timerRef.current = setTimeout(() => setShowResult(true), 800);
       } else {
         setCurrentRow((r) => r + 1);
         setCurrentGuess('');
@@ -319,6 +325,9 @@ function Wordal() {
     [gameOver, revealingRow, submitGuess, currentGuess.length, wordLength],
   );
 
+  const handleKeyRef = useRef(handleKey);
+  handleKeyRef.current = handleKey;
+
   // Physical keyboard listener
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -326,18 +335,18 @@ function Wordal() {
       const key = e.key.toUpperCase();
       if (key === 'ENTER') {
         e.preventDefault();
-        handleKey('ENTER');
+        handleKeyRef.current('ENTER');
       } else if (key === 'BACKSPACE') {
         e.preventDefault();
-        handleKey('BACKSPACE');
+        handleKeyRef.current('BACKSPACE');
       } else if (/^[A-Z]$/.test(key)) {
-        handleKey(key);
+        handleKeyRef.current(key);
       }
     }
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [handleKey]);
+  }, []);
 
   /* ── Render states ── */
 

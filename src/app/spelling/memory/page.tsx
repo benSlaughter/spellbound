@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -80,6 +80,12 @@ export default function MemoryMatchPage() {
   const [matchMessage, setMatchMessage] = useState('');
   const [showFinal, setShowFinal] = useState(false);
   const [totalPairs, setTotalPairs] = useState(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clean up timers on unmount
+  useEffect(() => {
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, []);
 
   useEffect(() => {
     const listId = new URLSearchParams(window.location.search).get('listId'); fetch(listId ? `/api/spellings/${listId}` : '/api/spellings?active=true')
@@ -137,7 +143,7 @@ export default function MemoryMatchPage() {
 
         if (first.pairId === second.pairId) {
           // Match!
-          setTimeout(() => {
+          timerRef.current = setTimeout(() => {
             playSound('success');
             setMatchMessage('Matched!');
             const newMatched = new Set(matchedPairs);
@@ -164,15 +170,15 @@ export default function MemoryMatchPage() {
               .then(() => fetch('/api/achievements', { method: 'POST', headers: { 'Content-Type': 'application/json' } }))
               .catch((err) => console.error('Failed to record progress:', err));
 
-            setTimeout(() => setMatchMessage(''), 1500);
+            timerRef.current = setTimeout(() => setMatchMessage(''), 1500);
 
             if (newMatched.size === totalPairs) {
-              setTimeout(() => setShowFinal(true), 1000);
+              timerRef.current = setTimeout(() => setShowFinal(true), 1000);
             }
           }, 500);
         } else {
           // No match
-          setTimeout(() => {
+          timerRef.current = setTimeout(() => {
             playSound('whoosh');
             setFlippedIds([]);
             setIsChecking(false);

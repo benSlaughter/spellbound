@@ -1,7 +1,7 @@
 'use client';
 
 import { type ReactNode } from 'react';
-import { useEffect, useMemo, useCallback } from 'react';
+import { useEffect, useMemo, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -98,6 +98,13 @@ export default function CelebrationOverlay({
     return () => clearTimeout(timer);
   }, [show, autoCloseMs, stableDismiss]);
 
+  useEffect(() => {
+    if (!show) return;
+    const handleEscape = (e: KeyboardEvent) => { if (e.key === 'Escape') stableDismiss(); };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [show, stableDismiss]);
+
   return (
     <AnimatePresence>
       {show && (
@@ -105,6 +112,8 @@ export default function CelebrationOverlay({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          role="dialog"
+          aria-modal="true"
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40"
           onClick={stableDismiss}
         >

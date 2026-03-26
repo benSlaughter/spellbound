@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -194,6 +194,12 @@ export default function WordSearchPage() {
   const [highlightedCells, setHighlightedCells] = useState<Set<string>>(new Set());
   const [foundCells, setFoundCells] = useState<Set<string>>(new Set());
   const [showFinal, setShowFinal] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clean up timers on unmount
+  useEffect(() => {
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, []);
 
   useEffect(() => {
     const listId = new URLSearchParams(window.location.search).get('listId'); fetch(listId ? `/api/spellings/${listId}` : '/api/spellings?active=true')
@@ -265,7 +271,7 @@ export default function WordSearchPage() {
             .catch((err) => console.error('Failed to record progress:', err));
 
           if (newFound.size === placedWords.length) {
-            setTimeout(() => setShowFinal(true), 800);
+            timerRef.current = setTimeout(() => setShowFinal(true), 800);
           }
         }
 
@@ -361,6 +367,7 @@ export default function WordSearchPage() {
                   onMouseEnter={() => handleCellHover(cell.row, cell.col)}
                   whileTap={{ scale: 0.9 }}
                   animate={isFound ? { scale: 1.1 } : {}}
+                  aria-label={"Letter " + cell.letter}
                   className={`
                     ${cellSize} rounded-md font-bold cursor-pointer
                     flex items-center justify-center select-none

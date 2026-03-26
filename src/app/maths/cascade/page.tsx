@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Suspense, useState, useEffect, useCallback } from 'react';
+import React, { Suspense, useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -74,6 +74,12 @@ function NumberCascade() {
 
   // Fade-out state for grid transition
   const [gridFading, setGridFading] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clean up timers on unmount
+  useEffect(() => {
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, []);
 
   useEffect(() => {
     const tables = parseTablesParam(searchParams.get('tables'));
@@ -95,7 +101,7 @@ function NumberCascade() {
       playSound('achievement');
     } else {
       setGridFading(true);
-      setTimeout(() => {
+      timerRef.current = setTimeout(() => {
         const nextQ = questions[nextIdx];
         setCurrentIndex(nextIdx);
         setWrongCount(0);
@@ -126,18 +132,18 @@ function NumberCascade() {
         recordProgress('maths_cascade', question.ref, result);
 
         // Cascade ripple
-        setTimeout(() => setRippleStep(1), 100);
-        setTimeout(() => setRippleStep(2), 200);
-        setTimeout(() => setRippleStep(3), 300);
-        setTimeout(() => setRippleStep(4), 400);
-        setTimeout(() => advanceToNext(), 1200);
+        timerRef.current = setTimeout(() => setRippleStep(1), 100);
+        timerRef.current = setTimeout(() => setRippleStep(2), 200);
+        timerRef.current = setTimeout(() => setRippleStep(3), 300);
+        timerRef.current = setTimeout(() => setRippleStep(4), 400);
+        timerRef.current = setTimeout(() => advanceToNext(), 1200);
       } else {
         // Wrong
         playSound('pop');
         setShakingTile(tileIndex);
         setWrongCount((prev) => prev + 1);
         setDisabledTiles((prev) => new Set(prev).add(tileIndex));
-        setTimeout(() => setShakingTile(null), 500);
+        timerRef.current = setTimeout(() => setShakingTile(null), 500);
       }
     },
     [question, answered, disabledTiles, wrongCount, advanceToNext],
@@ -287,6 +293,7 @@ function NumberCascade() {
                     }
                     onClick={() => handleTileClick(i, value)}
                     disabled={isDisabled || answered}
+                    aria-label={"Answer " + value}
                     className={tileClasses}
                   >
                     {value}

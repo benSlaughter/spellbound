@@ -97,6 +97,15 @@ export default function ScramblePage() {
   const [hintCount, setHintCount] = useState(0);
   const ctxRef = useRef<{ list: SpellingList; wordIndex: number } | null>(null);
   const hintRef = useRef(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clean up speech and timers on unmount
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis?.cancel();
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   // Keep refs in sync for use in timeout callbacks
   useEffect(() => {
@@ -160,8 +169,7 @@ export default function ScramblePage() {
       .then(() => fetch('/api/achievements', { method: 'POST', headers: { 'Content-Type': 'application/json' } }))
       .catch((err) => console.error('Failed to record progress:', err));
 
-    setTimeout(() => {
-      // Read current state from ref at timeout fire time
+    timerRef.current = setTimeout(() => {
       const ctx = ctxRef.current;
       if (ctx && ctx.wordIndex < ctx.list.words.length - 1) {
         const nextIdx = ctx.wordIndex + 1;

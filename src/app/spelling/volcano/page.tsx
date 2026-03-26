@@ -111,6 +111,15 @@ export default function VolcanoPage() {
 
   const ctxRef = useRef<{ list: SpellingList; wordIndex: number } | null>(null);
   const lavaRef = useRef(5);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clean up speech and timers on unmount
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis?.cancel();
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (list) ctxRef.current = { list, wordIndex };
@@ -172,7 +181,7 @@ export default function VolcanoPage() {
       const nextIdx = ctx.wordIndex + 1;
       setWordIndex(nextIdx);
       resetForWord(ctx.list.words[nextIdx].word);
-      setTimeout(() => speakWord(ctx.list.words[nextIdx].word), 500);
+      timerRef.current = setTimeout(() => speakWord(ctx.list.words[nextIdx].word), 500);
     } else {
       setShowFinal(true);
     }
@@ -217,13 +226,13 @@ export default function VolcanoPage() {
               .catch((err) => console.error('Failed to record progress:', err));
           }
 
-          setTimeout(advanceToNext, 2000);
+          timerRef.current = setTimeout(advanceToNext, 2000);
         }
       } else {
         // Wrong letter — shake the rock
         playSound('pop');
         setShakingId(rock.id);
-        setTimeout(() => setShakingId(null), 500);
+        timerRef.current = setTimeout(() => setShakingId(null), 500);
       }
     },
     [isCorrect, removedIds, filledCount, wordLetters, currentWord, advanceToNext]

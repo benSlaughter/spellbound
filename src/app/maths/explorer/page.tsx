@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState, useCallback } from 'react';
+import { Suspense, useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -72,6 +72,12 @@ function TimesTableExplorer() {
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebMsg, setCelebMsg] = useState('');
   const [practiceAnswers, setPracticeAnswers] = useState<number[]>([]);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clean up timers on unmount
+  useEffect(() => {
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, []);
 
   const isHidden = useCallback(
     (row: number, col: number) => {
@@ -113,7 +119,7 @@ function TimesTableExplorer() {
       const newWrong = practiceWrongCount + 1;
       setPracticeWrongCount(newWrong);
       setPracticeFeedback(wrongMessages[Math.min(newWrong - 1, wrongMessages.length - 1)]);
-      setTimeout(() => setPracticeFeedback(null), 1500);
+      timerRef.current = setTimeout(() => setPracticeFeedback(null), 1500);
     }
   };
 
@@ -250,7 +256,7 @@ function TimesTableExplorer() {
                           onMouseLeave={() => setHoverCell(null)}
                           onClick={() => handleCellClick(row, col)}
                           className={`
-                            w-10 h-10 text-xs sm:text-sm font-bold rounded-lg
+                            w-11 h-11 text-xs sm:text-sm font-bold rounded-lg
                             transition-all duration-150 cursor-pointer
                             flex items-center justify-center
                             ${hidden ? 'bg-secondary/60 text-secondary-dark hover:bg-secondary' : cellColor(value)}

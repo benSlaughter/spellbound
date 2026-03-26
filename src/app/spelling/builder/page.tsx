@@ -69,6 +69,15 @@ export default function BuilderPage() {
   const [autoFilling, setAutoFilling] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const ctxRef = useRef<{ list: SpellingList; wordIndex: number } | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clean up speech and timers on unmount
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis?.cancel();
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (list) ctxRef.current = { list, wordIndex };
@@ -117,7 +126,7 @@ export default function BuilderPage() {
       setWordIndex(nextIdx);
       resetWord();
       // After first interaction, auto-speak subsequent words
-      setTimeout(() => speakWord(ctx.list.words[nextIdx].word), 500);
+      timerRef.current = setTimeout(() => speakWord(ctx.list.words[nextIdx].word), 500);
     } else {
       setShowFinal(true);
     }
@@ -160,14 +169,14 @@ export default function BuilderPage() {
           .then(() => fetch('/api/achievements', { method: 'POST', headers: { 'Content-Type': 'application/json' } }))
           .catch((err) => console.error('Failed to record progress:', err));
 
-        setTimeout(advanceToNext, 2000);
+        timerRef.current = setTimeout(advanceToNext, 2000);
       }
     } else {
       const newAttempts = wrongAttempts + 1;
       setWrongAttempts(newAttempts);
       setShakePos(true);
       setShakeKey(letter);
-      setTimeout(() => {
+      timerRef.current = setTimeout(() => {
         setShakePos(false);
         setShakeKey(null);
       }, 500);
@@ -176,7 +185,7 @@ export default function BuilderPage() {
         setAutoFilling(true);
         setUsedHelp(true);
         playSound('pop');
-        setTimeout(() => {
+        timerRef.current = setTimeout(() => {
           const newBuilt = [...builtLetters, expected];
           setBuiltLetters(newBuilt);
           setWrongAttempts(0);
@@ -197,7 +206,7 @@ export default function BuilderPage() {
             })
               .then(() => fetch('/api/achievements', { method: 'POST', headers: { 'Content-Type': 'application/json' } }))
               .catch((err) => console.error('Failed to record progress:', err));
-            setTimeout(advanceToNext, 2000);
+            timerRef.current = setTimeout(advanceToNext, 2000);
           }
         }, 400);
       }
