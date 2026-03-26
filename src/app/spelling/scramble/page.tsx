@@ -58,48 +58,6 @@ function makeScramble(word: string): Tile[] {
   return shuffled;
 }
 
-function checkAndRecordAnswer(
-  newAnswer: Tile[],
-  word: string,
-  hintUsed: boolean,
-  listRef: React.RefObject<{ list: SpellingList; wordIndex: number } | null>,
-  setIsCorrect: (v: boolean) => void,
-  setEncouragement: (v: string) => void,
-  setWordIndex: React.Dispatch<React.SetStateAction<number>>,
-  setShowFinal: (v: boolean) => void,
-  resetWord: (word: string) => void,
-) {
-  if (newAnswer.length !== word.length) return;
-  const spelled = newAnswer.map((t) => t.letter).join('');
-  if (spelled !== word) return;
-
-  setIsCorrect(true);
-  setEncouragement(getEncouragement());
-  playSound('success');
-
-  const result = hintUsed ? 'helped' : 'correct';
-  fetch('/api/progress', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      activity_type: 'spelling_scramble',
-      activity_ref: word,
-      result,
-    }),
-  }).then(() => fetch('/api/achievements', { method: 'POST' }));
-
-  setTimeout(() => {
-    const ctx = listRef.current;
-    if (ctx && ctx.wordIndex < ctx.list.words.length - 1) {
-      const nextIdx = ctx.wordIndex + 1;
-      setWordIndex(nextIdx);
-      resetWord(ctx.list.words[nextIdx].word);
-    } else {
-      setShowFinal(true);
-    }
-  }, 2000);
-}
-
 export default function ScramblePage() {
   const [list, setList] = useState<SpellingList | null>(null);
   const [loading, setLoading] = useState(true);
@@ -113,11 +71,15 @@ export default function ScramblePage() {
   const [showFinal, setShowFinal] = useState(false);
   const [revealedCount, setRevealedCount] = useState(0);
   const ctxRef = useRef<{ list: SpellingList; wordIndex: number } | null>(null);
+  const hintRef = useRef(false);
 
-  // Keep ref in sync for use in timeout callbacks
+  // Keep refs in sync for use in timeout callbacks
   useEffect(() => {
     if (list) ctxRef.current = { list, wordIndex };
   });
+  useEffect(() => {
+    hintRef.current = usedHint;
+  }, [usedHint]);
 
   const resetWord = (word: string) => {
     setScrambledLetters(makeScramble(word));
@@ -129,7 +91,10 @@ export default function ScramblePage() {
 
   useEffect(() => {
     fetch('/api/spellings?active=true')
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
+        return res.json();
+      })
       .then((data: SpellingList[]) => {
         if (data.length > 0 && data[0].words.length > 0) {
           setList(data[0]);
@@ -145,6 +110,42 @@ export default function ScramblePage() {
 
   const currentWord = list?.words[wordIndex];
 
+  const checkAndRecordAnswer = (newAnswer: Tile[], word: string) => {
+    if (newAnswer.length !== word.length) return;
+    const spelled = newAnswer.map((t) => t.letter).join('');
+    if (spelled !== word) return;
+
+    setIsCorrect(true);
+    setEncouragement(getEncouragement());
+    playSound('success');
+
+    // Read hint state from ref for accurate recording
+    const result = hintRef.current ? 'helped' : 'correct';
+    fetch('/api/progress', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        activity_type: 'spelling_scramble',
+        activity_ref: word,
+        result,
+      }),
+    })
+      .then(() => fetch('/api/achievements', { method: 'POST' }))
+      .catch((err) => console.error('Failed to record progress:', err));
+
+    setTimeout(() => {
+      // Read current state from ref at timeout fire time
+      const ctx = ctxRef.current;
+      if (ctx && ctx.wordIndex < ctx.list.words.length - 1) {
+        const nextIdx = ctx.wordIndex + 1;
+        setWordIndex(nextIdx);
+        resetWord(ctx.list.words[nextIdx].word);
+      } else {
+        setShowFinal(true);
+      }
+    }, 2000);
+  };
+
   const selectLetter = (tile: Tile) => {
     if (isCorrect || !currentWord) return;
     playSound('click');
@@ -153,10 +154,7 @@ export default function ScramblePage() {
     setScrambledLetters(newScrambled);
     setAnswer(newAnswer);
 
-    checkAndRecordAnswer(
-      newAnswer, currentWord.word, usedHint, ctxRef,
-      setIsCorrect, setEncouragement, setWordIndex, setShowFinal, resetWord,
-    );
+    checkAndRecordAnswer(newAnswer, currentWord.word);
   };
 
   const removeLetter = (tile: Tile, index: number) => {
@@ -186,10 +184,7 @@ export default function ScramblePage() {
       setAnswer(newAnswer);
       setRevealedCount((prev) => prev + 1);
 
-      checkAndRecordAnswer(
-        newAnswer, currentWord.word, true, ctxRef,
-        setIsCorrect, setEncouragement, setWordIndex, setShowFinal, resetWord,
-      );
+      checkAndRecordAnswer(newAnswer, currentWord.word);
     }
   };
 

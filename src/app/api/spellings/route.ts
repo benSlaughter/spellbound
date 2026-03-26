@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
-import { checkAdminAuth } from "@/lib/auth";
+import { checkAdminAuth, checkCSRF, validateStringInput } from "@/lib/auth";
 
 interface SpellingWord {
   word: string;
@@ -37,12 +37,28 @@ export async function GET(request: NextRequest) {
         .all() as SpellingList[];
     }
 
-    const listsWithWords = lists.map((list) => {
-      const words = db
-        .prepare("SELECT * FROM spelling_words WHERE list_id = ? ORDER BY id")
-        .all(list.id);
-      return { ...list, words };
-    });
+    const listIds = lists.map((l) => l.id);
+    let allWords: Array<{ list_id: number } & Record<string, unknown>> = [];
+    if (listIds.length > 0) {
+      const placeholders = listIds.map(() => "?").join(",");
+      allWords = db
+        .prepare(
+          `SELECT * FROM spelling_words WHERE list_id IN (${placeholders}) ORDER BY id`
+        )
+        .all(...listIds) as Array<{ list_id: number } & Record<string, unknown>>;
+    }
+
+    const wordsByList = new Map<number, typeof allWords>();
+    for (const word of allWords) {
+      const bucket = wordsByList.get(word.list_id) ?? [];
+      bucket.push(word);
+      wordsByList.set(word.list_id, bucket);
+    }
+
+    const listsWithWords = lists.map((list) => ({
+      ...list,
+      words: wordsByList.get(list.id) ?? [],
+    }));
 
     return NextResponse.json(listsWithWords);
   } catch {
@@ -55,6 +71,13 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!checkCSRF(request)) {
+      return NextResponse.json(
+        { error: "Invalid content type" },
+        { status: 403 }
+      );
+    }
+
     const isAdmin = await checkAdminAuth();
     if (!isAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -66,7 +89,11 @@ export async function POST(request: NextRequest) {
       words: SpellingWord[];
     };
 
-    if (!name || typeof name !== "string" || !name.trim()) {
+    const nameCheck = validateStringInput(name, 200, "List name");
+    if (!nameCheck.valid) {
+      return NextResponse.json({ error: nameCheck.error }, { status: 400 });
+    }
+    if (!nameCheck.value.trim()) {
       return NextResponse.json(
         { error: "List name is required" },
         { status: 400 }
@@ -78,6 +105,28 @@ export async function POST(request: NextRequest) {
         { error: "At least one word is required" },
         { status: 400 }
       );
+    }
+
+    if (words.length > 50) {
+      return NextResponse.json(
+        { error: "Maximum 50 words per list" },
+        { status: 400 }
+      );
+    }
+
+    for (const w of words) {
+      if (w.word) {
+        const wordCheck = validateStringInput(w.word, 100, "Word");
+        if (!wordCheck.valid) {
+          return NextResponse.json({ error: wordCheck.error }, { status: 400 });
+        }
+      }
+      if (w.hint) {
+        const hintCheck = validateStringInput(w.hint, 500, "Hint");
+        if (!hintCheck.valid) {
+          return NextResponse.json({ error: hintCheck.error }, { status: 400 });
+        }
+      }
     }
 
     const db = getDb();
@@ -93,7 +142,7 @@ export async function POST(request: NextRequest) {
     );
 
     const result = db.transaction(() => {
-      const listResult = insertList.run(profileId, name.trim());
+      const listResult = insertList.run(profileId, nameCheck.value.trim());
       const listId = listResult.lastInsertRowid;
 
       for (const w of words) {

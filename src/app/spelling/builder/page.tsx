@@ -66,6 +66,7 @@ export default function BuilderPage() {
   const [shakePos, setShakePos] = useState(false);
   const [shakeKey, setShakeKey] = useState<string | null>(null);
   const [autoFilling, setAutoFilling] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
   const ctxRef = useRef<{ list: SpellingList; wordIndex: number } | null>(null);
 
   useEffect(() => {
@@ -84,12 +85,13 @@ export default function BuilderPage() {
 
   useEffect(() => {
     fetch('/api/spellings?active=true')
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
+        return res.json();
+      })
       .then((data: SpellingList[]) => {
         if (data.length > 0 && data[0].words.length > 0) {
           setList(data[0]);
-          // Speak the first word after a short delay
-          setTimeout(() => speakWord(data[0].words[0].word), 500);
         } else {
           setNoList(true);
         }
@@ -106,11 +108,19 @@ export default function BuilderPage() {
       const nextIdx = ctx.wordIndex + 1;
       setWordIndex(nextIdx);
       resetWord();
+      // After first interaction, auto-speak subsequent words
       setTimeout(() => speakWord(ctx.list.words[nextIdx].word), 500);
     } else {
       setShowFinal(true);
     }
   }, []);
+
+  const handleFirstListen = () => {
+    if (currentWord) {
+      speakWord(currentWord.word);
+      setHasInteracted(true);
+    }
+  };
 
   const handleLetterPress = useCallback((letter: string) => {
     if (!currentWord || isCorrect || autoFilling) return;
@@ -138,7 +148,9 @@ export default function BuilderPage() {
             activity_ref: currentWord.word,
             result,
           }),
-        }).then(() => fetch('/api/achievements', { method: 'POST' }));
+        })
+          .then(() => fetch('/api/achievements', { method: 'POST' }))
+          .catch((err) => console.error('Failed to record progress:', err));
 
         setTimeout(advanceToNext, 2000);
       }
@@ -174,7 +186,9 @@ export default function BuilderPage() {
                 activity_ref: currentWord.word,
                 result: 'helped',
               }),
-            }).then(() => fetch('/api/achievements', { method: 'POST' }));
+            })
+              .then(() => fetch('/api/achievements', { method: 'POST' }))
+              .catch((err) => console.error('Failed to record progress:', err));
             setTimeout(advanceToNext, 2000);
           }
         }, 400);
@@ -234,16 +248,35 @@ export default function BuilderPage() {
       </div>
 
       {/* Hear the Word */}
-      <div className="flex justify-center gap-3">
-        <Button
-          variant="primary"
-          size="lg"
-          emoji="🔊"
-          onClick={() => currentWord && speakWord(currentWord.word)}
+      {!hasInteracted ? (
+        <motion.div
+          className="flex justify-center"
+          initial={{ scale: 0.9 }}
+          animate={{ scale: [1, 1.05, 1] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
         >
-          Hear the word
-        </Button>
-      </div>
+          <Button
+            variant="primary"
+            size="lg"
+            emoji="🔊"
+            onClick={handleFirstListen}
+            className="text-xl px-8 py-4"
+          >
+            Tap to hear your word!
+          </Button>
+        </motion.div>
+      ) : (
+        <div className="flex justify-center gap-3">
+          <Button
+            variant="primary"
+            size="lg"
+            emoji="🔊"
+            onClick={() => currentWord && speakWord(currentWord.word)}
+          >
+            Hear the word
+          </Button>
+        </div>
+      )}
 
       {/* Hint */}
       <div className="text-center">

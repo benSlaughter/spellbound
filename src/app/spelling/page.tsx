@@ -78,7 +78,10 @@ export default function SpellingHub() {
 
   useEffect(() => {
     fetch('/api/spellings?active=true')
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
+        return res.json();
+      })
       .then((data: SpellingList[]) => {
         if (data.length > 0 && data[0].words.length > 0) {
           setList(data[0]);

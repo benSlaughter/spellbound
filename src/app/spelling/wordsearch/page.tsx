@@ -190,7 +190,10 @@ export default function WordSearchPage() {
 
   useEffect(() => {
     fetch('/api/spellings?active=true')
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
+        return res.json();
+      })
       .then((data: SpellingList[]) => {
         if (data.length > 0 && data[0].words.length > 0) {
           setList(data[0]);
@@ -250,7 +253,9 @@ export default function WordSearchPage() {
               activity_ref: match.word,
               result: 'correct',
             }),
-          }).then(() => fetch('/api/achievements', { method: 'POST' }));
+          })
+            .then(() => fetch('/api/achievements', { method: 'POST' }))
+            .catch((err) => console.error('Failed to record progress:', err));
 
           if (newFound.size === placedWords.length) {
             setTimeout(() => setShowFinal(true), 800);
