@@ -102,6 +102,13 @@ export default function BuilderPage() {
 
   const currentWord = list?.words[wordIndex];
 
+  const wordLen = currentWord?.word.length ?? 6;
+  const boxSizes = wordLen <= 6
+    ? { box: 'w-11 h-13 sm:w-13 sm:h-15', text: 'text-xl sm:text-2xl' }
+    : wordLen <= 9
+    ? { box: 'w-9 h-11 sm:w-11 sm:h-13', text: 'text-lg sm:text-xl' }
+    : { box: 'w-7 h-9 sm:w-9 sm:h-11', text: 'text-base sm:text-lg' };
+
   const advanceToNext = useCallback(() => {
     const ctx = ctxRef.current;
     if (ctx && ctx.wordIndex < ctx.list.words.length - 1) {
@@ -307,7 +314,7 @@ export default function BuilderPage() {
                   delay: index * 0.05,
                 }}
                 className={`
-                  w-11 h-13 sm:w-13 sm:h-15 rounded-xl text-xl sm:text-2xl font-extrabold
+                  ${boxSizes.box} rounded-xl ${boxSizes.text} font-extrabold
                   flex items-center justify-center border-2
                   ${filled
                     ? isCorrect

@@ -97,6 +97,14 @@ export default function MissingLettersPage() {
 
   const currentWord = list?.words[wordIndex];
 
+  /** Returns responsive tile size classes based on word length. */
+  const wordLen = currentWord?.word.length ?? 6;
+  const tileSizes = wordLen <= 6
+    ? { tile: 'w-12 h-14 sm:w-14 sm:h-16', text: 'text-2xl' }
+    : wordLen <= 9
+    ? { tile: 'w-10 h-12 sm:w-12 sm:h-14', text: 'text-xl' }
+    : { tile: 'w-8 h-10 sm:w-10 sm:h-12', text: 'text-lg' };
+
   // Focus the next blank input
   useEffect(() => {
     if (slots.length > 0 && !isCorrect) {
@@ -251,7 +259,7 @@ export default function MissingLettersPage() {
                     autoCapitalize="off"
                     onChange={(e) => handleInput(slot.index, e.target.value)}
                     className={`
-                      w-12 h-14 sm:w-14 sm:h-16 rounded-xl text-center text-2xl font-extrabold
+                      ${tileSizes.tile} rounded-xl text-center ${tileSizes.text} font-extrabold
                       border-3 border-accent focus:border-primary focus:outline-none
                       bg-accent-light/20 text-garden-text uppercase
                       ${shakeIdx === slot.index ? 'border-error bg-error/10' : ''}
@@ -262,7 +270,7 @@ export default function MissingLettersPage() {
                     initial={slot.isBlank ? { scale: 0.5, rotate: -10 } : {}}
                     animate={slot.isBlank ? { scale: 1, rotate: 0 } : {}}
                     className={`
-                      w-12 h-14 sm:w-14 sm:h-16 rounded-xl text-center text-2xl font-extrabold
+                      ${tileSizes.tile} rounded-xl text-center ${tileSizes.text} font-extrabold
                       flex items-center justify-center
                       ${isCorrect
                         ? 'bg-primary text-white'

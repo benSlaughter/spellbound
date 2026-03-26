@@ -34,6 +34,29 @@ const TILE_COLORS = [
 
 type Tile = { letter: string; id: number };
 
+/** Returns responsive tile size classes based on word length. */
+function tileSize(wordLength: number): { tile: string; text: string; empty: string } {
+  if (wordLength <= 6) {
+    return {
+      tile: 'w-12 h-12 sm:w-14 sm:h-14',
+      text: 'text-xl sm:text-2xl',
+      empty: 'w-12 h-12 sm:w-14 sm:h-14',
+    };
+  }
+  if (wordLength <= 9) {
+    return {
+      tile: 'w-10 h-10 sm:w-12 sm:h-12',
+      text: 'text-lg sm:text-xl',
+      empty: 'w-10 h-10 sm:w-12 sm:h-12',
+    };
+  }
+  return {
+    tile: 'w-8 h-8 sm:w-10 sm:h-10',
+    text: 'text-base sm:text-lg',
+    empty: 'w-8 h-8 sm:w-10 sm:h-10',
+  };
+}
+
 function shuffleArray<T>(arr: T[]): T[] {
   const shuffled = [...arr];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -109,6 +132,7 @@ export default function ScramblePage() {
   }, []);
 
   const currentWord = list?.words[wordIndex];
+  const sizes = tileSize(currentWord?.word.length ?? 6);
 
   const checkAndRecordAnswer = (newAnswer: Tile[], word: string) => {
     if (newAnswer.length !== word.length) return;
@@ -260,7 +284,7 @@ export default function ScramblePage() {
                 transition={{ type: 'spring', damping: 15, stiffness: 300 }}
                 onClick={() => removeLetter(tile, index)}
                 className={`
-                  w-12 h-12 sm:w-14 sm:h-14 rounded-xl text-xl sm:text-2xl font-extrabold
+                  ${sizes.tile} rounded-xl ${sizes.text} font-extrabold
                   text-white shadow-md flex items-center justify-center
                   ${index < revealedCount ? 'opacity-80 cursor-not-allowed' : 'cursor-pointer hover:scale-105'}
                   ${isCorrect ? 'bg-primary' : TILE_COLORS[tile.id % TILE_COLORS.length]}
@@ -276,7 +300,7 @@ export default function ScramblePage() {
                 <motion.div
                   key={`empty-${i}`}
                   layout
-                  className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl border-2 border-dashed border-garden-border"
+                  className={`${sizes.empty} rounded-xl border-2 border-dashed border-garden-border`}
                 />
               ))}
           </AnimatePresence>
@@ -317,7 +341,7 @@ export default function ScramblePage() {
                 transition={{ type: 'spring', damping: 15, stiffness: 300 }}
                 onClick={() => selectLetter(tile)}
                 className={`
-                  w-12 h-12 sm:w-14 sm:h-14 rounded-xl text-xl sm:text-2xl font-extrabold
+                  ${sizes.tile} rounded-xl ${sizes.text} font-extrabold
                   text-white shadow-md cursor-pointer flex items-center justify-center
                   ${TILE_COLORS[tile.id % TILE_COLORS.length]}
                 `}
