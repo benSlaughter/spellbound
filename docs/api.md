@@ -34,6 +34,13 @@ All endpoints return JSON. State-changing requests (POST, PUT, DELETE) must incl
 - [Settings](#settings)
   - [GET /api/settings](#get-apisettings)
   - [PUT /api/settings](#put-apisettings)
+- [Maths Tables Config](#maths-tables-config)
+  - [GET /api/maths/tables](#get-apimathstables)
+- [Feedback](#feedback)
+  - [POST /api/feedback](#post-apifeedback)
+  - [GET /api/feedback](#get-apifeedback)
+- [Unlocks](#unlocks)
+  - [GET /api/unlocks](#get-apiunlocks)
 
 ---
 
@@ -598,6 +605,110 @@ Update a setting. Admin only.
 
 ---
 
+## Maths Tables Config
+
+### GET /api/maths/tables
+
+Fetch the configured times tables and difficulty levels available for maths games.
+
+**Auth required:** No
+
+**Success response (200):**
+```typescript
+{
+  tables: number[];          // e.g. [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  difficulties: string[];   // e.g. ["seedling", "sapling", "tree", "mighty_oak"]
+}
+```
+
+**Notes:**
+- Tables and difficulties are configured via the `maths_tables` and `maths_difficulties` keys in the settings table
+- If no setting is configured, returns all tables (1–12) and all difficulties
+- The settings are comma-separated strings (e.g. `"2,3,5,10"`)
+
+---
+
+## Feedback
+
+### POST /api/feedback
+
+Submit student feedback. No authentication required — this is the child-facing feedback form.
+
+**Auth required:** No
+
+**Request body:**
+```typescript
+{
+  message: string;    // 1–1000 characters
+}
+```
+
+**Success response (200):**
+```typescript
+{ "id": number, "success": true }
+```
+
+**Error responses:**
+
+| Status | Body | When |
+|---|---|---|
+| 400 | `{ "error": "Message must be between 1 and 1000 characters" }` | Empty or too long |
+| 403 | `{ "error": "Invalid request" }` | Failed CSRF check |
+| 500 | `{ "error": "Failed to submit feedback" }` | Server error |
+
+**Notes:**
+- Messages are sanitised before storage
+- CSRF protection is enforced via the `checkCSRF` helper
+
+---
+
+### GET /api/feedback
+
+Fetch all student feedback. Admin only.
+
+**Auth required:** Yes
+
+**Success response (200):**
+```typescript
+{
+  id: number;
+  message: string;
+  created_at: string;
+}[]
+```
+
+**Error responses:**
+
+| Status | Body | When |
+|---|---|---|
+| 401 | `{ "error": "Unauthorised" }` | Not logged in as admin |
+| 500 | `{ "error": "Failed to fetch feedback" }` | Server error |
+
+---
+
+## Unlocks
+
+### GET /api/unlocks
+
+Fetch the game unlock status for the default profile. Returns total correct answers and which fun games are currently unlocked.
+
+**Auth required:** No
+
+**Success response (200):**
+```typescript
+{
+  totalAnswers: number;       // total correct + helped answers
+  unlockedGames: string[];    // e.g. ["/games/spotmatch"]
+}
+```
+
+**Notes:**
+- Counts progress records with result `correct` or `helped`
+- Compares against the `requiredCorrect` threshold in each `GameUnlock` definition from `src/lib/unlocks.ts`
+- If the count meets or exceeds the threshold, the game's `href` appears in `unlockedGames`
+
+---
+
 ## Activity Types Reference
 
 These are the standard `activity_type` values used in the progress system:
@@ -614,3 +725,8 @@ These are the standard `activity_type` values used in the progress system:
 | `maths_puzzle` | Puzzle Pieces |
 | `maths_river` | Number River |
 | `maths_explorer` | Times Table Explorer |
+| `spelling_catcher` | Spell Catcher |
+| `spelling_volcano` | Word Volcano |
+| `spelling_wordal` | Wordal |
+| `maths_maze` | Math Maze |
+| `maths_cascade` | Number Cascade |
