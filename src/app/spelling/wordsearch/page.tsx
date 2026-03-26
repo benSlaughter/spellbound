@@ -328,7 +328,7 @@ export default function WordSearchPage() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col gap-5 max-w-4xl mx-auto"
+      className="flex flex-col gap-5 max-w-5xl mx-auto"
     >
       <div className="flex items-center justify-between">
         <Breadcrumbs />
@@ -344,7 +344,7 @@ export default function WordSearchPage() {
         </p>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-5">
+      <div className="flex flex-col md:flex-row gap-5">
         {/* Grid */}
         <div className="game-card p-3 sm:p-4 flex justify-center overflow-x-auto">
           <div className="inline-grid gap-0.5" style={{ gridTemplateColumns: `repeat(${gridSize}, minmax(0, 1fr))` }}>

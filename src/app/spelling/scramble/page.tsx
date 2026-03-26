@@ -249,7 +249,7 @@ export default function ScramblePage() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col gap-6 max-w-2xl mx-auto"
+      className="flex flex-col gap-6 max-w-4xl mx-auto"
     >
       <div className="flex items-center justify-between">
         <Breadcrumbs />
@@ -267,8 +267,10 @@ export default function ScramblePage() {
         </p>
       </div>
 
+      {/* Answer + Scrambled Letters */}
+      <div className="flex flex-col md:flex-row md:gap-6">
       {/* Answer Area */}
-      <div className="game-card p-6">
+      <div className="game-card p-6 md:flex-1">
         <p className="text-sm font-bold text-garden-text-light mb-3 text-center">
           Your answer:
         </p>
@@ -311,23 +313,8 @@ export default function ScramblePage() {
         </div>
       </div>
 
-      {/* Encouragement Message */}
-      <AnimatePresence>
-        {isCorrect && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: -10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="text-center flex items-center justify-center gap-2"
-          >
-            <span className="text-3xl font-extrabold text-primary">{encouragement}</span>
-            <Sparkle weight="duotone" size={28} color="#FFD54F" className="ml-2" />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Scrambled Letters */}
-      <div className="game-card p-6">
+      <div className="game-card p-6 md:flex-1">
         <p className="text-sm font-bold text-garden-text-light mb-3 text-center">
           Available letters:
         </p>
@@ -356,6 +343,22 @@ export default function ScramblePage() {
           </AnimatePresence>
         </div>
       </div>
+      </div>
+
+      {/* Encouragement Message */}
+      <AnimatePresence>
+        {isCorrect && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: -10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="text-center flex items-center justify-center gap-2"
+          >
+            <span className="text-3xl font-extrabold text-primary">{encouragement}</span>
+            <Sparkle weight="duotone" size={28} color="#FFD54F" className="ml-2" />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Word hint + audio */}
       {currentWord && !isCorrect && (

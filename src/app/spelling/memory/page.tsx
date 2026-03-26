@@ -219,7 +219,7 @@ export default function MemoryMatchPage() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col gap-5 max-w-2xl mx-auto"
+      className="flex flex-col gap-5 max-w-4xl mx-auto"
     >
       <div className="flex items-center justify-between">
         <Breadcrumbs />
@@ -251,8 +251,10 @@ export default function MemoryMatchPage() {
 
       {/* Card Grid */}
       <div
-        className="grid gap-3 justify-center mx-auto w-full"
-        style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`, maxWidth: cols * 150 }}
+        className={`grid gap-3 justify-center mx-auto w-full ${
+          cols <= 2 ? 'grid-cols-2' : cols <= 3 ? 'grid-cols-3 md:grid-cols-4' : 'grid-cols-4'
+        }`}
+        style={{ maxWidth: cols <= 3 ? Math.max(cols, 3) * 180 : cols * 150 }}
       >
         {cards.map((card) => {
           const isFlipped = flippedIds.includes(card.id) || card.matched;

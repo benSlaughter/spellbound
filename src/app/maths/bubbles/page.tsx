@@ -149,38 +149,42 @@ function NumberBubbles() {
         </span>
       </div>
 
-      {/* Question */}
-      {question && (
-        <motion.div
-          key={currentIndex}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mx-auto bg-white rounded-2xl shadow-md px-8 py-5 text-center"
-        >
-          <p className="text-sm text-garden-text-light font-bold mb-1">What is…</p>
-          <p className="text-3xl font-extrabold text-garden-text">{question.question} ?</p>
-        </motion.div>
-      )}
-
-      {/* Feedback — fixed height so it doesn't shift the layout */}
-      <div className="h-10 flex items-center justify-center">
-        <AnimatePresence>
-          {feedback && (
-            <motion.p
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              className="text-center text-xl font-extrabold text-primary"
+      <div className="flex flex-col md:flex-row md:items-center md:gap-8 flex-1">
+        {/* Question + Feedback */}
+        <div className="flex flex-col gap-6 md:flex-1">
+          {/* Question */}
+          {question && (
+            <motion.div
+              key={currentIndex}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mx-auto bg-white rounded-2xl shadow-md px-8 py-5 text-center"
             >
-              {feedback}
-            </motion.p>
+              <p className="text-sm text-garden-text-light font-bold mb-1">What is…</p>
+              <p className="text-3xl font-extrabold text-garden-text">{question.question} ?</p>
+            </motion.div>
           )}
-        </AnimatePresence>
-      </div>
 
-      {/* Bubbles */}
-      <div className="flex-1 flex items-center justify-center">
-        <div className="grid grid-cols-2 gap-6 sm:gap-8">
+          {/* Feedback — fixed height so it doesn't shift the layout */}
+          <div className="h-10 flex items-center justify-center">
+            <AnimatePresence>
+              {feedback && (
+                <motion.p
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="text-center text-xl font-extrabold text-primary"
+                >
+                  {feedback}
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* Bubbles */}
+        <div className="flex-1 flex items-center justify-center">
+          <div className="grid grid-cols-2 gap-6 sm:gap-8">
           <AnimatePresence mode="popLayout">
             {answers.map((ans, i) => {
               const isPopped = poppedAnswer === ans;
@@ -224,6 +228,7 @@ function NumberBubbles() {
               );
             })}
           </AnimatePresence>
+        </div>
         </div>
       </div>
     </div>

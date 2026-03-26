@@ -237,7 +237,7 @@ export default function BuilderPage() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col gap-5 max-w-2xl mx-auto"
+      className="flex flex-col gap-5 max-w-4xl mx-auto"
     >
       <div className="flex items-center justify-between">
         <Breadcrumbs />
@@ -293,8 +293,10 @@ export default function BuilderPage() {
         </span>
       </div>
 
+      {/* Letter Boxes + Keyboard */}
+      <div className="flex flex-col md:flex-row md:gap-6">
       {/* Letter Boxes */}
-      <div className="game-card p-6">
+      <div className="game-card p-6 md:flex-1">
         <div className="flex flex-wrap justify-center gap-2">
           {currentWord?.word.split('').map((_, index) => {
             const filled = index < builtLetters.length;
@@ -334,23 +336,9 @@ export default function BuilderPage() {
         </div>
       </div>
 
-      {/* Encouragement */}
-      <AnimatePresence>
-        {isCorrect && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            className="text-center"
-          >
-
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Keyboard */}
       {!isCorrect && (
-        <div className="game-card p-4">
+        <div className="game-card p-4 md:flex-1">
           {KEYBOARD_ROWS.map((row, rowIdx) => (
             <div key={rowIdx} className="flex justify-center gap-1.5 mb-1.5">
               {row.map((letter) => (
@@ -375,6 +363,21 @@ export default function BuilderPage() {
           ))}
         </div>
       )}
+      </div>
+
+      {/* Encouragement */}
+      <AnimatePresence>
+        {isCorrect && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            className="text-center"
+          >
+
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Wrong attempts indicator */}
       {wrongAttempts > 0 && !isCorrect && (

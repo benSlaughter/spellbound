@@ -209,7 +209,7 @@ export default function MissingLettersPage() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col gap-6 max-w-2xl mx-auto"
+      className="flex flex-col gap-6 max-w-4xl mx-auto"
     >
       <div className="flex items-center justify-between">
         <Breadcrumbs />

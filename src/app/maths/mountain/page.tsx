@@ -132,8 +132,9 @@ function MathMountain() {
         </p>
       </div>
 
+      <div className="flex flex-col md:flex-row md:items-start md:gap-6">
       {/* Mountain Visualization */}
-      <div className="relative mx-auto w-full max-w-sm">
+      <div className="relative mx-auto w-full max-w-sm md:mx-0">
         <div
           className="relative rounded-2xl overflow-hidden h-72"
           style={{
@@ -232,7 +233,7 @@ function MathMountain() {
           key={currentStop}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mx-auto bg-white rounded-2xl shadow-md px-8 py-6 text-center max-w-sm w-full"
+          className="mx-auto bg-white rounded-2xl shadow-md px-8 py-6 text-center max-w-sm w-full md:flex-1"
         >
           {/* Signpost */}
           <div className="mb-2 flex justify-center"><Signpost weight="duotone" size={40} color="#8D6E63" /></div>
@@ -272,6 +273,7 @@ function MathMountain() {
           </div>
         </motion.div>
       )}
+      </div>
     </div>
   );
 }

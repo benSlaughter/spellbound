@@ -144,47 +144,51 @@ function NumberRiver() {
         </p>
       </div>
 
-      {/* Question */}
-      {question && (
-        <motion.div
-          key={currentIndex}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mx-auto bg-white rounded-2xl shadow-md px-8 py-5 text-center"
-        >
-          <p className="text-sm text-garden-text-light font-bold mb-1">What is…</p>
-          <p className="text-3xl font-extrabold text-garden-text">{question.question} ?</p>
-        </motion.div>
-      )}
-
-      {/* Feedback — fixed height so it doesn't shift the layout */}
-      <div className="h-14 flex items-center justify-center">
-        <AnimatePresence>
-          {feedback && (
+      <div className="flex flex-col md:flex-row md:items-center md:gap-8 flex-1">
+        {/* Question + Feedback */}
+        <div className="flex flex-col gap-6 md:flex-1">
+          {/* Question */}
+          {question && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              className="text-center"
+              key={currentIndex}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mx-auto bg-white rounded-2xl shadow-md px-8 py-5 text-center"
             >
-              <p className="text-xl font-extrabold text-primary">{feedback}</p>
-              {showSplash && (
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="inline-flex items-center gap-2 mt-1"
-                >
-                  <Fish weight="duotone" size={28} color="#4CAF50" />
-                  <span className="text-4xl font-extrabold">Splash!</span>
-                </motion.div>
-              )}
+              <p className="text-sm text-garden-text-light font-bold mb-1">What is…</p>
+              <p className="text-3xl font-extrabold text-garden-text">{question.question} ?</p>
             </motion.div>
           )}
-        </AnimatePresence>
-      </div>
 
-      {/* River with Lily Pads */}
-      <div className="flex-1 flex items-center justify-center">
+          {/* Feedback — fixed height so it doesn't shift the layout */}
+          <div className="h-14 flex items-center justify-center">
+            <AnimatePresence>
+              {feedback && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="text-center"
+                >
+                  <p className="text-xl font-extrabold text-primary">{feedback}</p>
+                  {showSplash && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="inline-flex items-center gap-2 mt-1"
+                    >
+                      <Fish weight="duotone" size={28} color="#4CAF50" />
+                      <span className="text-4xl font-extrabold">Splash!</span>
+                    </motion.div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* River with Lily Pads */}
+        <div className="flex-1 flex items-center justify-center">
         <div
           className="relative w-full max-w-md rounded-2xl overflow-hidden p-8"
           style={{
@@ -267,6 +271,7 @@ function NumberRiver() {
               })}
             </AnimatePresence>
           </div>
+        </div>
         </div>
       </div>
     </div>

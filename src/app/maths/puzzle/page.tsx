@@ -177,8 +177,9 @@ function PuzzlePieces() {
         {revealedPieces.size} of {GRID_SIZE} pieces revealed
       </div>
 
+      <div className="flex flex-col md:flex-row md:items-start md:gap-6">
       {/* Puzzle Grid */}
-      <div className="mx-auto w-full max-w-sm">
+      <div className="mx-auto w-full max-w-sm md:mx-0">
         <div className="relative rounded-2xl overflow-hidden aspect-square bg-green-100">
           {/* Hidden picture underneath */}
           <div className="absolute inset-0">
@@ -237,7 +238,7 @@ function PuzzlePieces() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="mx-auto bg-white rounded-2xl shadow-lg px-6 py-5 text-center max-w-sm w-full"
+            className="mx-auto bg-white rounded-2xl shadow-lg px-6 py-5 text-center max-w-sm w-full md:flex-1"
           >
             <p className="text-2xl font-extrabold text-garden-text mb-4">
               {activeQuestion.question} = ?
@@ -281,6 +282,7 @@ function PuzzlePieces() {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
 
       <CelebrationOverlay
         show={showCelebration}
