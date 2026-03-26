@@ -28,6 +28,7 @@ interface SpellingList {
   id: number;
   name: string;
   words: SpellingWord[];
+  is_active?: number;
 }
 
 const stagger = {
