@@ -156,28 +156,30 @@ function NumberRiver() {
         </motion.div>
       )}
 
-      {/* Feedback */}
-      <AnimatePresence>
-        {feedback && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            className="text-center"
-          >
-            <p className="text-xl font-extrabold text-primary">{feedback}</p>
-            {showFrog && (
-              <motion.span
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="text-4xl inline-block mt-1"
-              >
-                🐸 Ribbit!
-              </motion.span>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Feedback — fixed height so it doesn't shift the layout */}
+      <div className="h-14 flex items-center justify-center">
+        <AnimatePresence>
+          {feedback && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              className="text-center"
+            >
+              <p className="text-xl font-extrabold text-primary">{feedback}</p>
+              {showFrog && (
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="text-4xl inline-block mt-1"
+                >
+                  🐸 Ribbit!
+                </motion.span>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* River with Lily Pads */}
       <div className="flex-1 flex items-center justify-center">

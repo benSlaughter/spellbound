@@ -247,20 +247,22 @@ function MathMountain() {
             ))}
           </div>
 
-          {/* Feedback */}
-          <AnimatePresence>
-            {feedback && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className="mt-4 flex items-center justify-center gap-2"
-              >
-                {showOwl && <span className="text-3xl">🦉</span>}
-                <p className="text-lg font-bold text-primary">{feedback}</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {/* Feedback — fixed height to prevent card resize */}
+          <div className="h-12 flex items-center justify-center">
+            <AnimatePresence>
+              {feedback && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="flex items-center justify-center gap-2"
+                >
+                  {showOwl && <span className="text-3xl">🦉</span>}
+                  <p className="text-lg font-bold text-primary">{feedback}</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </motion.div>
       )}
     </div>

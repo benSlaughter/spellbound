@@ -161,19 +161,21 @@ function NumberBubbles() {
         </motion.div>
       )}
 
-      {/* Feedback */}
-      <AnimatePresence>
-        {feedback && (
-          <motion.p
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            className="text-center text-xl font-extrabold text-primary"
-          >
-            {feedback}
-          </motion.p>
-        )}
-      </AnimatePresence>
+      {/* Feedback — fixed height so it doesn't shift the layout */}
+      <div className="h-10 flex items-center justify-center">
+        <AnimatePresence>
+          {feedback && (
+            <motion.p
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              className="text-center text-xl font-extrabold text-primary"
+            >
+              {feedback}
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* Bubbles */}
       <div className="flex-1 flex items-center justify-center">
