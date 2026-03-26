@@ -85,6 +85,7 @@ function NumberBubbles() {
     const tables = parseTablesParam(searchParams.get('tables'));
     const difficulty = parseDifficultyParam(searchParams.get('difficulty'));
     const qs = generateQuestions(tables, difficulty, TOTAL_QUESTIONS);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setQuestions(qs);
     if (qs[0]) setBubbles(makeBubbles(makeShuffledAnswers(qs[0].answer, qs[0].wrongAnswers)));
     setReady(true);

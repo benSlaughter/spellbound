@@ -77,6 +77,7 @@ function PuzzlePieces() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPictureIndex(Math.floor(Math.random() * PICTURES.length));
     const tables = parseTablesParam(searchParams.get('tables'));
     const difficulty = parseDifficultyParam(searchParams.get('difficulty'));

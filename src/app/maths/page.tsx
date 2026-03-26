@@ -103,6 +103,7 @@ export default function MathsHub() {
     try {
       const saved = localStorage.getItem(DIFF_KEY);
       if (saved && ['seedling', 'sapling', 'tree', 'mighty_oak'].includes(saved)) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setDifficulty(saved as Difficulty);
       }
     } catch { /* ignore */ }
@@ -126,6 +127,7 @@ export default function MathsHub() {
   // Sync difficulty to localStorage and auto-correct if not enabled
   useEffect(() => {
     if (tablesLoaded && !enabledDifficulties.includes(difficulty)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDifficulty(enabledDifficulties[0] as Difficulty);
     }
     localStorage.setItem(DIFF_KEY, difficulty);

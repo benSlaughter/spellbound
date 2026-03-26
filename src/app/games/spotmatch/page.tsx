@@ -197,6 +197,7 @@ function SpotMatchGame() {
 
   // Avoid hydration mismatch + load best time
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     try {
       const saved = localStorage.getItem(BEST_TIME_KEY);
@@ -257,7 +258,7 @@ function SpotMatchGame() {
       setMatchFlash(false);
       setShakeIcon(null);
     }
-  }, [round]);
+  }, [round, bestTime]);
 
   const handleTap = useCallback(
     (iconName: string) => {

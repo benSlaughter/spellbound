@@ -8,7 +8,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
 import { playSound } from '@/lib/sounds';
 import Link from 'next/link';
-import { Plant, PencilSimple, MagnifyingGlass, CheckCircle, PuzzlePiece, Sparkle } from '@phosphor-icons/react';
+import { Plant, PencilSimple, MagnifyingGlass, CheckCircle, PuzzlePiece } from '@phosphor-icons/react';
 
 interface SpellingWord {
   id: number;

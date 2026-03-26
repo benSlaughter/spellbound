@@ -7,9 +7,8 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
 import Button from '@/components/ui/Button';
-import { playSound, speakWord } from '@/lib/sounds';
+import { playSound } from '@/lib/sounds';
 import {
-  SpeakerHigh,
   Trophy,
   ArrowRight,
   Backspace,
@@ -329,7 +328,7 @@ function Wordal() {
   );
 
   const handleKeyRef = useRef(handleKey);
-  handleKeyRef.current = handleKey;
+  useEffect(() => { handleKeyRef.current = handleKey; });
 
   // Physical keyboard listener
   useEffect(() => {
@@ -627,15 +626,12 @@ function Tile({
     return () => clearTimeout(timer);
   }, [isRevealing, index]);
 
-  // Reset flip state when cell changes (new word)
-  useEffect(() => {
-    if (cell.status === 'empty' || cell.status === 'pending') {
-      setFlipped(false);
-    }
-  }, [cell.status]);
+  // Reset flip state when cell changes (new word) — derive from status
+  const shouldReset = cell.status === 'empty' || cell.status === 'pending';
+  const effectiveFlipped = shouldReset ? false : flipped;
 
   const isSubmitted = cell.status === 'correct' || cell.status === 'present' || cell.status === 'absent';
-  const showColor = isSubmitted && (!isRevealing || flipped);
+  const showColor = isSubmitted && (!isRevealing || effectiveFlipped);
 
   let bgClass = 'bg-white border-2 border-gray-300';
   if (showColor) {
