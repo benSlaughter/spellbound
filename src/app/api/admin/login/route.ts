@@ -12,15 +12,14 @@ const failedAttempts = new Map<string, { count: number; firstAttempt: number }>(
 const MAX_ATTEMPTS = 5;
 const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
 
-// Cleanup stale entries every 15 minutes
-setInterval(() => {
+function cleanupExpiredAttempts() {
   const now = Date.now();
-  for (const [ip, data] of failedAttempts) {
+  for (const [ip, data] of failedAttempts.entries()) {
     if (now - data.firstAttempt > WINDOW_MS) {
       failedAttempts.delete(ip);
     }
   }
-}, WINDOW_MS);
+}
 
 function getClientIP(request: NextRequest): string {
   return (
@@ -32,6 +31,8 @@ function getClientIP(request: NextRequest): string {
 
 export async function POST(request: NextRequest) {
   try {
+    cleanupExpiredAttempts();
+
     if (!checkCSRF(request)) {
       return NextResponse.json(
         { error: "Invalid content type" },

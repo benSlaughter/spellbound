@@ -12,11 +12,15 @@ type RouteParams = { params: Promise<{ id: string }> };
 export async function GET(_request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
+    const listId = parseInt(id, 10);
+    if (!Number.isInteger(listId) || listId < 1) {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
     const db = getDb();
 
     const list = db
       .prepare("SELECT * FROM spelling_lists WHERE id = ?")
-      .get(Number(id)) as Record<string, unknown> | undefined;
+      .get(listId) as Record<string, unknown> | undefined;
 
     if (!list) {
       return NextResponse.json(
@@ -27,7 +31,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 
     const words = db
       .prepare("SELECT * FROM spelling_words WHERE list_id = ? ORDER BY id")
-      .all(Number(id));
+      .all(listId);
 
     return NextResponse.json({ ...list, words });
   } catch {
@@ -53,6 +57,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
 
     const { id } = await params;
+    const listId = parseInt(id, 10);
+    if (!Number.isInteger(listId) || listId < 1) {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
     const db = getDb();
     const body = await request.json();
     const { name, words, is_active } = body as {
@@ -63,7 +71,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     const existing = db
       .prepare("SELECT * FROM spelling_lists WHERE id = ?")
-      .get(Number(id));
+      .get(listId);
 
     if (!existing) {
       return NextResponse.json(
@@ -116,28 +124,28 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       if (sanitizedName !== undefined) {
         db.prepare("UPDATE spelling_lists SET name = ? WHERE id = ?").run(
           sanitizedName.trim(),
-          Number(id)
+          listId
         );
       }
 
       if (is_active !== undefined) {
         db.prepare("UPDATE spelling_lists SET is_active = ? WHERE id = ?").run(
           is_active ? 1 : 0,
-          Number(id)
+          listId
         );
       }
 
       if (words !== undefined) {
         // Replace all words
         db.prepare("DELETE FROM spelling_words WHERE list_id = ?").run(
-          Number(id)
+          listId
         );
         const insertWord = db.prepare(
           "INSERT INTO spelling_words (list_id, word, hint) VALUES (?, ?, ?)"
         );
         for (const w of words) {
           if (w.word && w.word.trim()) {
-            insertWord.run(Number(id), w.word.trim(), w.hint?.trim() || null);
+            insertWord.run(listId, w.word.trim(), w.hint?.trim() || null);
           }
         }
       }
@@ -145,10 +153,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     const updated = db
       .prepare("SELECT * FROM spelling_lists WHERE id = ?")
-      .get(Number(id)) as Record<string, unknown>;
+      .get(listId) as Record<string, unknown>;
     const updatedWords = db
       .prepare("SELECT * FROM spelling_words WHERE list_id = ? ORDER BY id")
-      .all(Number(id));
+      .all(listId);
 
     return NextResponse.json({ ...updated, words: updatedWords });
   } catch {
@@ -174,11 +182,15 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
 
     const { id } = await params;
+    const listId = parseInt(id, 10);
+    if (!Number.isInteger(listId) || listId < 1) {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
     const db = getDb();
 
     const existing = db
       .prepare("SELECT * FROM spelling_lists WHERE id = ?")
-      .get(Number(id));
+      .get(listId);
 
     if (!existing) {
       return NextResponse.json(
@@ -189,9 +201,9 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     db.transaction(() => {
       db.prepare("DELETE FROM spelling_words WHERE list_id = ?").run(
-        Number(id)
+        listId
       );
-      db.prepare("DELETE FROM spelling_lists WHERE id = ?").run(Number(id));
+      db.prepare("DELETE FROM spelling_lists WHERE id = ?").run(listId);
     })();
 
     return NextResponse.json({ success: true });

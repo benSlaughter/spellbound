@@ -28,9 +28,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!words || !Array.isArray(words) || words.length < 3) {
+    if (!words || !Array.isArray(words)) {
       return NextResponse.json(
-        { error: "At least 3 words are required" },
+        { error: "Words array is required" },
+        { status: 400 }
+      );
+    }
+
+    const validWords = words.filter((w: { word?: string }) => w.word && w.word.trim().length > 0);
+    if (validWords.length < 3) {
+      return NextResponse.json(
+        { error: "At least 3 non-empty words required" },
         { status: 400 }
       );
     }

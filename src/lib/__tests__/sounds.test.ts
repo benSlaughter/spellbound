@@ -1,5 +1,88 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
+describe('speakWord', () => {
+  beforeEach(() => {
+    vi.resetModules();
+  });
+
+  it('does not throw when window.speechSynthesis is undefined', async () => {
+    // In jsdom, speechSynthesis is not defined by default
+    const { speakWord } = await import('../sounds');
+    expect(() => speakWord('hello')).not.toThrow();
+  });
+
+  it('calls cancel() before speaking', async () => {
+    const mockSpeak = vi.fn();
+    const mockCancel = vi.fn();
+    Object.defineProperty(window, 'speechSynthesis', {
+      value: { speak: mockSpeak, cancel: mockCancel },
+      writable: true,
+      configurable: true,
+    });
+
+    // Stub SpeechSynthesisUtterance as a class
+    vi.stubGlobal(
+      'SpeechSynthesisUtterance',
+      class {
+        text: string;
+        rate = 1;
+        pitch = 1;
+        lang = '';
+        constructor(text: string) {
+          this.text = text;
+        }
+      }
+    );
+
+    const { speakWord } = await import('../sounds');
+    speakWord('hello');
+
+    expect(mockCancel).toHaveBeenCalledTimes(1);
+    expect(mockSpeak).toHaveBeenCalledTimes(1);
+    // cancel must be called before speak
+    const cancelOrder = mockCancel.mock.invocationCallOrder[0];
+    const speakOrder = mockSpeak.mock.invocationCallOrder[0];
+    expect(cancelOrder).toBeLessThan(speakOrder);
+
+    vi.unstubAllGlobals();
+  });
+
+  it('creates SpeechSynthesisUtterance with correct properties', async () => {
+    const mockSpeak = vi.fn();
+    const mockCancel = vi.fn();
+    Object.defineProperty(window, 'speechSynthesis', {
+      value: { speak: mockSpeak, cancel: mockCancel },
+      writable: true,
+      configurable: true,
+    });
+
+    // Mock SpeechSynthesisUtterance as a class
+    const utteranceInstances: Record<string, unknown>[] = [];
+    class MockUtterance {
+      text: string;
+      rate = 1;
+      pitch = 1;
+      lang = '';
+      constructor(text: string) {
+        this.text = text;
+        utteranceInstances.push(this);
+      }
+    }
+    vi.stubGlobal('SpeechSynthesisUtterance', MockUtterance);
+
+    const { speakWord } = await import('../sounds');
+    speakWord('elephant');
+
+    expect(utteranceInstances).toHaveLength(1);
+    expect(utteranceInstances[0].text).toBe('elephant');
+    expect(utteranceInstances[0].rate).toBe(0.75);
+    expect(utteranceInstances[0].pitch).toBe(1.0);
+    expect(utteranceInstances[0].lang).toBe('en-GB');
+
+    vi.unstubAllGlobals();
+  });
+});
+
 describe('playSound', () => {
   beforeEach(() => {
     vi.resetModules();

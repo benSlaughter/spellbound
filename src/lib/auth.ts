@@ -65,7 +65,7 @@ export async function setAdminCookie(token: string): Promise<void> {
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE, token, {
     httpOnly: true,
-    secure: false,
+    secure: process.env.NODE_ENV === 'production',
     sameSite: "lax",
     path: "/",
     maxAge: SESSION_DURATION_MS / 1000,

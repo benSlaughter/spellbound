@@ -19,11 +19,15 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     }
 
     const { id } = await params;
+    const listId = parseInt(id, 10);
+    if (!Number.isInteger(listId) || listId < 1) {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
     const db = getDb();
 
     const list = db
       .prepare("SELECT * FROM spelling_lists WHERE id = ?")
-      .get(Number(id)) as { profile_id: number } | undefined;
+      .get(listId) as { profile_id: number } | undefined;
 
     if (!list) {
       return NextResponse.json(
@@ -39,7 +43,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       ).run(list.profile_id);
       // Activate the target list
       db.prepare("UPDATE spelling_lists SET is_active = 1 WHERE id = ?").run(
-        Number(id)
+        listId
       );
     })();
 
