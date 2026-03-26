@@ -25,7 +25,6 @@ const navItems: { href: string; label: string; icon: ReactNode }[] = [
   { href: '/spelling', label: 'Spelling', icon: <Books weight="duotone" size={24} /> },
   { href: '/maths', label: 'Maths', icon: <Calculator weight="duotone" size={24} /> },
   { href: '/progress', label: 'My Garden', icon: <Plant weight="duotone" size={24} /> },
-  { href: '/feedback', label: 'Feedback', icon: <ChatDots weight="duotone" size={24} /> },
 ];
 
 const adminItem = { href: '/admin', label: 'Admin', icon: <Gear weight="duotone" size={20} /> };
@@ -80,6 +79,24 @@ export default function Sidebar() {
           {adminItem.icon}
         </span>
         <span>{adminItem.label}</span>
+      </Link>
+      <Link
+        href="/feedback"
+        onClick={() => setMobileOpen(false)}
+        className={`
+          flex items-center gap-3 px-4 py-2 rounded-xl text-sm font-semibold
+          transition-colors duration-150 min-h-[44px] ml-4
+          ${
+            isActive('/feedback')
+              ? 'bg-garden-text-light/20 text-garden-text'
+              : 'text-garden-text-light hover:bg-garden-text-light/10'
+          }
+        `}
+      >
+        <span className="flex items-center" aria-hidden="true">
+          <ChatDots weight="duotone" size={18} />
+        </span>
+        <span>Feedback</span>
       </Link>
     </nav>
   );

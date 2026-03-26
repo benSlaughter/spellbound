@@ -188,7 +188,6 @@ function NumberBubbles() {
           <AnimatePresence mode="popLayout">
             {answers.map((ans, i) => {
               const isPopped = poppedAnswer === ans;
-              const showHint = wrongCount >= 2 && ans === question?.answer;
 
               return (
                 <motion.button
@@ -217,7 +216,6 @@ function NumberBubbles() {
                     shadow-lg cursor-pointer select-none
                     relative overflow-hidden
                     min-w-[96px] min-h-[96px]
-                    ${showHint ? 'ring-4 ring-yellow-400 animate-pulse' : ''}
                   `}
                   disabled={poppedAnswer !== null}
                 >

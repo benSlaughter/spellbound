@@ -91,7 +91,7 @@ function NumberRiver() {
         setWrongCount(newWrong);
 
         if (newWrong >= 2) {
-          setFeedback('Look for the glowing pad!');
+          setFeedback('Keep trying!');
         } else {
           setFeedback('Try another pad!');
         }
@@ -227,7 +227,6 @@ function NumberRiver() {
             <AnimatePresence mode="popLayout">
               {answers.map((ans, i) => {
                 const isCorrectPad = tappedPad === ans;
-                const showHint = wrongCount >= 2 && ans === question?.answer;
 
                 return (
                   <motion.button
@@ -258,7 +257,6 @@ function NumberRiver() {
                       shadow-lg cursor-pointer select-none
                       mx-auto relative
                       min-w-[96px] min-h-[96px]
-                      ${showHint ? 'ring-4 ring-yellow-300 animate-pulse' : ''}
                       ${isCorrectPad ? 'ring-4 ring-yellow-400 bg-yellow-400' : ''}
                     `}
                   >
