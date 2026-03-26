@@ -111,6 +111,7 @@ export default function SpellingHub() {
   const [list, setList] = useState<SpellingList | null>(null);
   const [loading, setLoading] = useState(true);
   const [noList, setNoList] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     fetch('/api/spellings')
@@ -131,7 +132,7 @@ export default function SpellingHub() {
           setNoList(true);
         }
       })
-      .catch(() => setNoList(true))
+      .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, []);
 
@@ -142,11 +143,26 @@ export default function SpellingHub() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <Breadcrumbs />
         <LoadingSpinner />
-        <p className="mt-4 text-garden-text-light font-semibold">
-          Loading your spelling words...
-        </p>
+        <p className="text-garden-text-light font-semibold">Loading...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <Breadcrumbs />
+        <div className="game-card p-10 text-center max-w-md mx-auto">
+          <h2 className="text-2xl font-extrabold text-garden-text mb-3">
+            Oops! Could not load words
+          </h2>
+          <p className="text-garden-text-light text-lg">
+            Something went wrong. Try going back and trying again!
+          </p>
+        </div>
       </div>
     );
   }

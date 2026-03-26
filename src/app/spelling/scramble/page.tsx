@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { Suspense, useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -83,9 +84,19 @@ function makeScramble(word: string): Tile[] {
 }
 
 export default function ScramblePage() {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <Scramble />
+    </Suspense>
+  );
+}
+
+function Scramble() {
+  const searchParams = useSearchParams();
   const [list, setList] = useState<SpellingList | null>(null);
   const [loading, setLoading] = useState(true);
   const [noList, setNoList] = useState(false);
+  const [error, setError] = useState(false);
   const [wordIndex, setWordIndex] = useState(0);
   const [scrambledLetters, setScrambledLetters] = useState<Tile[]>([]);
   const [answer, setAnswer] = useState<Tile[]>([]);
@@ -125,23 +136,24 @@ export default function ScramblePage() {
   };
 
   useEffect(() => {
-    const listId = new URLSearchParams(window.location.search).get('listId'); fetch(listId ? `/api/spellings/${listId}` : '/api/spellings?active=true')
+    const listId = searchParams.get('listId');
+    fetch(listId ? `/api/spellings/${listId}` : '/api/spellings?active=true')
       .then((res) => {
         if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
         return res.json();
       })
-      .then((raw) => { const data: SpellingList[] = Array.isArray(raw) ? raw : [raw];
+      .then((raw) => {
+        const data: SpellingList[] = Array.isArray(raw) ? raw : [raw];
         if (data.length > 0 && data[0].words.length > 0) {
           setList(data[0]);
-          // Initialize first word
           setScrambledLetters(makeScramble(data[0].words[0].word));
         } else {
           setNoList(true);
         }
       })
-      .catch(() => setNoList(true))
+      .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, []);
+  }, [searchParams]);
 
   const currentWord = list?.words[wordIndex];
   const sizes = tileSize(currentWord?.word.length ?? 6);
@@ -226,9 +238,26 @@ export default function ScramblePage() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <Breadcrumbs />
         <LoadingSpinner />
-        <p className="mt-4 text-garden-text-light font-semibold">Loading your words...</p>
+        <p className="text-garden-text-light font-semibold">Loading...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <Breadcrumbs />
+        <div className="game-card p-10 text-center max-w-md mx-auto">
+          <h2 className="text-2xl font-extrabold text-garden-text mb-3">
+            Oops! Could not load words
+          </h2>
+          <p className="text-garden-text-light text-lg">
+            Something went wrong. Try going back and trying again!
+          </p>
+        </div>
       </div>
     );
   }

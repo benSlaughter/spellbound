@@ -13,6 +13,7 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
@@ -65,8 +66,8 @@ export default function SettingsPage() {
     setError("");
     setMessage("");
 
-    if (newPassword.length < 4) {
-      setError("Password must be at least 4 characters");
+    if (newPassword.length < 8) {
+      setError("Password must be at least 8 characters");
       return;
     }
 
@@ -75,12 +76,35 @@ export default function SettingsPage() {
       return;
     }
 
-    await updateSetting("admin_password", newPassword);
-    if (!error) {
-      setNewPassword("");
-      setConfirmPassword("");
-      setMessage("Password updated successfully");
+    if (settings?.hasPassword) {
+      if (!currentPassword) {
+        setError("Current password is required");
+        return;
+      }
+
+      // Verify old password first
+      try {
+        const verifyRes = await fetch("/api/admin/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: currentPassword }),
+        });
+
+        if (!verifyRes.ok) {
+          setError("Current password is incorrect");
+          return;
+        }
+      } catch {
+        setError("Connection error");
+        return;
+      }
     }
+
+    await updateSetting("admin_password", newPassword);
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setMessage("Password updated successfully");
   };
 
   const handleToggleSounds = async () => {
@@ -143,6 +167,24 @@ export default function SettingsPage() {
           Change Admin Password
         </h2>
         <form onSubmit={handleChangePassword} className="space-y-3">
+          {settings?.hasPassword && (
+            <div>
+              <label
+                htmlFor="current-password"
+                className="block text-sm font-medium text-stone-700 mb-1"
+              >
+                Current Password
+              </label>
+              <input
+                id="current-password"
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                className="input-admin"
+                required
+              />
+            </div>
+          )}
           <div>
             <label
               htmlFor="new-password"
@@ -157,7 +199,7 @@ export default function SettingsPage() {
               onChange={(e) => setNewPassword(e.target.value)}
               className="input-admin"
               required
-              minLength={4}
+              minLength={8}
             />
           </div>
           <div>
@@ -174,13 +216,13 @@ export default function SettingsPage() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="input-admin"
               required
-              minLength={4}
+              minLength={8}
             />
           </div>
           <button
             type="submit"
             disabled={saving}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 text-sm font-medium transition-colors cursor-pointer"
+            className="btn-admin-primary"
           >
             {saving ? "Saving…" : "Update Password"}
           </button>

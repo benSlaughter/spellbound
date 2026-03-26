@@ -322,9 +322,9 @@ export default function SpellingsPage() {
 
               {list.words.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-1.5">
-                  {list.words.map((word, idx) => (
+                  {list.words.map((word) => (
                     <span
-                      key={idx}
+                      key={word.id ?? word.word}
                       className="bg-stone-100 text-stone-700 text-xs px-2 py-1 rounded"
                       title={word.hint || undefined}
                     >

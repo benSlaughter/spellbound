@@ -1,6 +1,7 @@
 'use client';
 
 import { Suspense, useState, useEffect, useCallback, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -116,9 +117,11 @@ export default function WordalPage() {
 /* ── Main game component ── */
 
 function Wordal() {
+  const searchParams = useSearchParams();
   const [list, setList] = useState<SpellingList | null>(null);
   const [loading, setLoading] = useState(true);
   const [noList, setNoList] = useState(false);
+  const [error, setError] = useState(false);
 
   // Game state per word
   const [wordOrder, setWordOrder] = useState<number[]>([]);
@@ -145,7 +148,7 @@ function Wordal() {
 
   // Fetch spelling list
   useEffect(() => {
-    const listId = new URLSearchParams(window.location.search).get('listId');
+    const listId = searchParams.get('listId');
     fetch(listId ? `/api/spellings/${listId}` : '/api/spellings?active=true')
       .then((res) => {
         if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
@@ -162,9 +165,9 @@ function Wordal() {
           setNoList(true);
         }
       })
-      .catch(() => setNoList(true))
+      .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, []);
+  }, [searchParams]);
 
   const currentWordObj = list && wordOrder.length > 0 ? list.words[wordOrder[orderIndex]] : null;
   const targetWord = currentWordObj?.word.toUpperCase() ?? '';
@@ -352,11 +355,26 @@ function Wordal() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <Breadcrumbs />
         <LoadingSpinner />
-        <p className="mt-4 text-garden-text-light font-semibold">
-          Loading your words...
-        </p>
+        <p className="text-garden-text-light font-semibold">Loading...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <Breadcrumbs />
+        <div className="game-card p-10 text-center max-w-md mx-auto">
+          <h2 className="text-2xl font-extrabold text-garden-text mb-3">
+            Oops! Could not load words
+          </h2>
+          <p className="text-garden-text-light text-lg">
+            Something went wrong. Try going back and trying again!
+          </p>
+        </div>
       </div>
     );
   }

@@ -95,6 +95,7 @@ export default function MathsHub() {
   const [selectedTables, setSelectedTables] = useState<number[]>(ALL_TABLES);
   const [enabledDifficulties, setEnabledDifficulties] = useState<string[]>(['seedling', 'sapling', 'tree', 'mighty_oak']);
   const [tablesLoaded, setTablesLoaded] = useState(false);
+  const [tablesError, setTablesError] = useState(false);
   const [difficulty, setDifficulty] = useState<Difficulty>('sapling');
 
   // Restore saved difficulty from localStorage after mount (avoids hydration mismatch)
@@ -118,7 +119,7 @@ export default function MathsHub() {
           setEnabledDifficulties(data.difficulties);
         }
       })
-      .catch(() => {})
+      .catch(() => setTablesError(true))
       .finally(() => setTablesLoaded(true));
   }, []);
 
@@ -143,6 +144,17 @@ export default function MathsHub() {
       <motion.div variants={fadeUp}>
         <Breadcrumbs />
       </motion.div>
+
+      {tablesError && (
+        <motion.div variants={fadeUp} className="game-card p-6 text-center max-w-md mx-auto">
+          <h2 className="text-xl font-extrabold text-garden-text mb-2">
+            Oops! Could not load settings
+          </h2>
+          <p className="text-garden-text-light">
+            Using default settings. Try refreshing the page!
+          </p>
+        </motion.div>
+      )}
 
       {/* Header */}
       <motion.section variants={fadeUp} className="text-center">
