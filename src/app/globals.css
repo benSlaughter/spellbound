@@ -1,0 +1,209 @@
+@import "tailwindcss";
+
+/* ── SpellBound Magical Learning Garden Theme ── */
+
+:root {
+  /* Primary — warm green family */
+  --color-primary-50: #E8F5E9;
+  --color-primary-100: #C8E6C9;
+  --color-primary-200: #A5D6A7;
+  --color-primary-300: #81C784;
+  --color-primary-400: #66BB6A;
+  --color-primary-500: #4CAF50;
+  --color-primary-600: #43A047;
+  --color-primary-700: #388E3C;
+  --color-primary-800: #2E7D32;
+  --color-primary-900: #1B5E20;
+
+  /* Secondary — sunny yellow family */
+  --color-secondary-50: #FFF8E1;
+  --color-secondary-100: #FFECB3;
+  --color-secondary-200: #FFE082;
+  --color-secondary-300: #FFD54F;
+  --color-secondary-400: #FFCA28;
+  --color-secondary-500: #FFC107;
+  --color-secondary-600: #FFB300;
+  --color-secondary-700: #FFA000;
+  --color-secondary-800: #FF8F00;
+  --color-secondary-900: #FF6F00;
+
+  /* Accent — sky blue family */
+  --color-accent-50: #E3F2FD;
+  --color-accent-100: #BBDEFB;
+  --color-accent-200: #90CAF9;
+  --color-accent-300: #64B5F6;
+  --color-accent-400: #42A5F5;
+  --color-accent-500: #2196F3;
+  --color-accent-600: #1E88E5;
+  --color-accent-700: #1976D2;
+
+  /* Fun colours */
+  --color-fun-orange: #FF8A65;
+  --color-fun-purple: #AB47BC;
+  --color-fun-pink: #E91E63;
+
+  /* Surfaces & text */
+  --color-garden-bg: #FFF8E1;
+  --color-garden-card: #FFFDF7;
+  --color-garden-text: #3E2723;
+  --color-garden-text-light: #6D4C41;
+  --color-garden-border: #E8D5B7;
+
+  /* Feedback */
+  --color-success: #FFD700;
+  --color-success-bg: #FFF9E0;
+  --color-error: #EF5350;
+  --color-error-bg: #FFEBEE;
+}
+
+@theme inline {
+  --font-sans: var(--font-nunito), "Nunito", system-ui, sans-serif;
+
+  /* Expose theme colours to Tailwind utilities */
+  --color-primary: #4CAF50;
+  --color-primary-light: #81C784;
+  --color-primary-dark: #388E3C;
+  --color-secondary: #FFD54F;
+  --color-secondary-light: #FFE082;
+  --color-secondary-dark: #FFC107;
+  --color-accent: #42A5F5;
+  --color-accent-light: #90CAF9;
+  --color-accent-dark: #1E88E5;
+  --color-fun-orange: #FF8A65;
+  --color-fun-purple: #AB47BC;
+  --color-fun-pink: #E91E63;
+  --color-garden-bg: #FFF8E1;
+  --color-garden-card: #FFFDF7;
+  --color-garden-text: #3E2723;
+  --color-garden-text-light: #6D4C41;
+  --color-garden-border: #E8D5B7;
+  --color-success: #FFD700;
+  --color-error: #EF5350;
+}
+
+/* ── Base styles ── */
+
+body {
+  background: var(--color-garden-bg);
+  color: var(--color-garden-text);
+  font-family: var(--font-sans);
+}
+
+/* ── Utility components ── */
+
+.game-card {
+  background: var(--color-garden-card);
+  border-radius: 1rem;
+  box-shadow:
+    0 4px 6px -1px rgba(62, 39, 35, 0.08),
+    0 2px 4px -2px rgba(62, 39, 35, 0.05);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.game-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 12px 24px -4px rgba(62, 39, 35, 0.12),
+    0 4px 8px -2px rgba(62, 39, 35, 0.06);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: #fff;
+  background: var(--color-primary);
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+  min-height: 48px;
+}
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+}
+.btn-primary:active {
+  transform: scale(0.96);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--color-garden-text);
+  background: var(--color-secondary);
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+  min-height: 48px;
+}
+.btn-secondary:hover {
+  background: var(--color-secondary-dark);
+}
+.btn-secondary:active {
+  transform: scale(0.96);
+}
+
+.btn-fun {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: #fff;
+  background: var(--color-fun-orange);
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+  min-height: 48px;
+}
+.btn-fun:hover {
+  background: var(--color-fun-purple);
+}
+.btn-fun:active {
+  transform: scale(0.96);
+}
+
+/* ── Scrollbar styling ── */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-primary-50);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary-200);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-300);
+}
+
+/* ── Focus styles for accessibility ── */
+
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

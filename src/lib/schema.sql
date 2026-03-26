@@ -1,0 +1,44 @@
+CREATE TABLE IF NOT EXISTS profiles (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL DEFAULT 'Learner',
+  avatar TEXT DEFAULT 'sprout',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS spelling_lists (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  profile_id INTEGER REFERENCES profiles(id),
+  name TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  is_active INTEGER DEFAULT 0,
+  archived INTEGER DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS spelling_words (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  list_id INTEGER REFERENCES spelling_lists(id) ON DELETE CASCADE,
+  word TEXT NOT NULL,
+  hint TEXT
+);
+
+CREATE TABLE IF NOT EXISTS progress (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  profile_id INTEGER REFERENCES profiles(id),
+  activity_type TEXT NOT NULL,
+  activity_ref TEXT,
+  result TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS achievements (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  profile_id INTEGER REFERENCES profiles(id),
+  achievement_key TEXT NOT NULL,
+  unlocked_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(profile_id, achievement_key)
+);
+
+CREATE TABLE IF NOT EXISTS settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
