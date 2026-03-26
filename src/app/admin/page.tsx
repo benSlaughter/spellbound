@@ -5,13 +5,13 @@ import { PencilSimple, ChartBar, Gear, Calculator, ChatDots } from "@phosphor-ic
 
 export default function AdminDashboard() {
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="page-container-narrow">
       <h1 className="text-2xl font-bold text-stone-800 mb-6">Dashboard</h1>
 
       <div className="grid gap-4">
         <Link
           href="/admin/spellings"
-          className="bg-white rounded-xl p-6 shadow-sm border border-stone-200 hover:border-green-300 hover:shadow-md transition-all group"
+          className="admin-card hover:border-green-300 hover:shadow-md transition-all group"
         >
           <div className="flex items-center gap-4">
             <div className="text-3xl text-green-700"><PencilSimple weight="duotone" size={36} /></div>
@@ -28,7 +28,7 @@ export default function AdminDashboard() {
 
         <Link
           href="/admin/progress"
-          className="bg-white rounded-xl p-6 shadow-sm border border-stone-200 hover:border-green-300 hover:shadow-md transition-all group"
+          className="admin-card hover:border-green-300 hover:shadow-md transition-all group"
         >
           <div className="flex items-center gap-4">
             <div className="text-3xl text-green-700"><ChartBar weight="duotone" size={36} /></div>
@@ -45,7 +45,7 @@ export default function AdminDashboard() {
 
         <Link
           href="/admin/tables"
-          className="bg-white rounded-xl p-6 shadow-sm border border-stone-200 hover:border-green-300 hover:shadow-md transition-all group"
+          className="admin-card hover:border-green-300 hover:shadow-md transition-all group"
         >
           <div className="flex items-center gap-4">
             <div className="text-3xl text-green-700"><Calculator weight="duotone" size={36} /></div>
@@ -62,7 +62,7 @@ export default function AdminDashboard() {
 
         <Link
           href="/admin/feedback"
-          className="bg-white rounded-xl p-6 shadow-sm border border-stone-200 hover:border-green-300 hover:shadow-md transition-all group"
+          className="admin-card hover:border-green-300 hover:shadow-md transition-all group"
         >
           <div className="flex items-center gap-4">
             <div className="text-3xl text-green-700"><ChatDots weight="duotone" size={36} /></div>
@@ -79,7 +79,7 @@ export default function AdminDashboard() {
 
         <Link
           href="/admin/settings"
-          className="bg-white rounded-xl p-6 shadow-sm border border-stone-200 hover:border-green-300 hover:shadow-md transition-all group"
+          className="admin-card hover:border-green-300 hover:shadow-md transition-all group"
         >
           <div className="flex items-center gap-4">
             <div className="text-3xl text-green-700"><Gear weight="duotone" size={36} /></div>

@@ -55,7 +55,7 @@ export default function FeedbackPage() {
 
       <div className="flex flex-col items-center gap-6 max-w-xl mx-auto w-full">
         <div className="text-center">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-garden-text">
+          <h1 className="page-title">
             Feedback
           </h1>
           <p className="mt-2 text-lg text-garden-text-light font-semibold">
@@ -88,7 +88,7 @@ export default function FeedbackPage() {
               placeholder="What would you like to tell us?"
               maxLength={1000}
               rows={6}
-              className="w-full rounded-2xl border-2 border-garden-border bg-white p-4 text-lg text-garden-text placeholder:text-garden-text-light/50 focus:outline-none focus:border-primary resize-none"
+              className="textarea-student"
             />
 
             <div className="flex items-center justify-between">

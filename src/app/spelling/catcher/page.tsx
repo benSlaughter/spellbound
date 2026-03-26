@@ -250,7 +250,7 @@ function SpellCatcher() {
         className="flex flex-col items-center justify-center min-h-[60vh] gap-6"
       >
         <Breadcrumbs />
-        <div className="game-card p-10 text-center max-w-md">
+        <div className="game-card p-10 text-center max-w-md mx-auto">
           <span className="block mb-4">
             <Plant weight="duotone" size={64} color="#66BB6A" />
           </span>
@@ -288,14 +288,14 @@ function SpellCatcher() {
 
       {/* Title + Hear Word */}
       <div className="text-center">
-        <h1 className="text-2xl font-extrabold text-garden-text mb-2">
+        <h1 className="page-title text-2xl mb-2">
           <Star weight="duotone" size={24} color="#FFD54F" className="inline mr-1 align-text-bottom" />
           Spell Catcher
         </h1>
         <Button
-          variant="primary"
-          size="sm"
-          icon={<SpeakerHigh weight="duotone" size={18} />}
+          variant="secondary"
+          size="md"
+          icon={<SpeakerHigh weight="duotone" size={20} />}
           onClick={() => currentWord && speakWord(currentWord.word)}
         >
           Hear Word
@@ -341,14 +341,14 @@ function SpellCatcher() {
       </div>
 
       {/* Encouragement */}
-      <div className="h-8 flex items-center justify-center">
+      <div className="feedback-container">
         <AnimatePresence>
           {encouragement && (
             <motion.p
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              className="text-center text-lg font-extrabold text-primary"
+              className="msg-encouragement"
             >
               {encouragement}
             </motion.p>

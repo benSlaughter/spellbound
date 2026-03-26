@@ -136,7 +136,7 @@ function NumberRiver() {
 
       {/* Progress */}
       <div className="text-center">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-garden-text">
+        <h1 className="page-title text-2xl sm:text-3xl">
           Number River
         </h1>
         <p className="text-sm text-garden-text-light mt-1">
@@ -153,7 +153,7 @@ function NumberRiver() {
               key={currentIndex}
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mx-auto bg-white rounded-2xl shadow-md px-8 py-5 text-center"
+              className="question-card"
             >
               <p className="text-sm text-garden-text-light font-bold mb-1">What is…</p>
               <p className="text-3xl font-extrabold text-garden-text">{question.question} ?</p>
@@ -170,7 +170,7 @@ function NumberRiver() {
                   exit={{ opacity: 0 }}
                   className="text-center"
                 >
-                  <p className="text-xl font-extrabold text-primary">{feedback}</p>
+                  <p className="msg-encouragement">{feedback}</p>
                   {showSplash && (
                     <motion.div
                       initial={{ scale: 0 }}

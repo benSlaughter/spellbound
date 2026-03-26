@@ -360,7 +360,7 @@ function Wordal() {
         className="flex flex-col items-center justify-center min-h-[60vh] gap-6"
       >
         <Breadcrumbs />
-        <div className="game-card p-10 text-center max-w-md">
+        <div className="game-card p-10 text-center max-w-md mx-auto">
           <span className="block mb-4">
             <Plant weight="duotone" size={64} color="#66BB6A" />
           </span>
@@ -434,7 +434,7 @@ function Wordal() {
 
       {/* Title */}
       <div className="text-center">
-        <h1 className="text-2xl font-extrabold text-garden-text mb-1">
+        <h1 className="page-title text-2xl mb-1">
           ✏️ Wordal
         </h1>
         <p className="text-sm text-garden-text-light">

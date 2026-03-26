@@ -164,7 +164,7 @@ function PuzzlePieces() {
       <Breadcrumbs />
 
       <div className="text-center">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-garden-text">
+        <h1 className="page-title text-2xl sm:text-3xl">
           Puzzle Pieces
         </h1>
         <p className="text-sm text-garden-text-light mt-1">

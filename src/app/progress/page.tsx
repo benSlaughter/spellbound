@@ -419,10 +419,10 @@ export default function ProgressPage() {
       </motion.div>
 
       <motion.section variants={fadeUp} className="text-center">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-garden-text">
+        <h1 className="page-title">
           My Garden
         </h1>
-        <p className="mt-1 text-garden-text-light">
+        <p className="page-subtitle">
           Watch your garden grow as you learn!
         </p>
       </motion.section>

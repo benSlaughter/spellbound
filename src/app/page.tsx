@@ -37,7 +37,7 @@ export default function Home() {
     >
       {/* Welcome header */}
       <motion.section variants={fadeUp} className="text-center md:text-left">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-garden-text">
+        <h1 className="page-title text-left md:text-left">
           Welcome back, <span className="text-primary">Learner</span>!
         </h1>
         <p className="mt-2 text-lg text-garden-text-light">

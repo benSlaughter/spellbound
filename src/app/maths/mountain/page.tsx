@@ -124,7 +124,7 @@ function MathMountain() {
       <Breadcrumbs />
 
       <div className="text-center">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-garden-text">
+        <h1 className="page-title text-2xl sm:text-3xl">
           Math Mountain
         </h1>
         <p className="text-sm text-garden-text-light mt-1">
@@ -233,7 +233,7 @@ function MathMountain() {
           key={currentStop}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mx-auto bg-white rounded-2xl shadow-md px-8 py-6 text-center max-w-sm w-full md:flex-1"
+          className="question-card max-w-sm w-full md:flex-1"
         >
           {/* Signpost */}
           <div className="mb-2 flex justify-center"><Signpost weight="duotone" size={40} color="#8D6E63" /></div>

@@ -126,19 +126,19 @@ export default function SettingsPage() {
       <h1 className="text-2xl font-bold text-stone-800 mb-6">Settings</h1>
 
       {message && (
-        <div className="bg-green-50 text-green-700 text-sm rounded-lg px-4 py-2 mb-4">
+        <div className="msg-success mb-4">
           {message}
         </div>
       )}
 
       {error && (
-        <div className="bg-red-50 text-red-700 text-sm rounded-lg px-4 py-2 mb-4">
+        <div className="msg-error mb-4">
           {error}
         </div>
       )}
 
       {/* Change Password */}
-      <section className="bg-white rounded-xl shadow-sm border border-stone-200 p-6 mb-4">
+      <section className="admin-card mb-4">
         <h2 className="text-lg font-semibold text-stone-800 mb-4">
           Change Admin Password
         </h2>
@@ -155,7 +155,7 @@ export default function SettingsPage() {
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-stone-900"
+              className="input-admin"
               required
               minLength={4}
             />
@@ -172,7 +172,7 @@ export default function SettingsPage() {
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-stone-900"
+              className="input-admin"
               required
               minLength={4}
             />
@@ -180,7 +180,7 @@ export default function SettingsPage() {
           <button
             type="submit"
             disabled={saving}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 text-sm font-medium transition-colors"
+            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 text-sm font-medium transition-colors cursor-pointer"
           >
             {saving ? "Saving…" : "Update Password"}
           </button>
@@ -188,7 +188,7 @@ export default function SettingsPage() {
       </section>
 
       {/* Sounds */}
-      <section className="bg-white rounded-xl shadow-sm border border-stone-200 p-6 mb-4">
+      <section className="admin-card mb-4">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-semibold text-stone-800">Sounds</h2>
@@ -213,7 +213,7 @@ export default function SettingsPage() {
       </section>
 
       {/* Reset Progress */}
-      <section className="bg-white rounded-xl shadow-sm border border-stone-200 p-6">
+      <section className="admin-card">
         <h2 className="text-lg font-semibold text-stone-800 mb-2">
           Reset Progress
         </h2>
@@ -225,7 +225,7 @@ export default function SettingsPage() {
         {!showResetConfirm ? (
           <button
             onClick={() => setShowResetConfirm(true)}
-            className="bg-red-100 text-red-700 px-4 py-2 rounded-lg hover:bg-red-200 text-sm font-medium transition-colors"
+            className="btn-admin-danger-light text-sm"
           >
             Reset All Progress
           </button>
@@ -239,13 +239,13 @@ export default function SettingsPage() {
               <button
                 onClick={handleResetProgress}
                 disabled={saving}
-                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50 text-sm font-medium transition-colors"
+                className="btn-admin-danger disabled:opacity-50 text-sm"
               >
                 {saving ? "Resetting…" : "Yes, Reset Everything"}
               </button>
               <button
                 onClick={() => setShowResetConfirm(false)}
-                className="text-stone-500 hover:text-stone-700 px-4 py-2 text-sm transition-colors"
+                className="btn-admin-text"
               >
                 Cancel
               </button>

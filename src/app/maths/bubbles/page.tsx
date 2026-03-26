@@ -177,7 +177,7 @@ function NumberBubbles() {
 
       {/* Progress */}
       <div className="text-center">
-        <span className="text-sm font-bold text-garden-text-light">
+        <span className="progress-text">
           Bubble {currentIndex + 1} of {questions.length}
         </span>
       </div>
@@ -188,7 +188,7 @@ function NumberBubbles() {
           key={currentIndex}
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mx-auto bg-white rounded-2xl shadow-md px-8 py-5 text-center"
+          className="question-card"
         >
           <p className="text-sm text-garden-text-light font-bold mb-1">What is…</p>
           <p className="text-3xl font-extrabold text-garden-text">{question.question} ?</p>
@@ -196,14 +196,14 @@ function NumberBubbles() {
       )}
 
       {/* Feedback */}
-      <div className="h-10 flex items-center justify-center">
+      <div className="feedback-container">
         <AnimatePresence>
           {feedback && (
             <motion.p
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              className="text-center text-xl font-extrabold text-primary"
+              className="msg-encouragement"
             >
               {feedback}
             </motion.p>

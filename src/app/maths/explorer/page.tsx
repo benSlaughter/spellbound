@@ -130,7 +130,7 @@ function TimesTableExplorer() {
       <Breadcrumbs />
 
       <div className="text-center">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-garden-text">
+        <h1 className="page-title text-2xl sm:text-3xl">
           Times Table Explorer
         </h1>
         <p className="text-garden-text-light mt-1">
@@ -167,7 +167,7 @@ function TimesTableExplorer() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              className="text-center text-2xl font-extrabold text-primary bg-primary/10 rounded-2xl py-3 px-6"
+              className="msg-encouragement text-2xl bg-primary/10 rounded-2xl py-3 px-6"
             >
               {fact}
             </motion.div>

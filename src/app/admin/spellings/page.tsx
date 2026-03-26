@@ -193,7 +193,7 @@ export default function SpellingsPage() {
       </div>
 
       {error && (
-        <div className="bg-red-50 text-red-700 text-sm rounded-lg px-4 py-2 mb-4">
+        <div className="msg-error mb-4">
           {error}
         </div>
       )}
@@ -201,7 +201,7 @@ export default function SpellingsPage() {
       {(showForm || editingList) && (
         <form
           onSubmit={editingList ? handleUpdate : handleCreate}
-          className="bg-white rounded-xl shadow-sm border border-stone-200 p-6 mb-6"
+          className="admin-card p-6 mb-6"
         >
           <h2 className="text-lg font-semibold text-stone-800 mb-4">
             {editingList ? "Edit List" : "New Spelling List"}
@@ -219,7 +219,7 @@ export default function SpellingsPage() {
               type="text"
               value={formName}
               onChange={(e) => setFormName(e.target.value)}
-              className="w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-stone-900"
+              className="input-admin"
               placeholder="e.g. Week 5 Words"
               required
             />
@@ -239,7 +239,7 @@ export default function SpellingsPage() {
               id="list-words"
               value={formWords}
               onChange={(e) => setFormWords(e.target.value)}
-              className="w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent font-mono text-sm h-48 text-stone-900"
+              className="textarea-admin h-48"
               placeholder={`because - a reason word\nfriend\nbeautiful - means very pretty`}
             />
           </div>
@@ -248,7 +248,7 @@ export default function SpellingsPage() {
             <button
               type="submit"
               disabled={saving}
-              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 text-sm font-medium transition-colors"
+              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 text-sm font-medium transition-colors cursor-pointer"
             >
               {saving
                 ? "Saving…"
@@ -259,8 +259,7 @@ export default function SpellingsPage() {
             <button
               type="button"
               onClick={cancelForm}
-              className="text-stone-500 hover:text-stone-700 px-4 py-2 text-sm transition-colors"
-            >
+              className="btn-admin-text"            >
               Cancel
             </button>
           </div>
@@ -268,7 +267,7 @@ export default function SpellingsPage() {
       )}
 
       {lists.length === 0 ? (
-        <div className="bg-white rounded-xl shadow-sm border border-stone-200 p-8 text-center text-stone-500">
+        <div className="admin-card p-8 text-center text-stone-500">
           No spelling lists yet. Create one to get started!
         </div>
       ) : (
@@ -276,7 +275,7 @@ export default function SpellingsPage() {
           {lists.map((list) => (
             <div
               key={list.id}
-              className="bg-white rounded-xl shadow-sm border border-stone-200 p-4"
+              className="admin-card-sm"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -314,7 +313,7 @@ export default function SpellingsPage() {
                   </button>
                   <button
                     onClick={() => handleDelete(list.id, list.name)}
-                    className="text-sm text-red-500 hover:text-red-700 px-2 py-1 rounded hover:bg-red-50 transition-colors"
+                    className="btn-admin-text-danger px-2 py-1 rounded hover:bg-red-50"
                   >
                     Delete
                   </button>

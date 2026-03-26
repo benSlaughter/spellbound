@@ -193,6 +193,49 @@ body {
   background: var(--color-primary-300);
 }
 
+/* ── Layout ── */
+.page-container { @apply max-w-4xl mx-auto; }
+.page-container-narrow { @apply max-w-2xl mx-auto; }
+.page-container-wide { @apply max-w-5xl mx-auto; }
+
+/* ── Cards ── */
+.admin-card { @apply bg-white rounded-xl p-6 shadow-sm border border-stone-200; }
+.admin-card-sm { @apply bg-white rounded-xl p-4 shadow-sm border border-stone-200; }
+.question-card { @apply mx-auto bg-white rounded-2xl shadow-md px-8 py-5 text-center; }
+
+/* ── Buttons (admin) ── */
+.btn-admin-primary { @apply w-full bg-green-600 text-white py-2.5 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors cursor-pointer; }
+.btn-admin-danger { @apply bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 font-medium transition-colors cursor-pointer; }
+.btn-admin-danger-light { @apply bg-red-100 text-red-700 px-4 py-2 rounded-lg hover:bg-red-200 font-medium transition-colors cursor-pointer; }
+.btn-admin-text { @apply text-sm font-medium text-stone-500 hover:text-stone-700 transition-colors cursor-pointer; }
+.btn-admin-text-danger { @apply text-sm font-medium text-red-500 hover:text-red-700 transition-colors cursor-pointer; }
+
+/* ── Form inputs ── */
+.input-admin { @apply w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-stone-900; }
+.textarea-admin { @apply w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-stone-900 font-mono text-sm resize-none; }
+.input-student { @apply w-full px-5 py-3 text-lg rounded-xl border-2 border-garden-border bg-white focus:border-primary focus:outline-none font-semibold text-garden-text placeholder:text-garden-text-light/50; }
+.textarea-student { @apply w-full rounded-2xl border-2 border-garden-border bg-white p-4 text-lg text-garden-text placeholder:text-garden-text-light/50 focus:outline-none focus:border-primary resize-none; }
+.select-student { @apply bg-white border-2 border-garden-border rounded-xl px-4 py-2 text-sm font-semibold text-garden-text cursor-pointer focus:outline-none focus:border-primary; }
+
+/* ── Feedback messages ── */
+.msg-success { @apply bg-green-50 text-green-700 text-sm rounded-lg px-4 py-2; }
+.msg-error { @apply bg-red-50 text-red-700 text-sm rounded-lg px-4 py-2; }
+.msg-encouragement { @apply text-center text-xl font-extrabold text-primary; }
+
+/* ── Progress indicators ── */
+.progress-pill { @apply bg-primary-light/20 px-4 py-2 rounded-full font-bold text-garden-text text-sm; }
+.progress-text { @apply text-sm font-bold text-garden-text-light text-center; }
+
+/* ── Page titles ── */
+.page-title { @apply text-3xl sm:text-4xl font-extrabold text-garden-text text-center; }
+.page-subtitle { @apply mt-1 text-garden-text-light text-center; }
+
+/* ── Hint display ── */
+.hint-pill { @apply inline-flex items-center gap-2 bg-secondary/20 px-4 py-2 rounded-full text-garden-text font-semibold; }
+
+/* ── Feedback container (fixed height to prevent layout shift) ── */
+.feedback-container { @apply h-10 flex items-center justify-center; }
+
 /* ── Focus styles for accessibility ── */
 
 :focus-visible {

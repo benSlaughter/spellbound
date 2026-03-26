@@ -121,7 +121,7 @@ export default function TablesAdmin() {
       </p>
 
       {/* Tables */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-stone-200 mb-6">
+      <div className="admin-card mb-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-stone-700">Times Tables</h2>
           <div className="flex gap-2">
@@ -171,7 +171,7 @@ export default function TablesAdmin() {
       </div>
 
       {/* Difficulties */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-stone-200 mb-6">
+      <div className="admin-card mb-6">
         <h2 className="text-lg font-semibold text-stone-700 mb-4">Difficulty Levels</h2>
         <p className="text-sm text-stone-500 mb-4">
           Choose which difficulty levels the student can see. At least one must be enabled.
@@ -212,8 +212,8 @@ export default function TablesAdmin() {
         <div
           className={`mt-4 rounded-lg px-4 py-2 text-sm ${
             message.type === 'success'
-              ? 'bg-green-50 text-green-700'
-              : 'bg-red-50 text-red-700'
+              ? 'msg-success'
+              : 'msg-error'
           }`}
         >
           {message.text}
@@ -223,7 +223,7 @@ export default function TablesAdmin() {
       <button
         onClick={save}
         disabled={saving || selected.length === 0 || difficulties.length === 0}
-        className="mt-6 w-full bg-green-600 text-white py-2.5 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
+        className="btn-admin-primary mt-6"
       >
         {saving ? 'Saving...' : 'Save'}
       </button>

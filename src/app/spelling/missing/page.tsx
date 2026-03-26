@@ -193,7 +193,7 @@ export default function MissingLettersPage() {
         className="flex flex-col items-center justify-center min-h-[60vh] gap-6"
       >
         <Breadcrumbs />
-        <div className="game-card p-10 text-center max-w-md">
+        <div className="game-card p-10 text-center max-w-md mx-auto">
           <span className="text-6xl block mb-4"><Plant weight="duotone" size={64} color="#66BB6A" /></span>
           <h2 className="text-2xl font-extrabold text-garden-text mb-3">No words to practise!</h2>
           <p className="text-garden-text-light text-lg mb-6">Add some spelling words first!</p>
@@ -213,16 +213,16 @@ export default function MissingLettersPage() {
     >
       <div className="flex items-center justify-between">
         <Breadcrumbs />
-        <div className="bg-primary-light/20 px-4 py-2 rounded-full font-bold text-garden-text">
+        <div className="progress-pill">
           {wordIndex + 1} of {list.words.length} words
         </div>
       </div>
 
       <div className="text-center">
-        <h1 className="text-3xl font-extrabold text-garden-text">
+        <h1 className="page-title">
           Missing Letters
         </h1>
-        <p className="mt-1 text-garden-text-light">
+        <p className="page-subtitle">
           Fill in the missing letters!
         </p>
       </div>
@@ -294,12 +294,12 @@ export default function MissingLettersPage() {
       {currentWord && !isCorrect && (
         <div className="flex flex-col items-center gap-3">
           {currentWord.hint && (
-            <span className="inline-flex items-center gap-2 bg-secondary/20 px-4 py-2 rounded-full text-garden-text font-semibold">
+            <span className="hint-pill">
               <Lightbulb weight="duotone" size={20} color="#FFD54F" /> {currentWord.hint}
             </span>
           )}
           <Button variant="secondary" size="md" icon={<SpeakerHigh weight="duotone" size={20} />} onClick={() => speakWord(currentWord.word)}>
-            Hear word
+            Hear Word
           </Button>
         </div>
       )}
@@ -311,9 +311,9 @@ export default function MissingLettersPage() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
-            className="text-center flex items-center justify-center gap-2"
+            className="feedback-container"
           >
-            <span className="text-3xl font-extrabold text-primary">{encouragement}</span>
+            <span className="msg-encouragement">{encouragement}</span>
             <Sparkle weight="duotone" size={28} color="#FFD54F" />
           </motion.div>
         )}

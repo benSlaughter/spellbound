@@ -95,7 +95,7 @@ export default function AdminLayout({
           </div>
 
           {error && (
-            <div className="bg-red-50 text-red-700 text-sm rounded-lg px-4 py-2 mb-4">
+            <div className="msg-error mb-4">
               {error}
             </div>
           )}
@@ -112,7 +112,7 @@ export default function AdminLayout({
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-stone-900"
+              className="input-admin"
               placeholder="Enter admin password"
               autoFocus
               required
@@ -122,7 +122,7 @@ export default function AdminLayout({
           <button
             type="submit"
             disabled={submitting}
-            className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
+            className="btn-admin-primary"
           >
             {submitting ? "Signing in…" : "Sign In"}
           </button>

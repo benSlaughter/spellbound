@@ -200,7 +200,7 @@ export default function MemoryMatchPage() {
         className="flex flex-col items-center justify-center min-h-[60vh] gap-6"
       >
         <Breadcrumbs />
-        <div className="game-card p-10 text-center max-w-md">
+        <div className="game-card p-10 text-center max-w-md mx-auto">
           <span className="text-6xl block mb-4"><Plant weight="duotone" size={64} color="#66BB6A" /></span>
           <h2 className="text-2xl font-extrabold text-garden-text mb-3">No words to practise!</h2>
           <p className="text-garden-text-light text-lg mb-6">Add some spelling words first!</p>
@@ -223,14 +223,14 @@ export default function MemoryMatchPage() {
     >
       <div className="flex items-center justify-between">
         <Breadcrumbs />
-        <div className="bg-primary-light/20 px-4 py-2 rounded-full font-bold text-garden-text">
+        <div className="progress-pill">
           {matchedPairs.size} of {totalPairs} pairs
         </div>
       </div>
 
       <div className="text-center">
-        <h1 className="text-3xl font-extrabold text-garden-text">Memory Match</h1>
-        <p className="mt-1 text-garden-text-light">
+        <h1 className="page-title">Memory Match</h1>
+        <p className="page-subtitle">
           Find the matching word pairs!
         </p>
       </div>
@@ -242,7 +242,7 @@ export default function MemoryMatchPage() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
-            className="text-center text-2xl font-extrabold text-primary"
+            className="msg-encouragement"
           >
             {matchMessage}
           </motion.div>

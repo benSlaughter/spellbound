@@ -97,7 +97,7 @@ export default function ProgressPage() {
 
   if (error) {
     return (
-      <div className="bg-red-50 text-red-700 text-sm rounded-lg px-4 py-2">
+      <div className="msg-error">
         {error}
       </div>
     );
@@ -113,25 +113,25 @@ export default function ProgressPage() {
 
       {/* Summary Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-xl shadow-sm border border-stone-200 p-4 text-center">
+        <div className="admin-card-sm text-center">
           <div className="text-2xl font-bold text-green-700">
             {progress.totalGamesPlayed}
           </div>
           <div className="text-xs text-stone-500 mt-1">Total Games</div>
         </div>
-        <div className="bg-white rounded-xl shadow-sm border border-stone-200 p-4 text-center">
+        <div className="admin-card-sm text-center">
           <div className="text-2xl font-bold text-blue-700">
             {progress.wordsPractised}
           </div>
           <div className="text-xs text-stone-500 mt-1">Words Practised</div>
         </div>
-        <div className="bg-white rounded-xl shadow-sm border border-stone-200 p-4 text-center">
+        <div className="admin-card-sm text-center">
           <div className="text-2xl font-bold text-purple-700">
             {progress.mathsPractised}
           </div>
           <div className="text-xs text-stone-500 mt-1">Maths Practised</div>
         </div>
-        <div className="bg-white rounded-xl shadow-sm border border-stone-200 p-4 text-center">
+        <div className="admin-card-sm text-center">
           <div className="text-2xl font-bold text-amber-600">
             {progress.streakDays}
           </div>
@@ -141,7 +141,7 @@ export default function ProgressPage() {
 
       {/* Activity Breakdown */}
       {progress.statsByType.length > 0 && (
-        <section className="bg-white rounded-xl shadow-sm border border-stone-200 p-6 mb-6">
+        <section className="admin-card mb-6">
           <h2 className="text-lg font-semibold text-stone-800 mb-4">
             Activity Breakdown
           </h2>
@@ -196,7 +196,7 @@ export default function ProgressPage() {
       )}
 
       {/* Achievements */}
-      <section className="bg-white rounded-xl shadow-sm border border-stone-200 p-6 mb-6">
+      <section className="admin-card mb-6">
         <h2 className="text-lg font-semibold text-stone-800 mb-4">
           Achievements
         </h2>
@@ -241,7 +241,7 @@ export default function ProgressPage() {
       </section>
 
       {/* Recent Activity */}
-      <section className="bg-white rounded-xl shadow-sm border border-stone-200 p-6">
+      <section className="admin-card">
         <h2 className="text-lg font-semibold text-stone-800 mb-4">
           Recent Activity
         </h2>

@@ -246,7 +246,7 @@ export default function VolcanoPage() {
         className="flex flex-col items-center justify-center min-h-[60vh] gap-6"
       >
         <Breadcrumbs />
-        <div className="game-card p-10 text-center max-w-md">
+        <div className="game-card p-10 text-center max-w-md mx-auto">
           <span className="text-6xl block mb-4">
             <Plant weight="duotone" size={64} color="#66BB6A" />
           </span>
@@ -271,28 +271,28 @@ export default function VolcanoPage() {
     >
       <div className="flex items-center justify-between">
         <Breadcrumbs />
-        <div className="bg-primary-light/20 px-4 py-2 rounded-full font-bold text-garden-text">
+        <div className="progress-pill">
           {wordIndex + 1} of {list.words.length} words
         </div>
       </div>
 
       <div className="text-center">
-        <h1 className="text-3xl font-extrabold text-garden-text flex items-center justify-center gap-2">
+        <h1 className="page-title flex items-center justify-center gap-2">
           <Mountains weight="duotone" size={36} color="#BF360C" />
           Word Volcano
         </h1>
-        <p className="mt-1 text-garden-text-light">Tap the letters in order to spell the word!</p>
+        <p className="page-subtitle">Tap the letters in order to spell the word!</p>
       </div>
 
       {/* Hear word button */}
       <div className="flex justify-center">
         <Button
-          variant="primary"
+          variant="secondary"
           size="md"
           icon={<SpeakerHigh weight="duotone" size={20} />}
           onClick={() => currentWord && speakWord(currentWord.word)}
         >
-          Hear word
+          Hear Word
         </Button>
       </div>
 
@@ -419,7 +419,7 @@ export default function VolcanoPage() {
             exit={{ opacity: 0 }}
             className="text-center"
           >
-            <span className="text-3xl font-extrabold text-primary">{encouragement}</span>
+            <span className="msg-encouragement">{encouragement}</span>
           </motion.div>
         )}
       </AnimatePresence>

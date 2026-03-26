@@ -36,7 +36,7 @@ export default function AdminFeedbackPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="page-container-narrow">
       <h1 className="text-2xl font-bold text-stone-800 mb-6">Feedback</h1>
 
       {loading && (
@@ -48,7 +48,7 @@ export default function AdminFeedbackPage() {
       )}
 
       {!loading && !error && feedback.length === 0 && (
-        <div className="bg-white rounded-xl p-8 shadow-sm border border-stone-200 text-center">
+        <div className="admin-card p-8 text-center">
           <p className="text-stone-500">No feedback submitted yet.</p>
         </div>
       )}
@@ -58,7 +58,7 @@ export default function AdminFeedbackPage() {
           {feedback.map((entry) => (
             <div
               key={entry.id}
-              className="bg-white rounded-xl p-5 shadow-sm border border-stone-200"
+              className="admin-card p-5"
             >
               <p className="text-stone-800 whitespace-pre-wrap">{entry.message}</p>
               <p className="text-sm text-stone-400 mt-3">

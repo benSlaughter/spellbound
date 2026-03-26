@@ -184,7 +184,7 @@ function NumberCascade() {
 
       {/* Header */}
       <div className="text-center">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-garden-text flex items-center justify-center gap-2">
+        <h1 className="page-title text-2xl sm:text-3xl flex items-center justify-center gap-2">
           <Lightning weight="duotone" size={28} className="text-yellow-500" />
           Number Cascade
           <Lightning weight="duotone" size={28} className="text-yellow-500" />
@@ -212,7 +212,7 @@ function NumberCascade() {
           key={currentIndex}
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mx-auto bg-white rounded-2xl shadow-md px-8 py-5 text-center max-w-sm w-full"
+          className="question-card max-w-sm w-full"
         >
           <p className="text-sm font-bold text-garden-text-light mb-1">What is…</p>
           <p className="text-3xl sm:text-4xl font-extrabold text-garden-text">
@@ -309,7 +309,7 @@ function NumberCascade() {
       </div>
 
       {/* Feedback */}
-      <div className="h-10 flex items-center justify-center">
+      <div className="feedback-container">
         <AnimatePresence>
           {feedback && (
             <motion.p

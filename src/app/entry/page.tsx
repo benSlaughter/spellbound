@@ -121,7 +121,7 @@ export default function EntryPage() {
       <Breadcrumbs />
 
       <div className="text-center">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-garden-text">
+        <h1 className="page-title">
           Add This Week&apos;s Words
         </h1>
         <p className="mt-2 text-lg text-garden-text-light">
@@ -143,9 +143,7 @@ export default function EntryPage() {
           placeholder="e.g. Week 12 - March"
           value={listName}
           onChange={(e) => setListName(e.target.value)}
-          className="w-full px-5 py-3 text-lg rounded-xl border-2 border-garden-border
-                     bg-white focus:border-primary focus:outline-none
-                     font-semibold text-garden-text placeholder:text-garden-text-light/50"
+          className="input-student"
         />
       </div>
 

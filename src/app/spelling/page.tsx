@@ -159,7 +159,7 @@ export default function SpellingHub() {
         className="flex flex-col items-center justify-center min-h-[60vh] gap-6"
       >
         <Breadcrumbs />
-        <div className="game-card p-10 text-center max-w-md">
+        <div className="game-card p-10 text-center max-w-md mx-auto">
           <span className="text-6xl block mb-4"><Plant weight="duotone" size={64} color="#66BB6A" /></span>
           <h2 className="text-2xl font-extrabold text-garden-text mb-3">
             No spelling words yet!
@@ -184,7 +184,7 @@ export default function SpellingHub() {
       </motion.div>
 
       <motion.section variants={fadeUp} className="text-center">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-garden-text">
+        <h1 className="page-title">
           Spelling Practice
         </h1>
         {list && (
@@ -200,7 +200,7 @@ export default function SpellingHub() {
               <select
                 value={list.id}
                 onChange={(e) => switchList(Number(e.target.value))}
-                className="bg-white border-2 border-garden-border rounded-xl px-4 py-2 text-sm font-semibold text-garden-text cursor-pointer focus:outline-none focus:border-primary"
+                className="select-student"
               >
                 {allLists.map((l) => (
                   <option key={l.id} value={l.id}>

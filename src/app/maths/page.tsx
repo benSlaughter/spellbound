@@ -67,14 +67,14 @@ const GAMES = [
   },
   {
     title: 'Math Maze',
-    description: 'Find your way through the maze!',
+    description: 'Navigate through dungeon rooms — pick the right door to escape!',
     emoji: <Door weight="duotone" size={48} color="#FF8F00" />,
     path: 'maze',
     color: 'bg-fun-orange/20',
   },
   {
     title: 'Number Cascade',
-    description: 'Trigger chain reactions with correct answers!',
+    description: 'Find the correct answer in the grid and trigger a chain reaction!',
     emoji: <Lightning weight="duotone" size={48} color="#FFD54F" />,
     path: 'cascade',
     color: 'bg-secondary/20',
@@ -146,10 +146,10 @@ export default function MathsHub() {
 
       {/* Header */}
       <motion.section variants={fadeUp} className="text-center">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-garden-text">
+        <h1 className="page-title">
           Maths Garden
         </h1>
-        <p className="mt-2 text-garden-text-light text-lg">
+        <p className="page-subtitle text-lg">
           Choose a game and have fun!
         </p>
       </motion.section>
