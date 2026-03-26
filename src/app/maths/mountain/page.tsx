@@ -117,6 +117,7 @@ function MathMountain() {
           message="You reached the summit! 🏔️⭐"
           emoji="🏔️"
           onDismiss={() => setFinished(false)}
+          navigateBack
           autoCloseMs={5000}
         />
       </div>

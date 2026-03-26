@@ -122,6 +122,7 @@ function NumberRiver() {
           message="You crossed the river! 🌊🐸"
           emoji="🐸"
           onDismiss={() => setFinished(false)}
+          navigateBack
           autoCloseMs={5000}
         />
       </div>

@@ -330,6 +330,7 @@ function PuzzlePieces() {
         message="You completed the puzzle! 🧩"
         emoji={picture.emoji}
         onDismiss={() => setShowCelebration(false)}
+        navigateBack
         autoCloseMs={5000}
       />
     </div>

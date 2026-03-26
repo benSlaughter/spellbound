@@ -343,6 +343,7 @@ export default function ScramblePage() {
         message="You practised all your words! 🌟"
         emoji="🏆"
         onDismiss={() => setShowFinal(false)}
+        navigateBack
       />
     </motion.div>
   );

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const MESSAGES = [
@@ -45,6 +46,8 @@ export interface CelebrationOverlayProps {
   onDismiss: () => void;
   /** Time in milliseconds before auto-dismissing (default: 3000) */
   autoCloseMs?: number;
+  /** If true, navigate back after dismissal (default: false) */
+  navigateBack?: boolean;
 }
 
 /**
@@ -57,11 +60,18 @@ export default function CelebrationOverlay({
   message,
   onDismiss,
   autoCloseMs = 3000,
+  navigateBack = false,
 }: CelebrationOverlayProps) {
   const confetti = useMemo(() => makeConfetti(24), []);
   const displayMessage = message ?? MESSAGES[0];
+  const router = useRouter();
 
-  const stableDismiss = useCallback(() => onDismiss(), [onDismiss]);
+  const stableDismiss = useCallback(() => {
+    onDismiss();
+    if (navigateBack) {
+      router.back();
+    }
+  }, [onDismiss, navigateBack, router]);
 
   useEffect(() => {
     if (!show) return;
@@ -77,7 +87,7 @@ export default function CelebrationOverlay({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40"
-          onClick={onDismiss}
+          onClick={stableDismiss}
         >
           {/* Confetti particles */}
           {confetti.map((piece) => (

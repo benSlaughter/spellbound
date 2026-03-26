@@ -130,6 +130,7 @@ function NumberBubbles() {
           message="You popped all the bubbles! 🫧"
           emoji="🫧"
           onDismiss={() => setFinished(false)}
+          navigateBack
           autoCloseMs={5000}
         />
       </div>

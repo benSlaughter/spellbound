@@ -386,6 +386,7 @@ export default function BuilderPage() {
         message="You practised all your words! 🌟"
         emoji="🏆"
         onDismiss={() => setShowFinal(false)}
+        navigateBack
       />
     </motion.div>
   );

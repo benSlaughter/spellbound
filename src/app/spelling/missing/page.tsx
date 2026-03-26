@@ -313,6 +313,7 @@ export default function MissingLettersPage() {
         message="You practised all your words! 🌟"
         emoji="🏆"
         onDismiss={() => setShowFinal(false)}
+        navigateBack
       />
     </motion.div>
   );

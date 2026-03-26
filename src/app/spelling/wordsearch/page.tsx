@@ -404,6 +404,7 @@ export default function WordSearchPage() {
         message="You found all the words! 🌟"
         emoji="🧩"
         onDismiss={() => setShowFinal(false)}
+        navigateBack
       />
     </motion.div>
   );

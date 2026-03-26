@@ -290,6 +290,7 @@ export default function MemoryMatchPage() {
         message="You matched all the pairs! 🌟"
         emoji="🃏"
         onDismiss={() => setShowFinal(false)}
+        navigateBack
       />
     </motion.div>
   );
