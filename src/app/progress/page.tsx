@@ -50,6 +50,7 @@ interface AchievementData {
   emoji: string;
   unlocked: boolean;
   unlocked_at: string | null;
+  progress?: { current: number; target: number; label: string };
 }
 
 /** Maps icon name strings from achievements API to Phosphor icon ReactNodes */
@@ -618,36 +619,15 @@ export default function ProgressPage() {
                   }
                 }}
               >
-                <div className="relative group">
+                <div>
                   <Badge
                     emoji={achievementIcon(achievement.emoji)}
                     title={achievement.title}
                     unlocked={achievement.unlocked}
                     description={achievement.description}
+                    unlockedAt={achievement.unlocked_at ?? undefined}
+                    progress={achievement.progress}
                   />
-                  {/* Tooltip for locked badges */}
-                  {!achievement.unlocked && (
-                    <div className="
-                      absolute -top-10 left-1/2 -translate-x-1/2 z-10
-                      bg-garden-text text-white text-xs font-bold
-                      px-3 py-1.5 rounded-lg whitespace-nowrap
-                      opacity-0 group-hover:opacity-100
-                      transition-opacity duration-200 pointer-events-none
-                      shadow-md
-                    ">
-                      {achievement.description || 'Keep playing to unlock!'}
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-garden-text" />
-                    </div>
-                  )}
-                  {/* Unlocked date */}
-                  {achievement.unlocked && achievement.unlocked_at && (
-                    <p className="text-[10px] text-garden-text-light text-center mt-0.5">
-                      {new Date(achievement.unlocked_at).toLocaleDateString('en-GB', {
-                        day: 'numeric',
-                        month: 'short',
-                      })}
-                    </p>
-                  )}
                 </div>
               </motion.div>
             ))}

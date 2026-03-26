@@ -85,7 +85,7 @@ export default function Sidebar() {
         onClick={() => setMobileOpen(false)}
         className={`
           flex items-center gap-3 px-4 py-2 rounded-xl text-sm font-semibold
-          transition-colors duration-150 min-h-[44px] ml-4
+          transition-colors duration-150 min-h-[44px]
           ${
             isActive('/feedback')
               ? 'bg-garden-text-light/20 text-garden-text'
@@ -94,7 +94,7 @@ export default function Sidebar() {
         `}
       >
         <span className="flex items-center" aria-hidden="true">
-          <ChatDots weight="duotone" size={18} />
+          <ChatDots weight="duotone" size={20} />
         </span>
         <span>Feedback</span>
       </Link>

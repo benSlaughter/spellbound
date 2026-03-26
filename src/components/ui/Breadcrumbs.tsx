@@ -25,6 +25,9 @@ const ROUTE_NAMES: Record<string, string> = {
   'settings': 'Settings',
   'tables': 'Times Tables',
   'feedback': 'Feedback',
+  'dev': 'Dev',
+  'game1': 'Spell Catcher',
+  'game4': 'Number Cascade',
 };
 
 export default function Breadcrumbs() {

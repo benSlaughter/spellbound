@@ -123,10 +123,13 @@ export async function GET() {
 
     const unlockedKeys = new Set(unlocked.map((a) => a.achievement_key));
 
+    const stats = calculatePlayerStats(db, profileId);
+
     const allAchievements = achievements.map((a) => {
       const unlockedEntry = unlocked.find(
         (u) => u.achievement_key === a.key
       );
+      const prog = a.progress(stats);
       return {
         key: a.key,
         title: a.title,
@@ -134,6 +137,11 @@ export async function GET() {
         emoji: a.emoji,
         unlocked: unlockedKeys.has(a.key),
         unlocked_at: unlockedEntry?.unlocked_at || null,
+        progress: {
+          current: prog.current,
+          target: prog.target,
+          label: prog.label,
+        },
       };
     });
 

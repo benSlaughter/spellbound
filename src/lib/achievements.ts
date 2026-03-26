@@ -10,6 +10,8 @@ export interface Achievement {
   emoji: string;
   /** Returns true if the player's stats qualify for this achievement */
   check: (stats: PlayerStats) => boolean;
+  /** Returns { current, target, label } for progress display */
+  progress: (stats: PlayerStats) => { current: number; target: number; label: string };
 }
 
 /** Represents a player's cumulative statistics across all activities. */
@@ -58,6 +60,7 @@ export const achievements: Achievement[] = [
     description: "Completed first game",
     emoji: "Plant",
     check: (stats) => stats.totalGamesPlayed >= 1,
+    progress: (stats) => ({ current: Math.min(stats.totalGamesPlayed, 1), target: 1, label: 'games played' }),
   },
   {
     key: "word_wizard",
@@ -65,6 +68,7 @@ export const achievements: Achievement[] = [
     description: "Practised all words in a spelling list",
     emoji: "MagicWand",
     check: (stats) => stats.spellingListsCompleted >= 1,
+    progress: (stats) => ({ current: Math.min(stats.spellingListsCompleted, 1), target: 1, label: 'lists completed' }),
   },
   {
     key: "super_speller",
@@ -72,6 +76,7 @@ export const achievements: Achievement[] = [
     description: "Practised 50 words total",
     emoji: "Sparkle",
     check: (stats) => stats.totalWordsCorrect >= 50,
+    progress: (stats) => ({ current: Math.min(stats.totalWordsCorrect, 50), target: 50, label: 'words' }),
   },
   {
     key: "number_explorer",
@@ -79,6 +84,7 @@ export const achievements: Achievement[] = [
     description: "Tried every times table",
     emoji: "Calculator",
     check: (stats) => stats.uniqueTablesPlayed >= 12,
+    progress: (stats) => ({ current: Math.min(stats.uniqueTablesPlayed, 12), target: 12, label: 'tables' }),
   },
   {
     key: "shining_star",
@@ -86,6 +92,7 @@ export const achievements: Achievement[] = [
     description: "5-day practice streak",
     emoji: "Star",
     check: (stats) => stats.streakDays >= 5,
+    progress: (stats) => ({ current: Math.min(stats.streakDays, 5), target: 5, label: 'days' }),
   },
   {
     key: "butterfly_garden",
@@ -93,6 +100,7 @@ export const achievements: Achievement[] = [
     description: "10 achievements unlocked",
     emoji: "Butterfly",
     check: (stats) => stats.totalAchievements >= 10,
+    progress: (stats) => ({ current: Math.min(stats.totalAchievements, 10), target: 10, label: 'badges' }),
   },
   {
     key: "rainbow_learner",
@@ -100,6 +108,7 @@ export const achievements: Achievement[] = [
     description: "Played every game type",
     emoji: "Rainbow",
     check: (stats) => stats.uniqueGameTypesPlayed >= 10,
+    progress: (stats) => ({ current: Math.min(stats.uniqueGameTypesPlayed, 10), target: 10, label: 'game types' }),
   },
   {
     key: "century",
@@ -107,6 +116,7 @@ export const achievements: Achievement[] = [
     description: "100 correct answers total",
     emoji: "Trophy",
     check: (stats) => stats.totalWordsCorrect + stats.totalMathsCorrect >= 100,
+    progress: (stats) => ({ current: Math.min(stats.totalWordsCorrect + stats.totalMathsCorrect, 100), target: 100, label: 'correct answers' }),
   },
   {
     key: "maths_maestro",
@@ -114,6 +124,7 @@ export const achievements: Achievement[] = [
     description: "50 maths correct",
     emoji: "MusicNotes",
     check: (stats) => stats.totalMathsCorrect >= 50,
+    progress: (stats) => ({ current: Math.min(stats.totalMathsCorrect, 50), target: 50, label: 'maths correct' }),
   },
   {
     key: "dedicated_learner",
@@ -121,5 +132,6 @@ export const achievements: Achievement[] = [
     description: "10-day streak",
     emoji: "Medal",
     check: (stats) => stats.streakDays >= 10,
+    progress: (stats) => ({ current: Math.min(stats.streakDays, 10), target: 10, label: 'days' }),
   },
 ];

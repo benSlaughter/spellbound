@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState, useCallback } from 'react';
+import { Suspense, useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -16,7 +16,7 @@ import {
   makeShuffledAnswers,
   type MathQuestion,
 } from '@/lib/maths-helpers';
-import { Drop, Check, HandFist } from '@phosphor-icons/react';
+import { Drop, Check } from '@phosphor-icons/react';
 
 const TOTAL_QUESTIONS = 10;
 
@@ -31,13 +31,33 @@ const BUBBLE_COLORS = [
   'from-indigo-300 to-indigo-400',
 ];
 
-const BUBBLE_SIZES = ['w-24 h-24', 'w-28 h-28', 'w-26 h-26', 'w-24 h-24'];
-
-function shuffleColors() {
-  return [...BUBBLE_COLORS].sort(() => Math.random() - 0.5).slice(0, 4);
+interface Bubble {
+  id: number;
+  value: number;
+  x: number;
+  size: number;
+  color: string;
+  speed: number;
+  popped: boolean;
 }
-function shuffleSizes() {
-  return [...BUBBLE_SIZES].sort(() => Math.random() - 0.5);
+
+let bubbleIdCounter = 0;
+
+function makeBubbles(answers: number[]): Bubble[] {
+  // Create 2 copies of each answer for more bubbles in the area
+  const doubled = [...answers, ...answers];
+  return doubled.map((value, idx) => {
+    const id = ++bubbleIdCounter;
+    return {
+      id,
+      value,
+      x: 5 + Math.random() * 85,
+      size: 64 + Math.random() * 28,
+      color: BUBBLE_COLORS[id % BUBBLE_COLORS.length],
+      speed: 6 + Math.random() * 4,
+      popped: false,
+    };
+  });
 }
 
 export default function NumberBubblesPage() {
@@ -51,28 +71,27 @@ export default function NumberBubblesPage() {
 function NumberBubbles() {
   const searchParams = useSearchParams();
 
-  // useState ensures questions are generated once on mount and never
-  // regenerated on re-render (useMemo was unstable because parseTablesParam
-  // returns a new array reference each render).
-  const [questions] = useState(() => {
-    const tables = parseTablesParam(searchParams.get('tables'));
-    const difficulty = parseDifficultyParam(searchParams.get('difficulty'));
-    return generateQuestions(tables, difficulty, TOTAL_QUESTIONS);
-  });
+  const [questions, setQuestions] = useState<MathQuestion[]>([]);
+  const [ready, setReady] = useState(false);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [wrongCount, setWrongCount] = useState(0);
   const [feedback, setFeedback] = useState<string | null>(null);
-  const [poppedAnswer, setPoppedAnswer] = useState<number | null>(null);
   const [finished, setFinished] = useState(false);
-  const [colors, setColors] = useState(shuffleColors);
-  const [sizes, setSizes] = useState(shuffleSizes);
-  const [answers, setAnswers] = useState<number[]>(() => {
-    const q = questions[0];
-    return q ? makeShuffledAnswers(q.answer, q.wrongAnswers) : [];
-  });
+  const [correctPopped, setCorrectPopped] = useState(false);
+  const [bubbles, setBubbles] = useState<Bubble[]>([]);
+
+  useEffect(() => {
+    const tables = parseTablesParam(searchParams.get('tables'));
+    const difficulty = parseDifficultyParam(searchParams.get('difficulty'));
+    const qs = generateQuestions(tables, difficulty, TOTAL_QUESTIONS);
+    setQuestions(qs);
+    if (qs[0]) setBubbles(makeBubbles(makeShuffledAnswers(qs[0].answer, qs[0].wrongAnswers)));
+    setReady(true);
+  }, [searchParams]);
 
   const question: MathQuestion | undefined = questions[currentIndex];
+  const feedbackTimer = useRef<NodeJS.Timeout | null>(null);
 
   const nextQuestion = useCallback(() => {
     if (currentIndex + 1 >= questions.length) {
@@ -84,32 +103,46 @@ function NumberBubbles() {
       setCurrentIndex(nextIdx);
       setWrongCount(0);
       setFeedback(null);
-      setPoppedAnswer(null);
-      setColors(shuffleColors());
-      setSizes(shuffleSizes());
-      if (nextQ) setAnswers(makeShuffledAnswers(nextQ.answer, nextQ.wrongAnswers));
+      setCorrectPopped(false);
+      if (nextQ) setBubbles(makeBubbles(makeShuffledAnswers(nextQ.answer, nextQ.wrongAnswers)));
     }
   }, [currentIndex, questions]);
 
   const handleBubbleTap = useCallback(
-    (answer: number) => {
-      if (!question || poppedAnswer !== null) return;
+    (bubble: Bubble) => {
+      if (!question || correctPopped || bubble.popped) return;
 
-      if (answer === question.answer) {
-        playSound('pop');
-        setPoppedAnswer(answer);
+      if (bubble.value === question.answer) {
+        playSound('success');
+        setCorrectPopped(true);
         setFeedback(randomEncouragement());
+        setBubbles((prev) => prev.map((b) => b.id === bubble.id ? { ...b, popped: true } : b));
         recordProgress('maths_bubbles', question.ref, wrongCount > 0 ? 'helped' : 'correct');
         setTimeout(nextQuestion, 1200);
       } else {
-        playSound('click');
+        playSound('pop');
         setWrongCount((c) => c + 1);
+        setBubbles((prev) => prev.map((b) => b.id === bubble.id ? { ...b, popped: true } : b));
         setFeedback('Try again!');
-        setTimeout(() => setFeedback(null), 1500);
+        if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
+        feedbackTimer.current = setTimeout(() => setFeedback(null), 1500);
       }
     },
-    [question, poppedAnswer, wrongCount, nextQuestion],
+    [question, correctPopped, wrongCount, nextQuestion],
   );
+
+  // Clean up timer
+  useEffect(() => {
+    return () => { if (feedbackTimer.current) clearTimeout(feedbackTimer.current); };
+  }, []);
+
+  if (!ready) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   if (questions.length === 0) {
     return (
@@ -139,7 +172,7 @@ function NumberBubbles() {
   }
 
   return (
-    <div className="flex flex-col gap-6 pb-12 min-h-[80vh]">
+    <div className="flex flex-col gap-4 pb-12 min-h-[80vh]">
       <Breadcrumbs />
 
       {/* Progress */}
@@ -149,85 +182,82 @@ function NumberBubbles() {
         </span>
       </div>
 
-      <div className="flex flex-col md:flex-row md:items-center md:gap-8 flex-1">
-        {/* Question + Feedback */}
-        <div className="flex flex-col gap-6 md:flex-1">
-          {/* Question */}
-          {question && (
-            <motion.div
-              key={currentIndex}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mx-auto bg-white rounded-2xl shadow-md px-8 py-5 text-center"
+      {/* Question */}
+      {question && (
+        <motion.div
+          key={currentIndex}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mx-auto bg-white rounded-2xl shadow-md px-8 py-5 text-center"
+        >
+          <p className="text-sm text-garden-text-light font-bold mb-1">What is…</p>
+          <p className="text-3xl font-extrabold text-garden-text">{question.question} ?</p>
+        </motion.div>
+      )}
+
+      {/* Feedback */}
+      <div className="h-10 flex items-center justify-center">
+        <AnimatePresence>
+          {feedback && (
+            <motion.p
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              className="text-center text-xl font-extrabold text-primary"
             >
-              <p className="text-sm text-garden-text-light font-bold mb-1">What is…</p>
-              <p className="text-3xl font-extrabold text-garden-text">{question.question} ?</p>
-            </motion.div>
+              {feedback}
+            </motion.p>
           )}
+        </AnimatePresence>
+      </div>
 
-          {/* Feedback — fixed height so it doesn't shift the layout */}
-          <div className="h-10 flex items-center justify-center">
-            <AnimatePresence>
-              {feedback && (
-                <motion.p
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="text-center text-xl font-extrabold text-primary"
-                >
-                  {feedback}
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
+      {/* Bubble area */}
+      <div
+        className="relative flex-1 rounded-2xl overflow-hidden mx-auto w-full max-w-lg"
+        style={{
+          minHeight: '400px',
+          background: 'linear-gradient(180deg, #E3F2FD 0%, #BBDEFB 30%, #90CAF9 60%, #64B5F6 100%)',
+        }}
+      >
+        {/* Inject keyframes for bubble float */}
+        <style>{`
+          @keyframes bubbleFloat {
+            0% { top: 100%; }
+            100% { top: -25%; }
+          }
+        `}</style>
 
-        {/* Bubbles */}
-        <div className="flex-1 flex items-center justify-center">
-          <div className="grid grid-cols-2 gap-6 sm:gap-8">
-          <AnimatePresence mode="popLayout">
-            {answers.map((ans, i) => {
-              const isPopped = poppedAnswer === ans;
-
-              return (
-                <motion.button
-                  key={`${currentIndex}-${ans}`}
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{
-                    opacity: isPopped ? 0 : 1,
-                    scale: isPopped ? 1.5 : 1,
-                    y: isPopped ? -40 : [0, -6, 0],
-                    x: [0, i % 2 === 0 ? 3 : -3, 0],
-                  }}
-                  exit={{ opacity: 0, scale: 1.5 }}
-                  transition={{
-                    y: { type: 'tween', duration: 2.5, repeat: Infinity, ease: 'easeInOut' },
-                    x: { type: 'tween', duration: 3, repeat: Infinity, ease: 'easeInOut' },
-                    scale: { duration: 0.3 },
-                    opacity: { duration: 0.3 },
-                  }}
-                  whileTap={{ scale: 0.85 }}
-                  onClick={() => handleBubbleTap(ans)}
+        {bubbles.map((bubble) => {
+            if (bubble.popped) return null;
+            return (
+              <button
+                key={bubble.id}
+                onClick={() => handleBubbleTap(bubble)}
+                className="absolute cursor-pointer select-none active:scale-90"
+                style={{
+                  left: `${bubble.x}%`,
+                  width: `${bubble.size}px`,
+                  height: `${bubble.size}px`,
+                  transform: 'translateX(-50%)',
+                  animation: `bubbleFloat ${bubble.speed}s linear infinite`,
+                  animationDelay: `${(bubble.id % 8) * -(bubble.speed / 8)}s`,
+                }}
+                disabled={correctPopped}
+              >
+                <div
                   className={`
-                    ${sizes[i] || 'w-24 h-24'}
-                    rounded-full bg-gradient-to-br ${colors[i]}
+                    w-full h-full rounded-full bg-gradient-to-br ${bubble.color}
                     flex items-center justify-center
                     text-2xl font-extrabold text-white
-                    shadow-lg cursor-pointer select-none
-                    relative overflow-hidden
-                    min-w-[96px] min-h-[96px]
+                    shadow-lg relative overflow-hidden
                   `}
-                  disabled={poppedAnswer !== null}
                 >
-                  {/* Bubble shine */}
                   <span className="absolute top-2 left-3 w-5 h-3 bg-white/40 rounded-full rotate-[-30deg]" />
-                  {isPopped ? <Check weight="bold" size={24} /> : ans}
-                </motion.button>
-              );
-            })}
-          </AnimatePresence>
-        </div>
-        </div>
+                  {bubble.value}
+                </div>
+              </button>
+            );
+          })}
       </div>
     </div>
   );
