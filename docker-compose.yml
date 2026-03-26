@@ -5,7 +5,7 @@ services:
     container_name: spellbound
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3003:3000"
     volumes:
       - spellbound-data:/app/data
       - ./public/images/puzzles:/app/public/images/puzzles:ro

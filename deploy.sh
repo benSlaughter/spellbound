@@ -18,4 +18,4 @@ docker compose up -d
 echo "Cleaning old images..."
 docker image prune -f
 
-echo "SpellBound deployed! Access at http://localhost:3000"
+echo "SpellBound deployed! Access at http://localhost:3003"
