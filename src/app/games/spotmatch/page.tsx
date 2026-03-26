@@ -165,10 +165,10 @@ function formatTime(ms: number): string {
 
 /* ── page wrapper ───────────────────────────────────────────────── */
 
-export default function DobblePage() {
+export default function SpotMatchPage() {
   return (
     <Suspense fallback={<LoadingSpinner />}>
-      <DobbleGame />
+      <SpotMatchGame />
     </Suspense>
   );
 }
@@ -177,7 +177,9 @@ export default function DobblePage() {
 
 type GamePhase = 'ready' | 'playing' | 'finished';
 
-function DobbleGame() {
+const BEST_TIME_KEY = 'spellbound-spotmatch-best';
+
+function SpotMatchGame() {
   const [phase, setPhase] = useState<GamePhase>('ready');
   const [round, setRound] = useState(0);
   const [roundData, setRoundData] = useState<RoundData | null>(null);
@@ -185,14 +187,22 @@ function DobbleGame() {
   const [shakeIcon, setShakeIcon] = useState<string | null>(null);
   const [elapsed, setElapsed] = useState(0);
   const [finalTime, setFinalTime] = useState(0);
+  const [bestTime, setBestTime] = useState<number | null>(null);
+  const [isNewBest, setIsNewBest] = useState(false);
 
   const startTimeRef = useRef<number | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const advanceRef = useRef<NodeJS.Timeout | null>(null);
   const [mounted, setMounted] = useState(false);
 
-  // Avoid hydration mismatch
-  useEffect(() => setMounted(true), []);
+  // Avoid hydration mismatch + load best time
+  useEffect(() => {
+    setMounted(true);
+    try {
+      const saved = localStorage.getItem(BEST_TIME_KEY);
+      if (saved) setBestTime(parseInt(saved, 10));
+    } catch { /* ignore */ }
+  }, []);
 
   // Timer
   useEffect(() => {
@@ -233,6 +243,12 @@ function DobbleGame() {
     if (nextRound >= TOTAL_ROUNDS) {
       const time = startTimeRef.current ? Date.now() - startTimeRef.current : 0;
       setFinalTime(time);
+      const newBest = bestTime === null || time < bestTime;
+      setIsNewBest(newBest);
+      if (newBest) {
+        setBestTime(time);
+        try { localStorage.setItem(BEST_TIME_KEY, String(time)); } catch { /* ignore */ }
+      }
       setPhase('finished');
       playSound('achievement');
     } else {
@@ -275,7 +291,7 @@ function DobbleGame() {
         <div className="text-center">
           <h1 className="page-title text-3xl sm:text-4xl flex items-center justify-center gap-2">
             <Cards weight="duotone" size={40} className="text-primary" />
-            Dobble
+            Spot Match
           </h1>
           <p className="text-garden-text-light mt-2 text-lg">
             Find the matching icon between two cards — fast!
@@ -283,6 +299,11 @@ function DobbleGame() {
           <p className="text-garden-text-light text-sm mt-1">
             {TOTAL_ROUNDS} rounds · Tap the icon that appears on both cards
           </p>
+          {bestTime !== null && (
+            <p className="text-primary font-bold mt-3">
+              Best time: {formatTime(bestTime)}
+            </p>
+          )}
         </div>
         <Button variant="fun" size="lg" onClick={startGame}>
           Ready? Play!
@@ -298,13 +319,21 @@ function DobbleGame() {
         <Breadcrumbs />
         <CelebrationOverlay
           show
-          message={`Dobble master! ${formatTime(finalTime)}`}
+          message={`Spot Match champion! ${formatTime(finalTime)}`}
           emoji={<Trophy weight="duotone" size={72} color="#FFD54F" />}
           onDismiss={handlePlayAgain}
           autoCloseMs={6000}
         />
         <div className="text-center mt-4 z-10">
           <p className="text-2xl font-bold text-primary">{formatTime(finalTime)}</p>
+          {isNewBest && (
+            <p className="text-lg font-extrabold text-fun-orange mt-1">New Best Time!</p>
+          )}
+          {bestTime !== null && !isNewBest && (
+            <p className="text-garden-text-light text-sm mt-1">
+              Best time: {formatTime(bestTime)}
+            </p>
+          )}
           <p className="text-garden-text-light text-sm mt-1">
             You completed {TOTAL_ROUNDS} rounds!
           </p>
@@ -326,7 +355,7 @@ function DobbleGame() {
       <div className="text-center">
         <h1 className="page-title text-2xl sm:text-3xl flex items-center justify-center gap-2">
           <Cards weight="duotone" size={32} className="text-primary" />
-          Dobble
+          Spot Match
         </h1>
 
         {/* Timer */}
@@ -348,7 +377,7 @@ function DobbleGame() {
           transition={{ duration: 0.2 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 px-4"
         >
-          <DobbleCard
+          <SpotMatchCard
             icons={roundData.leftIcons}
             borderColor="border-primary"
             matchName={roundData.matchName}
@@ -356,7 +385,7 @@ function DobbleGame() {
             shakeIcon={shakeIcon}
             onTap={handleTap}
           />
-          <DobbleCard
+          <SpotMatchCard
             icons={roundData.rightIcons}
             borderColor="border-accent"
             matchName={roundData.matchName}
@@ -386,9 +415,9 @@ function DobbleGame() {
   );
 }
 
-/* ── Dobble circular card ───────────────────────────────────────── */
+/* ── Spot Match circular card ───────────────────────────────────────── */
 
-interface DobbleCardProps {
+interface SpotMatchCardProps {
   icons: CardIcon[];
   borderColor: string;
   matchName: string;
@@ -397,14 +426,14 @@ interface DobbleCardProps {
   onTap: (name: string) => void;
 }
 
-function DobbleCard({
+function SpotMatchCard({
   icons,
   borderColor,
   matchName,
   matchFlash,
   shakeIcon,
   onTap,
-}: DobbleCardProps) {
+}: SpotMatchCardProps) {
   return (
     <div
       className={`relative w-72 h-72 sm:w-80 sm:h-80 rounded-full bg-white ${borderColor} border-4 shadow-lg select-none overflow-hidden`}
