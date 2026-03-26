@@ -3,6 +3,10 @@
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 
+/**
+ * An animated back button that navigates to the previous page.
+ * Uses Framer Motion for a tap scale animation.
+ */
 export default function BackButton() {
   const router = useRouter();
 

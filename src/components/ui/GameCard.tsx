@@ -3,15 +3,27 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
+/** Props for the GameCard component. */
 export interface GameCardProps {
+  /** The game title displayed on the card */
   title: string;
+  /** Short description of the game */
   description: string;
+  /** Emoji icon for the game */
   emoji: string;
+  /** URL to navigate to when clicked */
   href: string;
+  /** Tailwind background colour class (e.g. 'bg-primary-light') */
   color: string;
+  /** Whether the game is locked/unavailable (default: false) */
   locked?: boolean;
 }
 
+/**
+ * A colourful card for game selection grids.
+ * Includes hover/tap animations and optional locked state.
+ * Locked cards display a lock icon and are not clickable.
+ */
 export default function GameCard({
   title,
   description,

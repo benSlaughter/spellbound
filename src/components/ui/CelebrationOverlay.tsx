@@ -33,14 +33,24 @@ function makeConfetti(count: number): ConfettiPiece[] {
   }));
 }
 
+/** Props for the CelebrationOverlay component. */
 export interface CelebrationOverlayProps {
+  /** Whether to show the overlay */
   show: boolean;
+  /** Large emoji displayed in the centre (default: '🏆') */
   emoji?: string;
+  /** Congratulatory message text */
   message?: string;
+  /** Callback when the overlay is dismissed (click or auto-close) */
   onDismiss: () => void;
+  /** Time in milliseconds before auto-dismissing (default: 3000) */
   autoCloseMs?: number;
 }
 
+/**
+ * A full-screen celebration overlay with confetti particles and a centre message.
+ * Auto-dismisses after a configurable delay. Click anywhere to dismiss early.
+ */
 export default function CelebrationOverlay({
   show,
   emoji = '🏆',

@@ -1,15 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
+import { checkCSRF, validateStringInput } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   try {
+    if (!checkCSRF(request)) {
+      return NextResponse.json(
+        { error: "Invalid content type" },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const { name, words } = body as {
       name: string;
       words: { word: string; hint?: string }[];
     };
 
-    if (!name || typeof name !== "string" || !name.trim()) {
+    const nameCheck = validateStringInput(name, 200, "List name");
+    if (!nameCheck.valid) {
+      return NextResponse.json({ error: nameCheck.error }, { status: 400 });
+    }
+    if (!nameCheck.value.trim()) {
       return NextResponse.json(
         { error: "List name is required" },
         { status: 400 }
@@ -21,6 +33,28 @@ export async function POST(request: NextRequest) {
         { error: "At least 3 words are required" },
         { status: 400 }
       );
+    }
+
+    if (words.length > 50) {
+      return NextResponse.json(
+        { error: "Maximum 50 words per list" },
+        { status: 400 }
+      );
+    }
+
+    for (const w of words) {
+      if (w.word) {
+        const wordCheck = validateStringInput(w.word, 100, "Word");
+        if (!wordCheck.valid) {
+          return NextResponse.json({ error: wordCheck.error }, { status: 400 });
+        }
+      }
+      if (w.hint) {
+        const hintCheck = validateStringInput(w.hint, 500, "Hint");
+        if (!hintCheck.valid) {
+          return NextResponse.json({ error: hintCheck.error }, { status: 400 });
+        }
+      }
     }
 
     const db = getDb();
@@ -39,7 +73,7 @@ export async function POST(request: NextRequest) {
         "UPDATE spelling_lists SET is_active = 0 WHERE profile_id = ?"
       ).run(profileId);
 
-      const listResult = insertList.run(profileId, name.trim());
+      const listResult = insertList.run(profileId, nameCheck.value.trim());
       const newId = listResult.lastInsertRowid;
 
       // Activate the new list

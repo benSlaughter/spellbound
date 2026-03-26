@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
-import { checkAdminAuth } from "@/lib/auth";
+import { checkAdminAuth, checkCSRF, validateStringInput } from "@/lib/auth";
 
 interface SpellingWord {
   word: string;
@@ -40,6 +40,13 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
+    if (!checkCSRF(request)) {
+      return NextResponse.json(
+        { error: "Invalid content type" },
+        { status: 403 }
+      );
+    }
+
     const isAdmin = await checkAdminAuth();
     if (!isAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -65,10 +72,50 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       );
     }
 
+    // Validate name if provided
+    let sanitizedName: string | undefined;
+    if (name !== undefined) {
+      const nameCheck = validateStringInput(name, 200, "List name");
+      if (!nameCheck.valid) {
+        return NextResponse.json({ error: nameCheck.error }, { status: 400 });
+      }
+      sanitizedName = nameCheck.value;
+    }
+
+    // Validate words if provided
+    if (words !== undefined) {
+      if (!Array.isArray(words)) {
+        return NextResponse.json(
+          { error: "Words must be an array" },
+          { status: 400 }
+        );
+      }
+      if (words.length > 50) {
+        return NextResponse.json(
+          { error: "Maximum 50 words per list" },
+          { status: 400 }
+        );
+      }
+      for (const w of words) {
+        if (w.word) {
+          const wordCheck = validateStringInput(w.word, 100, "Word");
+          if (!wordCheck.valid) {
+            return NextResponse.json({ error: wordCheck.error }, { status: 400 });
+          }
+        }
+        if (w.hint) {
+          const hintCheck = validateStringInput(w.hint, 500, "Hint");
+          if (!hintCheck.valid) {
+            return NextResponse.json({ error: hintCheck.error }, { status: 400 });
+          }
+        }
+      }
+    }
+
     db.transaction(() => {
-      if (name !== undefined) {
+      if (sanitizedName !== undefined) {
         db.prepare("UPDATE spelling_lists SET name = ? WHERE id = ?").run(
-          name.trim(),
+          sanitizedName.trim(),
           Number(id)
         );
       }
@@ -112,8 +159,15 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-export async function DELETE(_request: NextRequest, { params }: RouteParams) {
+export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
+    if (!checkCSRF(request)) {
+      return NextResponse.json(
+        { error: "Invalid content type" },
+        { status: 403 }
+      );
+    }
+
     const isAdmin = await checkAdminAuth();
     if (!isAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

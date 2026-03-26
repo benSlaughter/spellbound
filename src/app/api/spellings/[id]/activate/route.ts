@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
-import { checkAdminAuth } from "@/lib/auth";
+import { checkAdminAuth, checkCSRF } from "@/lib/auth";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
-export async function POST(_request: NextRequest, { params }: RouteParams) {
+export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
+    if (!checkCSRF(request)) {
+      return NextResponse.json(
+        { error: "Invalid content type" },
+        { status: 403 }
+      );
+    }
+
     const isAdmin = await checkAdminAuth();
     if (!isAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

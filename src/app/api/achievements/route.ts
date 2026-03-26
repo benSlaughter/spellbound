@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { achievements, type PlayerStats } from "@/lib/achievements";
+import { checkCSRF } from "@/lib/auth";
 
 interface AchievementRow {
   id: number;
@@ -145,8 +146,15 @@ export async function GET() {
   }
 }
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
+    if (!checkCSRF(request)) {
+      return NextResponse.json(
+        { error: "Invalid content type" },
+        { status: 403 }
+      );
+    }
+
     const db = getDb();
     const profileId = 1;
 

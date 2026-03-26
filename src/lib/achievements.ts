@@ -1,22 +1,42 @@
+/** Definition of an unlockable achievement badge. */
 export interface Achievement {
+  /** Unique identifier for this achievement (snake_case) */
   key: string;
+  /** Display title shown on the badge */
   title: string;
+  /** Short description of how to earn this achievement */
   description: string;
+  /** Emoji icon displayed on the badge */
   emoji: string;
+  /** Returns true if the player's stats qualify for this achievement */
   check: (stats: PlayerStats) => boolean;
 }
 
+/** Represents a player's cumulative statistics across all activities. */
 export interface PlayerStats {
+  /** Total number of progress records (games played) */
   totalGamesPlayed: number;
+  /** Total spelling words answered correctly */
   totalWordsCorrect: number;
+  /** Total maths questions answered correctly */
   totalMathsCorrect: number;
+  /** Number of distinct times tables practised */
   uniqueTablesPlayed: number;
+  /** Number of spelling lists fully completed */
   spellingListsCompleted: number;
+  /** Consecutive days with at least one activity */
   streakDays: number;
+  /** Number of distinct game types played (max ~10) */
   uniqueGameTypesPlayed: number;
+  /** Number of achievements currently unlocked */
   totalAchievements: number;
 }
 
+/**
+ * All available achievements in the app.
+ * Each achievement defines a condition checked against the player's stats.
+ * New achievements are automatically detected by the POST /api/achievements endpoint.
+ */
 export const achievements: Achievement[] = [
   {
     key: "first_sprout",

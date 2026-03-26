@@ -9,6 +9,10 @@ const dots = [
   { color: 'bg-fun-orange', delay: 0.45 },
 ];
 
+/**
+ * An accessible loading indicator with four bouncing coloured dots.
+ * Uses staggered Framer Motion animations.
+ */
 export default function LoadingSpinner() {
   return (
     <div

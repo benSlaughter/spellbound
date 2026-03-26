@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
+import { checkCSRF, sanitizeText } from "@/lib/auth";
 
 interface ProgressEntry {
   id: number;
@@ -112,6 +113,13 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!checkCSRF(request)) {
+      return NextResponse.json(
+        { error: "Invalid content type" },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const { activity_type, activity_ref, result } = body as {
       activity_type: string;
@@ -126,6 +134,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (activity_type.length > 50) {
+      return NextResponse.json(
+        { error: "activity_type must be at most 50 characters" },
+        { status: 400 }
+      );
+    }
+
+    if (activity_ref && typeof activity_ref === "string" && activity_ref.length > 100) {
+      return NextResponse.json(
+        { error: "activity_ref must be at most 100 characters" },
+        { status: 400 }
+      );
+    }
+
     if (!result || !["correct", "helped", "skipped"].includes(result)) {
       return NextResponse.json(
         { error: "result must be 'correct', 'helped', or 'skipped'" },
@@ -136,13 +158,16 @@ export async function POST(request: NextRequest) {
     const db = getDb();
     const profileId = 1;
 
+    const sanitizedType = sanitizeText(activity_type);
+    const sanitizedRef = activity_ref ? sanitizeText(activity_ref) : null;
+
     const stmt = db.prepare(
       "INSERT INTO progress (profile_id, activity_type, activity_ref, result) VALUES (?, ?, ?, ?)"
     );
     const insertResult = stmt.run(
       profileId,
-      activity_type,
-      activity_ref || null,
+      sanitizedType,
+      sanitizedRef,
       result
     );
 

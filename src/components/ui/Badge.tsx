@@ -2,12 +2,20 @@
 
 import { motion } from 'framer-motion';
 
+/** Props for the Badge component. */
 export interface BadgeProps {
+  /** Emoji icon displayed on the badge when unlocked */
   emoji: string;
+  /** Display title shown below the badge */
   title: string;
+  /** Whether the achievement has been earned (default: false) */
   unlocked?: boolean;
 }
 
+/**
+ * A circular achievement badge that shows an emoji when unlocked
+ * or a "?" when locked. Includes a spring animation on unlock.
+ */
 export default function Badge({ emoji, title, unlocked = false }: BadgeProps) {
   return (
     <motion.div

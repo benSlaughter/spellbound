@@ -2,9 +2,13 @@
 
 import { motion } from 'framer-motion';
 
+/** Props for the ProgressStars component. */
 export interface ProgressStarsProps {
+  /** Number of stars to show as filled/active */
   filled: number;
+  /** Total number of stars to display (default: 5) */
   total?: number;
+  /** Star size: 'sm', 'md', or 'lg' (default: 'md') */
   size?: 'sm' | 'md' | 'lg';
 }
 
@@ -14,6 +18,11 @@ const sizes = {
   lg: 'text-4xl',
 };
 
+/**
+ * A row of animated stars indicating progress or completion.
+ * Filled stars appear in colour; unfilled stars are dimmed.
+ * Each star animates in with a staggered spring effect.
+ */
 export default function ProgressStars({
   filled,
   total = 5,

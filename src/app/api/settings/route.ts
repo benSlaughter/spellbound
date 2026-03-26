@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
-import { checkAdminAuth } from "@/lib/auth";
+import { checkAdminAuth, checkCSRF, validateStringInput } from "@/lib/auth";
 import bcrypt from "bcryptjs";
 
 interface SettingRow {
@@ -37,6 +37,13 @@ export async function GET() {
 
 export async function PUT(request: NextRequest) {
   try {
+    if (!checkCSRF(request)) {
+      return NextResponse.json(
+        { error: "Invalid content type" },
+        { status: 403 }
+      );
+    }
+
     const isAdmin = await checkAdminAuth();
     if (!isAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -45,11 +52,9 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
     const { key, value } = body as { key: string; value: string };
 
-    if (!key || typeof key !== "string") {
-      return NextResponse.json(
-        { error: "Setting key is required" },
-        { status: 400 }
-      );
+    const keyCheck = validateStringInput(key, 50, "Setting key");
+    if (!keyCheck.valid) {
+      return NextResponse.json({ error: keyCheck.error }, { status: 400 });
     }
 
     if (value === undefined || value === null) {
@@ -59,10 +64,18 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    const valueStr = String(value);
+    if (valueStr.length > 1000) {
+      return NextResponse.json(
+        { error: "Setting value must be at most 1000 characters" },
+        { status: 400 }
+      );
+    }
+
     const db = getDb();
 
     // Special action: reset all progress and achievements
-    if (key === "reset_progress") {
+    if (keyCheck.value === "reset_progress") {
       const profileId = 1;
       db.transaction(() => {
         db.prepare("DELETE FROM progress WHERE profile_id = ?").run(profileId);
@@ -71,14 +84,14 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ success: true });
     }
 
-    let finalValue = String(value);
-    if (key === "admin_password") {
+    let finalValue = valueStr;
+    if (keyCheck.value === "admin_password") {
       finalValue = bcrypt.hashSync(finalValue, 10);
     }
 
     db.prepare(
       "INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value"
-    ).run(key, finalValue);
+    ).run(keyCheck.value, finalValue);
 
     return NextResponse.json({ success: true });
   } catch {

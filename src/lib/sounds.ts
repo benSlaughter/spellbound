@@ -1,5 +1,6 @@
 "use client";
 
+/** Available sound effect names that can be played via {@link playSound}. */
 type SoundName = "success" | "click" | "achievement" | "pop" | "whoosh" | "splash";
 
 let audioContext: AudioContext | null = null;
@@ -141,6 +142,21 @@ function playSplash(ctx: AudioContext) {
   playTone(ctx, 450, 0.04, "sine", 0.05, now + 0.3);
 }
 
+/**
+ * Play a synthesised sound effect using the Web Audio API.
+ * Safe to call server-side (no-ops if window is unavailable).
+ * Automatically resumes the AudioContext if suspended by browser autoplay policy.
+ *
+ * Available sounds:
+ * - `success` — ascending C-E-G chord (correct answer)
+ * - `click` — short tap feedback
+ * - `achievement` — celebratory fanfare (badge unlocked)
+ * - `pop` — bubble/item pop
+ * - `whoosh` — transition/swipe effect
+ * - `splash` — water splash with droplets
+ *
+ * @param name - The sound effect to play
+ */
 export function playSound(name: SoundName): void {
   const ctx = getAudioContext();
   if (!ctx) return;

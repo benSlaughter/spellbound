@@ -17,13 +17,21 @@ const sizeClasses = {
   lg: 'px-6 py-3 text-lg min-h-[52px]',
 } as const;
 
+/** Props for the Button component. */
 export interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Visual style: 'primary' (green), 'secondary' (yellow), or 'fun' (cycles colours) */
   variant?: keyof typeof variantClasses;
+  /** Button size: 'sm', 'md', or 'lg' (default: 'lg') */
   size?: keyof typeof sizeClasses;
+  /** Optional emoji displayed before the button text */
   emoji?: string;
 }
 
+/**
+ * A themed button with Framer Motion tap animation.
+ * The 'fun' variant cycles through orange, purple, and pink on each click.
+ */
 export default function Button({
   variant = 'primary',
   size = 'lg',
