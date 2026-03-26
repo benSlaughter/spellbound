@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState, useMemo, useCallback } from 'react';
+import { Suspense, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -31,13 +31,12 @@ export default function MathMountainPage() {
 
 function MathMountain() {
   const searchParams = useSearchParams();
-  const tables = parseTablesParam(searchParams.get('tables'));
-  const difficulty = parseDifficultyParam(searchParams.get('difficulty'));
 
-  const questions = useMemo(
-    () => generateQuestions(tables, difficulty, TOTAL_STOPS),
-    [tables, difficulty],
-  );
+  const [questions] = useState(() => {
+    const tables = parseTablesParam(searchParams.get('tables'));
+    const difficulty = parseDifficultyParam(searchParams.get('difficulty'));
+    return generateQuestions(tables, difficulty, TOTAL_STOPS);
+  });
 
   const [currentStop, setCurrentStop] = useState(0);
   const [wrongCount, setWrongCount] = useState(0);
