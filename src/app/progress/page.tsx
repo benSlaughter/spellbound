@@ -56,15 +56,15 @@ interface AchievementData {
 /** Maps icon name strings from achievements API to Phosphor icon ReactNodes */
 const ICON_MAP: Record<string, ReactNode> = {
   Plant: <PhPlant weight="duotone" size={32} color="#66BB6A" />,
-  MagicWand: <PhMagicWand weight="duotone" size={32} color="#9C27B0" />,
-  Sparkle: <PhSparkle weight="duotone" size={32} color="#FFD54F" />,
-  Calculator: <PhCalculator weight="duotone" size={32} color="#FF9800" />,
-  Star: <PhStar weight="duotone" size={32} color="#FFD54F" />,
-  Butterfly: <PhButterfly weight="duotone" size={32} color="#9C27B0" />,
-  Rainbow: <PhRainbow weight="duotone" size={32} color="#E91E63" />,
-  Trophy: <PhTrophy weight="duotone" size={32} color="#FFD54F" />,
-  MusicNotes: <PhMusicNotes weight="duotone" size={32} color="#2196F3" />,
-  Medal: <PhMedal weight="duotone" size={32} color="#FF9800" />,
+  MagicWand: <PhMagicWand weight="duotone" size={32} color="#7B1FA2" />,
+  Sparkle: <PhSparkle weight="duotone" size={32} color="#FF6F00" />,
+  Calculator: <PhCalculator weight="duotone" size={32} color="#E65100" />,
+  Star: <PhStar weight="fill" size={32} color="#F57F17" />,
+  Butterfly: <PhButterfly weight="duotone" size={32} color="#7B1FA2" />,
+  Rainbow: <PhRainbow weight="duotone" size={32} color="#D81B60" />,
+  Trophy: <PhTrophy weight="fill" size={32} color="#E65100" />,
+  MusicNotes: <PhMusicNotes weight="duotone" size={32} color="#1565C0" />,
+  Medal: <PhMedal weight="fill" size={32} color="#BF360C" />,
 };
 
 function achievementIcon(emoji: string): ReactNode {
@@ -218,7 +218,7 @@ function GardenPlant({
   return (
     <motion.div
       className="absolute bottom-[15%] flex flex-col items-center select-none pointer-events-none"
-      style={{ left }}
+      style={{ left, zIndex: 20 }}
       initial={{ opacity: 0, scale: 0, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay, type: 'spring', stiffness: 200, damping: 12 }}
@@ -258,7 +258,7 @@ function Rainbow() {
   return (
     <motion.div
       className="absolute left-1/2 -translate-x-1/2 select-none pointer-events-none"
-      style={{ top: '10%', zIndex: 0 }}
+      style={{ top: '-10%', zIndex: 0 }}
       initial={{ opacity: 0, scale: 0 }}
       animate={{ opacity: 0.7, scale: 1 }}
       transition={{ delay: 1.5, type: 'spring', stiffness: 100, damping: 15 }}
@@ -351,15 +351,19 @@ export default function ProgressPage() {
 
     const flowers = spellingTypes.map((s, i) => ({
       plantDef: SPELLING_FLOWERS[i % SPELLING_FLOWERS.length],
-      size: Math.min(70, 40 + s.total * 3),
-      left: `${12 + i * 14}%`,
+      size: Math.max(50, Math.min(70, 45 + s.total * 3)),
+      left: `${8 + (i * 40) / Math.max(spellingTypes.length, 1)}%`,
     }));
 
-    const plants = mathsTypes.map((s, i) => ({
-      plantDef: MATHS_PLANTS[i % MATHS_PLANTS.length],
-      size: Math.min(120, 60 + s.total * 3),
-      left: `${55 + i * 12}%`,
-    }));
+    const plants = mathsTypes.map((s, i) => {
+      const baseSize = Math.max(80, Math.min(120, 60 + s.total * 3));
+      const variance = 1 + ((i % 3) - 1) * 0.05;
+      return {
+        plantDef: MATHS_PLANTS[i % MATHS_PLANTS.length],
+        size: Math.round(baseSize * variance),
+        left: `${52 + (i * 40) / Math.max(mathsTypes.length, 1)}%`,
+      };
+    });
 
     const unlockedCount = achievements?.filter((a) => a.unlocked).length ?? 0;
     const butterflyCount = Math.min(5, Math.floor(unlockedCount / 2));
@@ -434,7 +438,6 @@ export default function ProgressPage() {
           style={{
             height: '18%',
             background: 'linear-gradient(180deg, #66BB6A 0%, #43A047 50%, #8D6E63 100%)',
-            borderRadius: '60% 60% 0 0 / 30% 30% 0 0',
             zIndex: 10,
           }}
         />
@@ -519,27 +522,30 @@ export default function ProgressPage() {
           <>
             <motion.div
               className="absolute bottom-[13%] left-[5%] select-none pointer-events-none"
+              style={{ zIndex: 20 }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.7 }}
               transition={{ delay: 1.8 }}
             >
-              <SvgDaisy size={24} color="#E91E63" />
+              <SvgDaisy size={36} color="#E91E63" />
             </motion.div>
             <motion.div
               className="absolute bottom-[14%] right-[6%] select-none pointer-events-none"
+              style={{ zIndex: 20 }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.7 }}
               transition={{ delay: 2.0 }}
             >
-              <PhFlowerTulip weight="duotone" size={24} color="#AB47BC" />
+              <PhFlowerTulip weight="duotone" size={36} color="#AB47BC" />
             </motion.div>
             <motion.div
               className="absolute bottom-[15%] left-[48%] select-none pointer-events-none"
+              style={{ zIndex: 20 }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.6 }}
               transition={{ delay: 2.2 }}
             >
-              <SvgDaisy size={20} color="#FF8A65" />
+              <SvgDaisy size={32} color="#FF8A65" />
             </motion.div>
           </>
         )}

@@ -17,10 +17,8 @@ import {
   FishSimple,
 } from '@phosphor-icons/react';
 
-const STORAGE_KEY = 'spellbound-maths-tables';
-const DIFF_KEY = 'spellbound-maths-difficulty';
-
 const ALL_TABLES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+const DIFF_KEY = 'spellbound-maths-difficulty';
 
 const DIFFICULTIES: { key: Difficulty; label: string; icon: ReactNode; desc: string }[] = [
   { key: 'seedling', label: 'Seedling', icon: <Plant weight="duotone" size={24} color="#66BB6A" />, desc: 'Multiplication 1-6' },
@@ -78,17 +76,8 @@ const fadeUp = {
 };
 
 export default function MathsHub() {
-  const [selectedTables, setSelectedTables] = useState<number[]>(() => {
-    if (typeof window === 'undefined') return ALL_TABLES;
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved) as number[];
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      }
-    } catch { /* ignore */ }
-    return ALL_TABLES;
-  });
+  const [selectedTables, setSelectedTables] = useState<number[]>(ALL_TABLES);
+  const [tablesLoaded, setTablesLoaded] = useState(false);
   const [difficulty, setDifficulty] = useState<Difficulty>(() => {
     if (typeof window === 'undefined') return 'sapling';
     try {
@@ -101,28 +90,22 @@ export default function MathsHub() {
   });
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(selectedTables));
-  }, [selectedTables]);
+    fetch('/api/maths/tables')
+      .then((res) => res.json())
+      .then((data: { tables: number[] }) => {
+        if (Array.isArray(data.tables) && data.tables.length > 0) {
+          setSelectedTables(data.tables);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setTablesLoaded(true));
+  }, []);
 
   useEffect(() => {
     localStorage.setItem(DIFF_KEY, difficulty);
   }, [difficulty]);
 
-  function toggleTable(n: number) {
-    setSelectedTables((prev) => {
-      if (prev.includes(n)) {
-        const next = prev.filter((t) => t !== n);
-        return next.length === 0 ? [n] : next; // always keep at least one
-      }
-      return [...prev, n];
-    });
-  }
-
-  function selectAll() {
-    setSelectedTables(ALL_TABLES);
-  }
-
-  const tablesParam = selectedTables.sort((a, b) => a - b).join(',');
+  const tablesParam = [...selectedTables].sort((a, b) => a - b).join(',');
   const queryString = `?tables=${tablesParam}&difficulty=${difficulty}`;
 
   return (
@@ -142,54 +125,18 @@ export default function MathsHub() {
           Maths Garden
         </h1>
         <p className="mt-2 text-garden-text-light text-lg">
-          Pick your tables, choose a game, and have fun!
+          Choose a game and have fun!
         </p>
       </motion.section>
 
-      {/* Choose Your Tables */}
-      <motion.section variants={fadeUp} className="bg-garden-card rounded-2xl p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-garden-text">Choose Your Tables</h2>
-          <button
-            onClick={selectAll}
-            className="text-sm font-bold text-primary hover:text-primary-dark transition-colors cursor-pointer"
-          >
-            Select All
-          </button>
-        </div>
-        <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
-          {ALL_TABLES.map((n) => {
-            const active = selectedTables.includes(n);
-            return (
-              <motion.button
-                key={n}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => toggleTable(n)}
-                className={`
-                  relative w-full aspect-square rounded-xl font-extrabold text-xl
-                  flex items-center justify-center cursor-pointer
-                  transition-all duration-200 min-h-[52px]
-                  ${
-                    active
-                      ? 'bg-primary text-white shadow-md shadow-primary/30 ring-2 ring-primary/50'
-                      : 'bg-white text-garden-text-light border-2 border-garden-border hover:border-primary-light'
-                  }
-                `}
-              >
-                {n}
-                {active && (
-                  <motion.div
-                    layoutId={`glow-${n}`}
-                    className="absolute inset-0 rounded-xl bg-primary/10"
-                    initial={false}
-                    transition={{ duration: 0.2 }}
-                  />
-                )}
-              </motion.button>
-            );
-          })}
-        </div>
-      </motion.section>
+      {/* Active tables note */}
+      {tablesLoaded && (
+        <motion.section variants={fadeUp} className="text-center">
+          <p className="text-sm text-garden-text-light">
+            Practising tables: {[...selectedTables].sort((a, b) => a - b).join(', ')}
+          </p>
+        </motion.section>
+      )}
 
       {/* Difficulty */}
       <motion.section variants={fadeUp} className="bg-garden-card rounded-2xl p-6 shadow-sm">

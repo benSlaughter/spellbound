@@ -5,29 +5,24 @@ interface SvgRoseProps {
   weight?: string;
 }
 
-export function SvgRose({ size = 48, color = '#F06292', className }: SvgRoseProps) {
+/** A poppy flower in Phosphor duotone style — 4 rounded petals around a dark centre. */
+export function SvgRose({ size = 48, color = '#EF5350', className }: SvgRoseProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 256 256" fill="none" className={className}>
       {/* Stem */}
-      <line x1="128" y1="176" x2="128" y2="244" stroke="#66BB6A" strokeWidth={12} strokeLinecap="round" />
-      {/* Sepals */}
-      <path d="M128 176 Q108 168 104 152" stroke="#43A047" strokeWidth={8} strokeLinecap="round" fill="none" />
-      <path d="M128 176 Q148 168 152 152" stroke="#43A047" strokeWidth={8} strokeLinecap="round" fill="none" />
-      <path d="M128 176 Q118 164 122 148" stroke="#43A047" strokeWidth={6} strokeLinecap="round" fill="none" />
-      <path d="M128 176 Q138 164 134 148" stroke="#43A047" strokeWidth={6} strokeLinecap="round" fill="none" />
-      {/* Outer petals (duotone fill) */}
-      <path d="M128 40 Q80 52 72 104 Q68 132 96 156 Q112 168 128 168 Q144 168 160 156 Q188 132 184 104 Q176 52 128 40Z" fill={color} fillOpacity={0.2} stroke={color} strokeWidth={12} strokeLinejoin="round" />
-      {/* Left petal curl */}
-      <path d="M88 72 Q72 96 80 128 Q88 148 112 160" stroke={color} strokeWidth={10} strokeLinecap="round" fill="none" />
-      {/* Right petal curl */}
-      <path d="M168 72 Q184 96 176 128 Q168 148 144 160" stroke={color} strokeWidth={10} strokeLinecap="round" fill="none" />
-      {/* Inner petal shadows */}
-      <path d="M108 68 Q96 92 104 124 Q110 144 128 152" stroke={color} strokeWidth={8} strokeLinecap="round" fill="none" opacity={0.2} />
-      <path d="M148 68 Q160 92 152 124 Q146 144 128 152" stroke={color} strokeWidth={8} strokeLinecap="round" fill="none" opacity={0.2} />
-      {/* Spiral centre */}
-      <path d="M128 80 Q112 84 108 100 Q104 116 120 128 Q132 136 140 124 Q148 112 140 100 Q134 92 128 96" stroke={color} strokeWidth={8} strokeLinecap="round" fill="none" />
-      {/* Centre bud */}
-      <circle cx="128" cy="104" r="10" fill={color} />
+      <line x1="128" y1="170" x2="128" y2="244" stroke="#66BB6A" strokeWidth={12} strokeLinecap="round" />
+      {/* Petals — 4 large overlapping circles */}
+      <circle cx="104" cy="96" r="40" fill={color} fillOpacity={0.2} stroke={color} strokeWidth={12} />
+      <circle cx="152" cy="96" r="40" fill={color} fillOpacity={0.2} stroke={color} strokeWidth={12} />
+      <circle cx="104" cy="140" r="40" fill={color} fillOpacity={0.2} stroke={color} strokeWidth={12} />
+      <circle cx="152" cy="140" r="40" fill={color} fillOpacity={0.2} stroke={color} strokeWidth={12} />
+      {/* Dark centre */}
+      <circle cx="128" cy="118" r="18" fill="#3E2723" />
+      <circle cx="128" cy="118" r="10" fill="#5D4037" />
+      {/* Centre dots */}
+      <circle cx="122" cy="114" r="3" fill="#8D6E63" />
+      <circle cx="134" cy="114" r="3" fill="#8D6E63" />
+      <circle cx="128" cy="124" r="3" fill="#8D6E63" />
     </svg>
   );
 }

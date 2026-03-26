@@ -23,6 +23,7 @@ const ROUTE_NAMES: Record<string, string> = {
   'admin': 'Admin',
   'spellings': 'Spellings',
   'settings': 'Settings',
+  'tables': 'Times Tables',
 };
 
 export default function Breadcrumbs() {

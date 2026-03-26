@@ -81,6 +81,11 @@ function seedDefaults(database: Database.Database): void {
       .prepare("INSERT INTO settings (key, value) VALUES (?, ?)")
       .run("admin_password", hashedPassword);
   }
+
+  // Seed default maths tables (all 1-12) if not already set
+  database
+    .prepare("INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)")
+    .run("maths_tables", "1,2,3,4,5,6,7,8,9,10,11,12");
 }
 
 // --- Helper functions ---
