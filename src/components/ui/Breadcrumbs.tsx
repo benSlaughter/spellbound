@@ -35,7 +35,7 @@ const ROUTE_NAMES: Record<string, string> = {
   'wordal': 'Wordal',
   'maze': 'Math Maze',
   'cascade': 'Number Cascade',
-  'game': 'Number Match',
+  'game': 'Dobble',
 };
 
 export default function Breadcrumbs() {

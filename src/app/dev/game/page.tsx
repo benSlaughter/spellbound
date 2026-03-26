@@ -1,264 +1,314 @@
 'use client';
 
-import { Suspense, useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { Suspense, useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSearchParams } from 'next/navigation';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
-import { Cards, Star } from '@phosphor-icons/react';
-import { playSound } from '@/lib/sounds';
+import Button from '@/components/ui/Button';
+import { Cards, Trophy } from '@phosphor-icons/react';
 import {
-  generateQuestions,
-  parseTablesParam,
-  parseDifficultyParam,
-  randomEncouragement,
-  recordProgress,
-  makeShuffledAnswers,
-  shuffleArray,
-  type MathQuestion,
-} from '@/lib/maths-helpers';
+  Star, Heart, Flower, Butterfly, Sun, Moon, Cloud, Tree,
+  Fish, Bird, Bug, Leaf, Drop, Lightning, Snowflake, Fire,
+  Diamond, Crown, Bell, Gift, Balloon, Cake, Cookie, Pizza,
+  Football, Basketball, Bicycle, Rocket, Airplane, Car, Anchor,
+} from '@phosphor-icons/react';
+import type { Icon as PhosphorIcon } from '@phosphor-icons/react';
+import { playSound } from '@/lib/sounds';
 
 /* ── constants ─────────────────────────────────────────────────── */
 
 const TOTAL_ROUNDS = 10;
-const ITEMS_PER_CARD = 5;
+const ICONS_PER_CARD = 6;
 
-const ITEM_COLORS = [
+const ICON_POOL: { Icon: PhosphorIcon; name: string }[] = [
+  { Icon: Star, name: 'Star' },
+  { Icon: Heart, name: 'Heart' },
+  { Icon: Flower, name: 'Flower' },
+  { Icon: Butterfly, name: 'Butterfly' },
+  { Icon: Sun, name: 'Sun' },
+  { Icon: Moon, name: 'Moon' },
+  { Icon: Cloud, name: 'Cloud' },
+  { Icon: Tree, name: 'Tree' },
+  { Icon: Fish, name: 'Fish' },
+  { Icon: Bird, name: 'Bird' },
+  { Icon: Bug, name: 'Bug' },
+  { Icon: Leaf, name: 'Leaf' },
+  { Icon: Drop, name: 'Drop' },
+  { Icon: Lightning, name: 'Lightning' },
+  { Icon: Snowflake, name: 'Snowflake' },
+  { Icon: Fire, name: 'Fire' },
+  { Icon: Diamond, name: 'Diamond' },
+  { Icon: Crown, name: 'Crown' },
+  { Icon: Bell, name: 'Bell' },
+  { Icon: Gift, name: 'Gift' },
+  { Icon: Balloon, name: 'Balloon' },
+  { Icon: Cake, name: 'Cake' },
+  { Icon: Cookie, name: 'Cookie' },
+  { Icon: Pizza, name: 'Pizza' },
+  { Icon: Football, name: 'Football' },
+  { Icon: Basketball, name: 'Basketball' },
+  { Icon: Bicycle, name: 'Bicycle' },
+  { Icon: Rocket, name: 'Rocket' },
+  { Icon: Airplane, name: 'Airplane' },
+  { Icon: Car, name: 'Car' },
+  { Icon: Anchor, name: 'Anchor' },
+];
+
+const ICON_COLORS = [
   '#E91E63', '#4CAF50', '#2196F3', '#FF9800',
   '#9C27B0', '#009688', '#F44336', '#3F51B5',
+  '#00BCD4', '#FF5722', '#8BC34A', '#673AB7',
+];
+
+// 1 centre + 5 around in a ring
+const POSITIONS_6 = [
+  { top: '50%', left: '50%' },
+  { top: '20%', left: '50%' },
+  { top: '35%', left: '78%' },
+  { top: '65%', left: '78%' },
+  { top: '80%', left: '50%' },
+  { top: '65%', left: '22%' },
 ];
 
 /* ── types ──────────────────────────────────────────────────────── */
 
-interface CardItem {
-  text: string;
-  id: string;
-  isMatch: boolean;
-  top: string;
-  left: string;
-  rotation: number;
-  fontSize: string;
+interface CardIcon {
+  Icon: PhosphorIcon;
+  name: string;
   color: string;
+  size: number;
+  rotation: number;
+  posIndex: number;
 }
 
 interface RoundData {
-  leftItems: CardItem[];
-  rightItems: CardItem[];
+  leftIcons: CardIcon[];
+  rightIcons: CardIcon[];
+  matchName: string;
 }
 
 /* ── helpers ────────────────────────────────────────────────────── */
 
-function scatterInCircle(
-  count: number,
-): { top: string; left: string; rotation: number; fontSize: string }[] {
-  const items = [];
-  for (let i = 0; i < count; i++) {
-    const angle = (i / count) * 2 * Math.PI + (Math.random() * 0.5 - 0.25);
-    const distance = 15 + Math.random() * 25;
-    const top = 50 + Math.sin(angle) * distance;
-    const left = 50 + Math.cos(angle) * distance;
-    const rotation = Math.floor(Math.random() * 40 - 20);
-    const fontSize = `${16 + Math.floor(Math.random() * 8)}px`;
-    items.push({ top: `${top}%`, left: `${left}%`, rotation, fontSize });
+function shuffleArray<T>(arr: T[]): T[] {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
   }
-  return items;
+  return copy;
 }
 
-function generateRound(
-  currentQuestion: MathQuestion,
-  allQuestions: MathQuestion[],
-): RoundData {
-  // Pick decoy questions that have a different answer
-  const decoys = shuffleArray(
-    allQuestions.filter(
-      (q) => q.question !== currentQuestion.question && q.answer !== currentQuestion.answer,
-    ),
-  ).slice(0, ITEMS_PER_CARD - 1);
+function randomColor(): string {
+  return ICON_COLORS[Math.floor(Math.random() * ICON_COLORS.length)];
+}
 
-  const leftPositions = scatterInCircle(ITEMS_PER_CARD);
-  const leftItems: CardItem[] = shuffleArray(
-    [currentQuestion, ...decoys].map((q, i) => ({
-      text: q.question,
-      id: `q-${i}`,
-      isMatch: q.question === currentQuestion.question,
-      ...leftPositions[i],
-      color: ITEM_COLORS[i % ITEM_COLORS.length],
-    })),
+function randomSize(): number {
+  return 28 + Math.floor(Math.random() * 17); // 28-44
+}
+
+function randomRotation(): number {
+  return Math.floor(Math.random() * 51) - 25; // -25 to +25
+}
+
+function makeCardIcon(
+  icon: (typeof ICON_POOL)[number],
+  posIndex: number,
+): CardIcon {
+  return {
+    Icon: icon.Icon,
+    name: icon.name,
+    color: randomColor(),
+    size: randomSize(),
+    rotation: randomRotation(),
+    posIndex,
+  };
+}
+
+function generateRound(): RoundData {
+  const shuffled = shuffleArray(ICON_POOL);
+
+  const matchIcon = shuffled[0];
+  const leftOnly = shuffled.slice(1, ICONS_PER_CARD);
+  const rightOnly = shuffled.slice(ICONS_PER_CARD, ICONS_PER_CARD * 2 - 1);
+
+  const leftPositions = shuffleArray([0, 1, 2, 3, 4, 5]);
+  const rightPositions = shuffleArray([0, 1, 2, 3, 4, 5]);
+
+  const leftIcons = shuffleArray(
+    [...leftOnly, matchIcon].map((icon, i) => makeCardIcon(icon, leftPositions[i])),
   );
 
-  // Right card: correct answer + plausible wrong answers
-  const rightAnswers = makeShuffledAnswers(
-    currentQuestion.answer,
-    currentQuestion.wrongAnswers,
-  );
-  // Ensure we have exactly ITEMS_PER_CARD items (pad or trim)
-  while (rightAnswers.length < ITEMS_PER_CARD) {
-    const extra = currentQuestion.answer + rightAnswers.length + 3;
-    if (!rightAnswers.includes(extra)) rightAnswers.push(extra);
-  }
-  const trimmedRight = rightAnswers.slice(0, ITEMS_PER_CARD);
-
-  const rightPositions = scatterInCircle(ITEMS_PER_CARD);
-  const rightItems: CardItem[] = shuffleArray(
-    trimmedRight.map((num, i) => ({
-      text: String(num),
-      id: `a-${i}`,
-      isMatch: num === currentQuestion.answer,
-      ...rightPositions[i],
-      color: ITEM_COLORS[(i + 3) % ITEM_COLORS.length],
-    })),
+  const rightIcons = shuffleArray(
+    [...rightOnly, matchIcon].map((icon, i) => makeCardIcon(icon, rightPositions[i])),
   );
 
-  return { leftItems, rightItems };
+  return { leftIcons, rightIcons, matchName: matchIcon.name };
+}
+
+function formatTime(ms: number): string {
+  const secs = ms / 1000;
+  const mins = Math.floor(secs / 60);
+  const remainder = (secs % 60).toFixed(1);
+  return `${String(mins).padStart(2, '0')}:${remainder.padStart(4, '0')}`;
 }
 
 /* ── page wrapper ───────────────────────────────────────────────── */
 
-export default function NumberMatchPage() {
+export default function DobblePage() {
   return (
     <Suspense fallback={<LoadingSpinner />}>
-      <NumberMatch />
+      <DobbleGame />
     </Suspense>
   );
 }
 
 /* ── game component ─────────────────────────────────────────────── */
 
-function NumberMatch() {
-  const searchParams = useSearchParams();
+type GamePhase = 'ready' | 'playing' | 'finished';
 
-  /* questions generated once from URL params */
-  const questions = useMemo(() => {
-    const tables = parseTablesParam(searchParams.get('tables'));
-    const difficulty = parseDifficultyParam(searchParams.get('difficulty'));
-    // Generate extra questions for decoy pool
-    return generateQuestions(tables, difficulty, Math.max(TOTAL_ROUNDS + 10, 20));
-  }, [searchParams]);
-
+function DobbleGame() {
+  const [phase, setPhase] = useState<GamePhase>('ready');
   const [round, setRound] = useState(0);
   const [roundData, setRoundData] = useState<RoundData | null>(null);
-  const [selectedQuestion, setSelectedQuestion] = useState<string | null>(null);
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState<string | null>(null);
-  const [matchResult, setMatchResult] = useState<'correct' | 'wrong' | null>(null);
-  const [finished, setFinished] = useState(false);
+  const [matchFlash, setMatchFlash] = useState(false);
+  const [shakeIcon, setShakeIcon] = useState<string | null>(null);
+  const [elapsed, setElapsed] = useState(0);
+  const [finalTime, setFinalTime] = useState(0);
+
+  const startTimeRef = useRef<number | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const advanceRef = useRef<NodeJS.Timeout | null>(null);
+  const [mounted, setMounted] = useState(false);
 
-  // Generate round data on mount and round change
+  // Avoid hydration mismatch
+  useEffect(() => setMounted(true), []);
+
+  // Timer
   useEffect(() => {
-    if (questions.length === 0) return;
-    const q = questions[round % questions.length];
-    setRoundData(generateRound(q, questions));
-    setSelectedQuestion(null);
-    setSelectedAnswer(null);
-    setFeedback(null);
-    setMatchResult(null);
-  }, [round, questions]);
+    if (phase !== 'playing') return;
+    timerRef.current = setInterval(() => {
+      if (startTimeRef.current) {
+        setElapsed(Date.now() - startTimeRef.current);
+      }
+    }, 100);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [phase]);
 
-  // Cleanup timer
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (advanceRef.current) clearTimeout(advanceRef.current);
     };
   }, []);
 
-  const currentQuestion = questions[round % questions.length] as MathQuestion | undefined;
+  const startGame = useCallback(() => {
+    const data = generateRound();
+    setRoundData(data);
+    setRound(0);
+    setMatchFlash(false);
+    setShakeIcon(null);
+    setElapsed(0);
+    setFinalTime(0);
+    startTimeRef.current = Date.now();
+    setPhase('playing');
+    playSound('click');
+  }, []);
 
-  const checkMatch = useCallback(
-    (questionId: string | null, answerId: string | null) => {
-      if (!questionId || !answerId || !roundData || !currentQuestion) return;
+  const advanceRound = useCallback(() => {
+    const nextRound = round + 1;
+    if (nextRound >= TOTAL_ROUNDS) {
+      const time = startTimeRef.current ? Date.now() - startTimeRef.current : 0;
+      setFinalTime(time);
+      setPhase('finished');
+      playSound('achievement');
+    } else {
+      setRound(nextRound);
+      setRoundData(generateRound());
+      setMatchFlash(false);
+      setShakeIcon(null);
+    }
+  }, [round]);
 
-      const qItem = roundData.leftItems.find((item) => item.id === questionId);
-      const aItem = roundData.rightItems.find((item) => item.id === answerId);
-      if (!qItem || !aItem) return;
+  const handleTap = useCallback(
+    (iconName: string) => {
+      if (!roundData || matchFlash) return;
 
-      if (qItem.isMatch && aItem.isMatch) {
-        // Correct!
-        setMatchResult('correct');
-        setFeedback(randomEncouragement());
+      if (iconName === roundData.matchName) {
         playSound('success');
-        recordProgress('number_match', currentQuestion.ref, 'correct');
-
-        timerRef.current = setTimeout(() => {
-          const nextRound = round + 1;
-          if (nextRound >= TOTAL_ROUNDS) {
-            setFinished(true);
-            playSound('achievement');
-          } else {
-            setRound(nextRound);
-          }
-        }, 1000);
+        setMatchFlash(true);
+        advanceRef.current = setTimeout(advanceRound, 500);
       } else {
-        // Wrong
-        setMatchResult('wrong');
-        setFeedback('Try again!');
         playSound('pop');
-
-        timerRef.current = setTimeout(() => {
-          setSelectedQuestion(null);
-          setSelectedAnswer(null);
-          setMatchResult(null);
-          setFeedback(null);
-        }, 800);
+        setShakeIcon(iconName);
+        setTimeout(() => setShakeIcon(null), 400);
       }
     },
-    [roundData, currentQuestion, round],
+    [roundData, matchFlash, advanceRound],
   );
 
-  const handleSelectLeft = useCallback(
-    (itemId: string) => {
-      if (matchResult) return;
-      setSelectedQuestion(itemId);
-      // If answer already selected, check
-      if (selectedAnswer) {
-        checkMatch(itemId, selectedAnswer);
-      }
-    },
-    [selectedAnswer, checkMatch, matchResult],
-  );
+  const handlePlayAgain = useCallback(() => {
+    setPhase('ready');
+    setRoundData(null);
+  }, []);
 
-  const handleSelectRight = useCallback(
-    (itemId: string) => {
-      if (matchResult) return;
-      setSelectedAnswer(itemId);
-      // If question already selected, check
-      if (selectedQuestion) {
-        checkMatch(selectedQuestion, itemId);
-      }
-    },
-    [selectedQuestion, checkMatch, matchResult],
-  );
+  if (!mounted) return <LoadingSpinner />;
 
-  /* ── renders ─────────────────────────────────────────────────── */
-
-  if (questions.length === 0) {
+  /* ── ready screen ───────────────────────────────────────────── */
+  if (phase === 'ready') {
     return (
-      <div className="flex flex-col items-center gap-4 py-12">
+      <div className="flex flex-col items-center gap-8 py-12">
         <Breadcrumbs />
-        <p className="text-garden-text-light text-lg">
-          No questions to show — go back and pick some tables!
-        </p>
+        <div className="text-center">
+          <h1 className="page-title text-3xl sm:text-4xl flex items-center justify-center gap-2">
+            <Cards weight="duotone" size={40} className="text-primary" />
+            Dobble
+          </h1>
+          <p className="text-garden-text-light mt-2 text-lg">
+            Find the matching icon between two cards — fast!
+          </p>
+          <p className="text-garden-text-light text-sm mt-1">
+            {TOTAL_ROUNDS} rounds · Tap the icon that appears on both cards
+          </p>
+        </div>
+        <Button variant="fun" size="lg" onClick={startGame}>
+          Ready? Play!
+        </Button>
       </div>
     );
   }
 
-  if (finished) {
+  /* ── finished screen ────────────────────────────────────────── */
+  if (phase === 'finished') {
     return (
       <div className="flex flex-col items-center gap-6 py-12">
         <Breadcrumbs />
         <CelebrationOverlay
           show
-          message="Number Match champion!"
-          emoji={<Star weight="duotone" size={72} color="#FFD54F" />}
-          onDismiss={() => setFinished(false)}
-          navigateBack
-          autoCloseMs={5000}
+          message={`Dobble master! ${formatTime(finalTime)}`}
+          emoji={<Trophy weight="duotone" size={72} color="#FFD54F" />}
+          onDismiss={handlePlayAgain}
+          autoCloseMs={6000}
         />
+        <div className="text-center mt-4 z-10">
+          <p className="text-2xl font-bold text-primary">{formatTime(finalTime)}</p>
+          <p className="text-garden-text-light text-sm mt-1">
+            You completed {TOTAL_ROUNDS} rounds!
+          </p>
+          <div className="mt-4">
+            <Button variant="fun" size="lg" onClick={handlePlayAgain}>
+              Play Again
+            </Button>
+          </div>
+        </div>
       </div>
     );
   }
 
+  /* ── playing screen ─────────────────────────────────────────── */
   return (
     <div className="flex flex-col gap-4 pb-12">
       <Breadcrumbs />
@@ -266,11 +316,14 @@ function NumberMatch() {
       <div className="text-center">
         <h1 className="page-title text-2xl sm:text-3xl flex items-center justify-center gap-2">
           <Cards weight="duotone" size={32} className="text-primary" />
-          Number Match
+          Dobble
         </h1>
-        <p className="text-sm text-garden-text-light mt-1">
-          Find the matching pair!
+
+        {/* Timer */}
+        <p className="text-2xl font-mono font-bold text-primary mt-1 tabular-nums">
+          {formatTime(elapsed)}
         </p>
+
         <p className="text-xs text-garden-text-light">
           Round {round + 1} of {TOTAL_ROUNDS}
         </p>
@@ -282,43 +335,39 @@ function NumberMatch() {
           key={round}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.2 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 px-4"
         >
-          {/* Left card — questions */}
           <DobbleCard
-            items={roundData.leftItems}
+            icons={roundData.leftIcons}
             borderColor="border-primary"
-            label="Questions"
-            selectedId={selectedQuestion}
-            matchResult={matchResult}
-            onSelect={handleSelectLeft}
+            matchName={roundData.matchName}
+            matchFlash={matchFlash}
+            shakeIcon={shakeIcon}
+            onTap={handleTap}
           />
-
-          {/* Right card — answers */}
           <DobbleCard
-            items={roundData.rightItems}
+            icons={roundData.rightIcons}
             borderColor="border-accent"
-            label="Answers"
-            selectedId={selectedAnswer}
-            matchResult={matchResult}
-            onSelect={handleSelectRight}
+            matchName={roundData.matchName}
+            matchFlash={matchFlash}
+            shakeIcon={shakeIcon}
+            onTap={handleTap}
           />
         </motion.div>
       )}
 
-      {/* Feedback */}
-      <div className="h-12 flex items-center justify-center">
+      {/* Feedback area */}
+      <div className="h-8 flex items-center justify-center">
         <AnimatePresence>
-          {feedback && (
+          {matchFlash && (
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className={`text-lg font-bold ${
-                matchResult === 'correct' ? 'text-primary' : 'text-fun-orange'
-              }`}
+              className="text-lg font-bold text-primary"
             >
-              {feedback}
+              ✓ Match!
             </motion.p>
           )}
         </AnimatePresence>
@@ -327,81 +376,71 @@ function NumberMatch() {
   );
 }
 
-/* ── Dobble-style circular card ─────────────────────────────────── */
+/* ── Dobble circular card ───────────────────────────────────────── */
 
 interface DobbleCardProps {
-  items: CardItem[];
+  icons: CardIcon[];
   borderColor: string;
-  label: string;
-  selectedId: string | null;
-  matchResult: 'correct' | 'wrong' | null;
-  onSelect: (id: string) => void;
+  matchName: string;
+  matchFlash: boolean;
+  shakeIcon: string | null;
+  onTap: (name: string) => void;
 }
 
 function DobbleCard({
-  items,
+  icons,
   borderColor,
-  label,
-  selectedId,
-  matchResult,
-  onSelect,
+  matchName,
+  matchFlash,
+  shakeIcon,
+  onTap,
 }: DobbleCardProps) {
   return (
-    <div className="flex flex-col items-center gap-2">
-      <span className="text-xs font-semibold text-garden-text-light uppercase tracking-wide">
-        {label}
-      </span>
-      <div
-        className={`relative w-72 h-72 sm:w-80 sm:h-80 rounded-full bg-white ${borderColor} border-4 shadow-lg select-none`}
-      >
-        {items.map((item) => {
-          const isSelected = item.id === selectedId;
-          const isCorrectMatch = matchResult === 'correct' && isSelected && item.isMatch;
-          const isWrongMatch = matchResult === 'wrong' && isSelected;
+    <div
+      className={`relative w-72 h-72 sm:w-80 sm:h-80 rounded-full bg-white ${borderColor} border-4 shadow-lg select-none overflow-hidden`}
+    >
+      {icons.map((item) => {
+        const pos = POSITIONS_6[item.posIndex];
+        const isMatch = item.name === matchName;
+        const showGlow = matchFlash && isMatch;
+        const isShaking = shakeIcon === item.name;
 
-          return (
-            <motion.button
-              key={item.id}
-              onClick={() => onSelect(item.id)}
-              className="absolute font-bold cursor-pointer rounded-lg px-3 py-1 min-w-[44px] min-h-[44px] flex items-center justify-center"
-              style={{
-                top: item.top,
-                left: item.left,
-                fontSize: item.fontSize,
-                color: item.color,
-              }}
-              initial={false}
-              animate={{
-                scale: isSelected ? 1.15 : 1,
-                rotate: item.rotation,
-                x: '-50%',
-                y: '-50%',
-                ...(isWrongMatch
-                  ? { x: ['-50%', '-45%', '-55%', '-50%'] }
-                  : {}),
-              }}
-              transition={
-                isWrongMatch
-                  ? { duration: 0.3, ease: 'easeInOut' }
-                  : { type: 'spring', stiffness: 300, damping: 20 }
-              }
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
+        return (
+          <motion.button
+            key={item.name}
+            onClick={() => onTap(item.name)}
+            className="absolute flex items-center justify-center cursor-pointer transition-transform"
+            style={{
+              top: pos.top,
+              left: pos.left,
+              transform: `translate(-50%, -50%) rotate(${item.rotation}deg)`,
+            }}
+            initial={false}
+            animate={{
+              scale: showGlow ? 1.3 : 1,
+              ...(isShaking
+                ? { x: [0, -6, 6, -6, 6, 0] }
+                : {}),
+            }}
+            transition={
+              isShaking
+                ? { duration: 0.35, ease: 'easeInOut' }
+                : { type: 'spring', stiffness: 300, damping: 20 }
+            }
+            whileHover={{ scale: 1.15 }}
+            whileTap={{ scale: 0.9 }}
+            aria-label={item.name}
+          >
+            <span
+              className={`rounded-full p-1.5 transition-shadow duration-150 ${
+                showGlow ? 'ring-4 ring-yellow-400 bg-yellow-50 shadow-lg' : ''
+              }`}
             >
-              <span
-                className={`
-                  rounded-lg px-1 transition-shadow duration-200
-                  ${isSelected ? 'ring-2 ring-offset-2 ring-primary shadow-md' : ''}
-                  ${isCorrectMatch ? 'ring-4 ring-green-400 bg-green-50' : ''}
-                  ${isWrongMatch ? 'ring-4 ring-red-400 bg-red-50' : ''}
-                `}
-              >
-                {item.text}
-              </span>
-            </motion.button>
-          );
-        })}
-      </div>
+              <item.Icon weight="duotone" size={item.size} color={item.color} />
+            </span>
+          </motion.button>
+        );
+      })}
     </div>
   );
 }

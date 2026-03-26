@@ -114,8 +114,27 @@ export default function DevIconsPage() {
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">
-      <h1 className="text-3xl font-extrabold text-garden-text mb-2">Icon Library</h1>
-      <p className="text-garden-text-light mb-8">All SVG and Phosphor icons used in SpellBound</p>
+      <h1 className="text-3xl font-extrabold text-garden-text mb-2">Dev</h1>
+      <p className="text-garden-text-light mb-8">Development tools and game prototypes</p>
+
+      {/* Game prototypes */}
+      <section className="mb-10">
+        <h2 className="text-xl font-bold text-garden-text mb-4 border-b border-garden-border pb-2">Game Prototypes</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <a href="/dev/game" className="flex items-center gap-3 p-4 rounded-xl bg-white shadow-sm border border-garden-border/30 hover:shadow-md transition-shadow">
+            <GameController weight="duotone" size={32} color="#9C27B0" />
+            <div>
+              <span className="font-bold text-garden-text">Spot Match</span>
+              <p className="text-xs text-garden-text-light">Dobble-style icon matching game</p>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      {/* Icon library */}
+      <section className="mb-10">
+        <h2 className="text-xl font-bold text-garden-text mb-4 border-b border-garden-border pb-2">Icon Library</h2>
+      </section>
 
       {categories.map((cat) => (
         <section key={cat} className="mb-10">
