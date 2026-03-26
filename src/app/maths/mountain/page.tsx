@@ -7,8 +7,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Button from '@/components/ui/Button';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
-import { Bear } from '@/components/svg';
-import { Flag, Signpost, Bird, Mountains, Star } from '@phosphor-icons/react';
+import { Flag, Signpost, Bird, Mountains, Star, PersonSimpleHike } from '@phosphor-icons/react';
 import { playSound } from '@/lib/sounds';
 import {
   generateQuestions,
@@ -213,7 +212,7 @@ function MathMountain() {
             className="absolute"
             style={{ transform: 'translate(-50%, 50%)' }}
           >
-            <Bear size={36} />
+            <PersonSimpleHike weight="duotone" size={32} color="#8D6E63" />
           </motion.div>
 
           {/* Flag at top */}

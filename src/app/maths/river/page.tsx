@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
-import { Frog } from '@/components/svg';
+import { Fish } from '@phosphor-icons/react';
 import { playSound } from '@/lib/sounds';
 import {
   generateQuestions,
@@ -48,7 +48,7 @@ function NumberRiver() {
   const [wrongCount, setWrongCount] = useState(0);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [tappedPad, setTappedPad] = useState<number | null>(null);
-  const [showFrog, setShowFrog] = useState(false);
+  const [showSplash, setShowSplash] = useState(false);
   const [finished, setFinished] = useState(false);
   const [answers, setAnswers] = useState<number[]>(() => {
     const q = questions[0];
@@ -68,7 +68,7 @@ function NumberRiver() {
       setWrongCount(0);
       setFeedback(null);
       setTappedPad(null);
-      setShowFrog(false);
+      setShowSplash(false);
       if (nextQ) setAnswers(makeShuffledAnswers(nextQ.answer, nextQ.wrongAnswers));
     }
   }, [currentIndex, questions]);
@@ -80,7 +80,7 @@ function NumberRiver() {
       if (answer === question.answer) {
         playSound('splash');
         setTappedPad(answer);
-        setShowFrog(true);
+        setShowSplash(true);
         setFeedback(randomEncouragement());
         const result = wrongCount > 0 ? 'helped' : 'correct';
         recordProgress('maths_river', question.ref, result);
@@ -121,7 +121,7 @@ function NumberRiver() {
         <CelebrationOverlay
           show={true}
           message="You crossed the river!"
-          emoji={<Frog variant="jumping" size={72} />}
+          emoji={<Fish weight="duotone" size={72} color="#4CAF50" />}
           onDismiss={() => setFinished(false)}
           navigateBack
           autoCloseMs={5000}
@@ -168,14 +168,14 @@ function NumberRiver() {
               className="text-center"
             >
               <p className="text-xl font-extrabold text-primary">{feedback}</p>
-              {showFrog && (
+              {showSplash && (
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   className="inline-flex items-center gap-2 mt-1"
                 >
-                  <Frog variant="sitting" size={28} />
-                  <span className="text-4xl font-extrabold">Ribbit!</span>
+                  <Fish weight="duotone" size={28} color="#4CAF50" />
+                  <span className="text-4xl font-extrabold">Splash!</span>
                 </motion.div>
               )}
             </motion.div>
@@ -267,7 +267,7 @@ function NumberRiver() {
                         animate={{ scale: 1 }}
                         className="absolute -top-5"
                       >
-                        <Frog variant="jumping" size={32} />
+                        <Fish weight="duotone" size={32} color="#4CAF50" />
                       </motion.div>
                     )}
                   </motion.button>

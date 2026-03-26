@@ -258,7 +258,7 @@ function Rainbow() {
   return (
     <motion.div
       className="absolute left-1/2 -translate-x-1/2 select-none pointer-events-none"
-      style={{ top: '25%' }}
+      style={{ top: '25%', zIndex: 0 }}
       initial={{ opacity: 0, scale: 0 }}
       animate={{ opacity: 0.7, scale: 1 }}
       transition={{ delay: 1.5, type: 'spring', stiffness: 100, damping: 15 }}
@@ -435,6 +435,7 @@ export default function ProgressPage() {
             height: '18%',
             background: 'linear-gradient(180deg, #66BB6A 0%, #43A047 50%, #8D6E63 100%)',
             borderRadius: '60% 60% 0 0 / 30% 30% 0 0',
+            zIndex: 10,
           }}
         />
 
@@ -444,6 +445,7 @@ export default function ProgressPage() {
           style={{
             height: '8%',
             background: '#6D4C41',
+            zIndex: 10,
           }}
         />
 
