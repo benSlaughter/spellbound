@@ -294,3 +294,7 @@ Edit the `Difficulty` type and `generateQuestions()` in `src/lib/maths-helpers.t
 
 ### Add new sound effects
 Add a new function in `src/lib/sounds.ts`, add the name to the `SoundName` type, and add a case to the `playSound()` switch.
+
+## Roadmap & Issues
+
+See `docs/ROADMAP.md` for the full project roadmap (short/medium/long term). All work items are tracked as GitHub Issues with labels: `short-term`, `medium-term`, `long-term`, plus category labels (`dev`, `design`, `product`, `game`, `garden`, `polish`).
