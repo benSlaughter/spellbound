@@ -15,6 +15,8 @@ import {
   Mountains,
   PuzzlePiece,
   FishSimple,
+  Door,
+  Lightning,
 } from '@phosphor-icons/react';
 
 const ALL_TABLES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -62,6 +64,20 @@ const GAMES = [
     emoji: <FishSimple weight="duotone" size={48} color="#4CAF50" />,
     path: 'river',
     color: 'bg-primary/20',
+  },
+  {
+    title: 'Math Maze',
+    description: 'Find your way through the maze!',
+    emoji: <Door weight="duotone" size={48} color="#FF8F00" />,
+    path: 'maze',
+    color: 'bg-fun-orange/20',
+  },
+  {
+    title: 'Number Cascade',
+    description: 'Trigger chain reactions with correct answers!',
+    emoji: <Lightning weight="duotone" size={48} color="#FFD54F" />,
+    path: 'cascade',
+    color: 'bg-secondary/20',
   },
 ];
 

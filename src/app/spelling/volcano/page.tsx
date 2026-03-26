@@ -203,7 +203,7 @@ export default function VolcanoPage() {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                activity_type: 'word_volcano',
+                activity_type: 'spelling_volcano',
                 activity_ref: currentWord.word,
                 result: 'correct',
               }),

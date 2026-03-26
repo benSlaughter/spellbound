@@ -15,6 +15,9 @@ import {
   PencilSimple,
   Plant,
   Flower,
+  CloudArrowDown,
+  Mountains,
+  GridFour,
 } from '@phosphor-icons/react';
 
 interface SpellingWord {
@@ -79,6 +82,27 @@ const games = [
     emoji: <SpeakerHigh weight="duotone" size={48} color="#FFD54F" />,
     href: '/spelling/builder',
     color: 'bg-secondary/10 border-2 border-secondary/30',
+  },
+  {
+    title: 'Spell Catcher',
+    description: 'Catch the falling letters to spell the word!',
+    emoji: <CloudArrowDown weight="duotone" size={48} color="#42A5F5" />,
+    href: '/spelling/catcher',
+    color: 'bg-accent-light/10 border-2 border-accent-light/30',
+  },
+  {
+    title: 'Word Volcano',
+    description: 'Tap letter rocks before the lava rises!',
+    emoji: <Mountains weight="duotone" size={48} color="#EF5350" />,
+    href: '/spelling/volcano',
+    color: 'bg-fun-orange/10 border-2 border-fun-orange/30',
+  },
+  {
+    title: 'Wordal',
+    description: 'Guess the hidden word in 6 tries!',
+    emoji: <GridFour weight="duotone" size={48} color="#66BB6A" />,
+    href: '/spelling/wordal',
+    color: 'bg-primary-light/10 border-2 border-primary-light/30',
   },
 ];
 

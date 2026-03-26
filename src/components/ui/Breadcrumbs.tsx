@@ -29,6 +29,11 @@ const ROUTE_NAMES: Record<string, string> = {
   'game1': 'Spell Catcher',
   'game4': 'Number Cascade',
   'game5': 'Wordal',
+  'catcher': 'Spell Catcher',
+  'volcano': 'Word Volcano',
+  'wordal': 'Wordal',
+  'maze': 'Math Maze',
+  'cascade': 'Number Cascade',
 };
 
 export default function Breadcrumbs() {
