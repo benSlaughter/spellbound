@@ -411,12 +411,18 @@ export default function ProgressPage() {
       className="flex flex-col gap-8 pb-8"
     >
       {/* Header */}
-      <motion.div variants={fadeUp} className="flex items-center gap-3">
+      <motion.div variants={fadeUp}>
         <Breadcrumbs />
+      </motion.div>
+
+      <motion.section variants={fadeUp} className="text-center">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-garden-text">
           My Garden
         </h1>
-      </motion.div>
+        <p className="mt-1 text-garden-text-light">
+          Watch your garden grow as you learn!
+        </p>
+      </motion.section>
 
       {/* ── Visual Garden Scene ── */}
       <motion.div
