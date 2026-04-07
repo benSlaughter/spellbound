@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import GameCard from '@/components/ui/GameCard';
-import { Plant, Tree, TreeEvergreen, Lightning, Books, Calculator, GameController, Trophy } from '@phosphor-icons/react';
+import { Plant, Tree, TreeEvergreen, Lightning, Books, Calculator, GameController } from '@phosphor-icons/react';
 import { SvgDaisy, SvgTulip, SvgBluebell, SvgDaffodil, SvgLavender } from '@/components/svg';
 import Link from 'next/link';
 
@@ -47,20 +47,6 @@ export default function Home() {
         </p>
       </motion.section>
 
-      {/* Daily Challenge */}
-      <motion.div variants={fadeUp}>
-        <Link
-          href="/challenge"
-          className="game-card p-5 flex items-center gap-4 bg-amber-50 border-2 border-amber-200 hover:border-amber-300 transition-colors"
-        >
-          <Lightning weight="duotone" size={32} className="text-amber-500 shrink-0" />
-          <div>
-            <p className="font-bold text-garden-text">Daily Challenge</p>
-            <p className="text-garden-text-light text-sm">A quick mix of your spelling and maths — practise what needs it most!</p>
-          </div>
-        </Link>
-      </motion.div>
-
       {/* Main activity cards */}
       <motion.section variants={fadeUp}>
         <h2 className="text-xl font-bold text-garden-text mb-4">
@@ -90,11 +76,10 @@ export default function Home() {
           />
           <GameCard
             title="Challenges"
-            description="Coming soon — special missions to test your skills!"
-            emoji={<Trophy weight="duotone" size={48} color="#FF9800" />}
+            description="A quick mix of spelling and maths — practise what needs it most!"
+            emoji={<Lightning weight="duotone" size={48} color="#F59E0B" />}
             href="/challenges"
-            color="bg-fun-orange/10 border-2 border-fun-orange/30"
-            locked
+            color="bg-amber-50 border-2 border-amber-200"
           />
         </div>
       </motion.section>

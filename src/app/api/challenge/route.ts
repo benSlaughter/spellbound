@@ -19,7 +19,7 @@ export async function GET() {
 
     // --- Spelling: get active list words ---
     const activeList = db.prepare(
-      "SELECT id FROM spelling_lists WHERE profile_id = ? AND is_active = 1 LIMIT 1"
+      "SELECT id FROM spelling_lists WHERE is_active = 1 AND (profile_id = ? OR profile_id IS NULL) LIMIT 1"
     ).get(profileId) as { id: number } | undefined;
 
     let spellingItems: { word: string; hint: string | null; confidence: number }[] = [];
