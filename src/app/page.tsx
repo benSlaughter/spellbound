@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import GameCard from '@/components/ui/GameCard';
-import { Plant, Tree, TreeEvergreen, Lightbulb, Books, Calculator, GameController, Trophy } from '@phosphor-icons/react';
+import { Plant, Tree, TreeEvergreen, Lightning, Books, Calculator, GameController, Trophy } from '@phosphor-icons/react';
 import { SvgDaisy, SvgTulip, SvgBluebell, SvgDaffodil, SvgLavender } from '@/components/svg';
 import Link from 'next/link';
 
@@ -20,16 +20,8 @@ const fadeUp = {
   show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
 };
 
-const SUGGESTIONS = [
-  'Why not try some spelling practice?',
-  'Ready for a maths challenge?',
-  'Your garden is waiting to grow!',
-  'Practice makes perfect — let\'s go!',
-];
-
 export default function Home() {
   const [name, setName] = useState('Learner');
-  const suggestion = SUGGESTIONS[new Date().getDay() % SUGGESTIONS.length];
 
   useEffect(() => {
     fetch('/api/profile')
@@ -55,16 +47,18 @@ export default function Home() {
         </p>
       </motion.section>
 
-      {/* Today's suggestion */}
-      <motion.div
-        variants={fadeUp}
-        className="game-card p-5 flex items-center gap-4 bg-secondary-light/30 border border-secondary/30"
-      >
-        <Lightbulb weight="duotone" size={28} color="#FFD54F" />
-        <div>
-          <p className="font-bold text-garden-text">Today&apos;s idea</p>
-          <p className="text-garden-text-light">{suggestion}</p>
-        </div>
+      {/* Daily Challenge */}
+      <motion.div variants={fadeUp}>
+        <Link
+          href="/challenge"
+          className="game-card p-5 flex items-center gap-4 bg-amber-50 border-2 border-amber-200 hover:border-amber-300 transition-colors"
+        >
+          <Lightning weight="duotone" size={32} className="text-amber-500 shrink-0" />
+          <div>
+            <p className="font-bold text-garden-text">Daily Challenge</p>
+            <p className="text-garden-text-light text-sm">A quick mix of your spelling and maths — practise what needs it most!</p>
+          </div>
+        </Link>
       </motion.div>
 
       {/* Main activity cards */}

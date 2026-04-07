@@ -27,6 +27,7 @@ const ROUTE_NAMES: Record<string, string> = {
   'settings': 'Settings',
   'tables': 'Times Tables',
   'feedback': 'Feedback',
+  'challenge': 'Daily Challenge',
   'catcher': 'Spell Catcher',
   'volcano': 'Word Volcano',
   'wordal': 'Wordal',
