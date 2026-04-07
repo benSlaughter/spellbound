@@ -62,17 +62,63 @@ interface AchievementData {
   unlocked_at: string | null;
 }
 
+interface ItemConfidence {
+  ref: string;
+  correct: number;
+  helped: number;
+  skipped: number;
+  total: number;
+  lastSeen: string | null;
+  confidence: number;
+}
+
+/** Simple confidence score: weighted correct ratio with time decay. */
+function computeConfidence(item: { correct: number; helped: number; total: number; lastSeen: string | null }): number {
+  if (item.total === 0 || !item.lastSeen) return 0;
+  const weighted = (item.correct + item.helped * 0.5) / item.total;
+  const days = Math.max(0, (Date.now() - new Date(item.lastSeen).getTime()) / 86400000);
+  return weighted * Math.pow(0.5, days / 14);
+}
+
+function confidenceColor(c: number): string {
+  if (c >= 0.7) return 'bg-emerald-100 text-emerald-800 border-emerald-300';
+  if (c >= 0.4) return 'bg-amber-100 text-amber-800 border-amber-300';
+  return 'bg-red-100 text-red-800 border-red-300';
+}
+
+function confidenceLabel(c: number): string {
+  if (c >= 0.7) return 'Strong';
+  if (c >= 0.4) return 'Developing';
+  return 'Needs practice';
+}
+
+function ConfidencePill({ item }: { item: ItemConfidence }) {
+  return (
+    <div
+      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-sm font-medium ${confidenceColor(item.confidence)}`}
+      title={`${item.ref}: ${item.correct} correct, ${item.helped} helped, ${item.skipped} skipped — ${confidenceLabel(item.confidence)}`}
+    >
+      <span className="font-bold">{item.ref}</span>
+      <span className="opacity-60 text-xs">({item.correct}/{item.total})</span>
+    </div>
+  );
+}
+
 export default function ProgressPage() {
   const [progress, setProgress] = useState<ProgressSummary | null>(null);
   const [achievements, setAchievements] = useState<AchievementData[]>([]);
+  const [spellingConfidence, setSpellingConfidence] = useState<ItemConfidence[]>([]);
+  const [mathsConfidence, setMathsConfidence] = useState<ItemConfidence[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const fetchData = useCallback(async () => {
     try {
-      const [progressRes, achievementsRes] = await Promise.all([
+      const [progressRes, achievementsRes, spellingStatsRes, mathsStatsRes] = await Promise.all([
         fetch("/api/progress"),
         fetch("/api/achievements"),
+        fetch("/api/progress/items?kind=spelling"),
+        fetch("/api/progress/items?kind=maths"),
       ]);
 
       const progressData = await progressRes.json();
@@ -80,6 +126,30 @@ export default function ProgressPage() {
 
       setProgress(progressData);
       setAchievements(achievementsData);
+
+      if (spellingStatsRes.ok) {
+        const spellingData = await spellingStatsRes.json();
+        setSpellingConfidence(
+          spellingData.items
+            .map((item: ItemConfidence) => ({
+              ...item,
+              confidence: computeConfidence(item),
+            }))
+            .sort((a: ItemConfidence, b: ItemConfidence) => a.confidence - b.confidence)
+        );
+      }
+
+      if (mathsStatsRes.ok) {
+        const mathsData = await mathsStatsRes.json();
+        setMathsConfidence(
+          mathsData.items
+            .map((item: ItemConfidence) => ({
+              ...item,
+              confidence: computeConfidence(item),
+            }))
+            .sort((a: ItemConfidence, b: ItemConfidence) => a.confidence - b.confidence)
+        );
+      }
     } catch {
       setError("Failed to load progress data");
     } finally {
@@ -239,6 +309,40 @@ export default function ProgressPage() {
           </div>
         )}
       </section>
+
+      {/* Learning Confidence */}
+      {(spellingConfidence.length > 0 || mathsConfidence.length > 0) && (
+        <section className="admin-card">
+          <h2 className="text-lg font-semibold text-stone-800 mb-2">
+            Learning Confidence
+          </h2>
+          <p className="text-sm text-stone-500 mb-4">
+            How well each item is known. Weaker items appear first in games automatically.
+          </p>
+
+          {spellingConfidence.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-sm font-semibold text-stone-600 mb-2">Spelling Words</h3>
+              <div className="flex flex-wrap gap-2">
+                {spellingConfidence.map((item) => (
+                  <ConfidencePill key={item.ref} item={item} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {mathsConfidence.length > 0 && (
+            <div>
+              <h3 className="text-sm font-semibold text-stone-600 mb-2">Maths Facts</h3>
+              <div className="flex flex-wrap gap-2">
+                {mathsConfidence.map((item) => (
+                  <ConfidencePill key={item.ref} item={item} />
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+      )}
 
       {/* Recent Activity */}
       <section className="admin-card">
