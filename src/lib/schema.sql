@@ -44,7 +44,8 @@ CREATE TABLE IF NOT EXISTS spelling_words (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   list_id INTEGER REFERENCES spelling_lists(id) ON DELETE CASCADE,
   word TEXT NOT NULL,
-  hint TEXT                      -- optional clue shown during games
+  hint TEXT,                     -- optional clue shown during games
+  UNIQUE(list_id, word)          -- prevent duplicate words within a list
 );
 
 -- Learning activity log. Every correct answer, hint

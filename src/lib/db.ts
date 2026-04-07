@@ -39,6 +39,7 @@ function getDb(): Database.Database {
   db.pragma("foreign_keys = ON");
 
   initSchema(db);
+  migrateSchema(db);
   seedDefaults(db);
 
   return db;
@@ -55,6 +56,15 @@ function initSchema(database: Database.Database): void {
     schema = fs.readFileSync(altPath, "utf-8");
   }
   database.exec(schema);
+}
+
+/** Apply incremental schema migrations for existing databases. */
+function migrateSchema(database: Database.Database): void {
+  // Add unique constraint on spelling_words(list_id, word) if missing.
+  // SQLite can't ALTER to add constraints, so we create the index instead.
+  database.exec(
+    "CREATE UNIQUE INDEX IF NOT EXISTS idx_spelling_words_unique ON spelling_words(list_id, word)"
+  );
 }
 
 /** Seed default profile ("Learner") and admin password ("spellbound123") if none exist. */
@@ -209,7 +219,7 @@ export function getWordsForList(listId: number) {
  */
 export function addWord(listId: number, word: string, hint?: string) {
   const result = getDb()
-    .prepare("INSERT INTO spelling_words (list_id, word, hint) VALUES (?, ?, ?)")
+    .prepare("INSERT OR IGNORE INTO spelling_words (list_id, word, hint) VALUES (?, ?, ?)")
     .run(listId, word, hint ?? null);
   return result.lastInsertRowid;
 }

@@ -141,7 +141,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
           listId
         );
         const insertWord = db.prepare(
-          "INSERT INTO spelling_words (list_id, word, hint) VALUES (?, ?, ?)"
+          "INSERT OR IGNORE INTO spelling_words (list_id, word, hint) VALUES (?, ?, ?)"
         );
         for (const w of words) {
           if (w.word && w.word.trim()) {

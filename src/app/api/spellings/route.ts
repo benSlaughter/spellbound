@@ -138,7 +138,7 @@ export async function POST(request: NextRequest) {
       "INSERT INTO spelling_lists (profile_id, name) VALUES (?, ?)"
     );
     const insertWord = db.prepare(
-      "INSERT INTO spelling_words (list_id, word, hint) VALUES (?, ?, ?)"
+      "INSERT OR IGNORE INTO spelling_words (list_id, word, hint) VALUES (?, ?, ?)"
     );
 
     const result = db.transaction(() => {
