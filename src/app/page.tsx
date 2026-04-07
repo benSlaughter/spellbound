@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import GameCard from '@/components/ui/GameCard';
 import { Plant, Tree, TreeEvergreen, Lightbulb, Books, Calculator, GameController, Trophy } from '@phosphor-icons/react';
@@ -27,7 +28,15 @@ const SUGGESTIONS = [
 ];
 
 export default function Home() {
+  const [name, setName] = useState('Learner');
   const suggestion = SUGGESTIONS[new Date().getDay() % SUGGESTIONS.length];
+
+  useEffect(() => {
+    fetch('/api/profile')
+      .then(res => res.ok ? res.json() : null)
+      .then(data => { if (data?.name) setName(data.name); })
+      .catch(() => {});
+  }, []);
 
   return (
     <motion.div
@@ -39,7 +48,7 @@ export default function Home() {
       {/* Welcome header */}
       <motion.section variants={fadeUp} className="text-center md:text-left">
         <h1 className="page-title text-left md:text-left">
-          Welcome back, <span className="text-primary">Learner</span>!
+          Welcome back, <span className="text-primary">{name}</span>!
         </h1>
         <p className="mt-2 text-lg text-garden-text-light">
           Your Magical Learning Garden is ready. What would you like to explore today?

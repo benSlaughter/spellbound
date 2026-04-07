@@ -113,6 +113,17 @@ export function getProfile(id: number) {
 }
 
 /**
+ * Update a profile's name.
+ * @param id - The profile ID
+ * @param name - New display name
+ */
+export function updateProfileName(id: number, name: string) {
+  return getDb()
+    .prepare("UPDATE profiles SET name = ? WHERE id = ?")
+    .run(name, id);
+}
+
+/**
  * Create a new user profile.
  * @param name - Display name for the profile
  * @param avatar - Avatar identifier (default: "sprout")

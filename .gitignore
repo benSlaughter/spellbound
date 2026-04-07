@@ -42,3 +42,6 @@ next-env.d.ts
 
 # database
 /data/
+
+# screenshots from QA testing
+/public/screenshots/

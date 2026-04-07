@@ -32,21 +32,23 @@ export default function MathMountainPage() {
 function MathMountain() {
   const searchParams = useSearchParams();
 
-  const [questions] = useState(() => {
-    const tables = parseTablesParam(searchParams.get('tables'));
-    const difficulty = parseDifficultyParam(searchParams.get('difficulty'));
-    return generateQuestions(tables, difficulty, TOTAL_STOPS);
-  });
-
+  const [questions, setQuestions] = useState<MathQuestion[]>([]);
   const [currentStop, setCurrentStop] = useState(0);
   const [wrongCount, setWrongCount] = useState(0);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [answered, setAnswered] = useState(false);
   const [finished, setFinished] = useState(false);
-  const [answers, setAnswers] = useState<number[]>(() => {
-    const q = questions[0];
-    return q ? makeShuffledAnswers(q.answer, q.wrongAnswers) : [];
-  });
+  const [answers, setAnswers] = useState<number[]>([]);
+
+  // Generate questions client-side only to avoid hydration mismatch
+  useEffect(() => {
+    const tables = parseTablesParam(searchParams.get('tables'));
+    const difficulty = parseDifficultyParam(searchParams.get('difficulty'));
+    const qs = generateQuestions(tables, difficulty, TOTAL_STOPS);
+    setQuestions(qs);
+    if (qs[0]) setAnswers(makeShuffledAnswers(qs[0].answer, qs[0].wrongAnswers));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Clean up timers on unmount

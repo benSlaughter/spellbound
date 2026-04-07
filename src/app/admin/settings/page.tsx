@@ -11,6 +11,7 @@ interface Settings {
 export default function SettingsPage() {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [loading, setLoading] = useState(true);
+  const [learnerName, setLearnerName] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
@@ -21,9 +22,16 @@ export default function SettingsPage() {
 
   const fetchSettings = useCallback(async () => {
     try {
-      const res = await fetch("/api/settings");
-      const data = await res.json();
+      const [settingsRes, profileRes] = await Promise.all([
+        fetch("/api/settings"),
+        fetch("/api/profile"),
+      ]);
+      const data = await settingsRes.json();
       setSettings(data);
+      if (profileRes.ok) {
+        const profile = await profileRes.json();
+        setLearnerName(profile.name || "");
+      }
     } catch {
       setError("Failed to load settings");
     } finally {
@@ -112,6 +120,31 @@ export default function SettingsPage() {
     await updateSetting("sounds_enabled", current ? "false" : "true");
   };
 
+  const handleSaveName = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!learnerName.trim()) return;
+    setSaving(true);
+    setError("");
+    setMessage("");
+    try {
+      const res = await fetch("/api/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: learnerName.trim() }),
+      });
+      if (res.ok) {
+        setMessage("Learner name updated");
+      } else {
+        const data = await res.json();
+        setError(data.error || "Failed to update name");
+      }
+    } catch {
+      setError("Connection error");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handleResetProgress = async () => {
     setSaving(true);
     setError("");
@@ -160,6 +193,40 @@ export default function SettingsPage() {
           {error}
         </div>
       )}
+
+      {/* Learner Name */}
+      <section className="admin-card mb-4">
+        <h2 className="text-lg font-semibold text-stone-800 mb-4">
+          Learner Name
+        </h2>
+        <form onSubmit={handleSaveName} className="flex gap-3 items-end">
+          <div className="flex-1">
+            <label
+              htmlFor="learner-name"
+              className="block text-sm font-medium text-stone-700 mb-1"
+            >
+              Shown in greetings and around the app
+            </label>
+            <input
+              id="learner-name"
+              type="text"
+              value={learnerName}
+              onChange={(e) => setLearnerName(e.target.value)}
+              className="input-admin"
+              placeholder="e.g. Rosie"
+              maxLength={50}
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={saving || !learnerName.trim()}
+            className="btn-admin-primary"
+          >
+            {saving ? "Saving…" : "Save"}
+          </button>
+        </form>
+      </section>
 
       {/* Change Password */}
       <section className="admin-card mb-4">
