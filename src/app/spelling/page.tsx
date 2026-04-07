@@ -5,14 +5,12 @@ import { motion } from 'framer-motion';
 import GameCard from '@/components/ui/GameCard';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
-import Link from 'next/link';
 import {
   Shuffle,
   MagnifyingGlass,
   SpeakerHigh,
   PuzzlePiece,
   Cards,
-  PencilSimple,
   Plant,
   Flower,
   CloudArrowDown,

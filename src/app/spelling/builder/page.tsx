@@ -10,7 +10,7 @@ import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
 import Button from '@/components/ui/Button';
 import { playSound } from '@/lib/sounds';
 import Link from 'next/link';
-import { Plant, PencilSimple, SpeakerHigh, Lightbulb, Sparkle, Trophy } from '@phosphor-icons/react';
+import { Plant, PencilSimple, SpeakerHigh, Lightbulb, Trophy } from '@phosphor-icons/react';
 
 interface SpellingWord {
   id: number;

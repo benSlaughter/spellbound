@@ -11,7 +11,7 @@ import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
 import Button from '@/components/ui/Button';
 import { playSound, speakWord } from '@/lib/sounds';
 import Link from 'next/link';
-import { Plant, PencilSimple, Lightbulb, Sparkle, Trophy, SpeakerHigh } from '@phosphor-icons/react';
+import { Plant, PencilSimple, Lightbulb, Trophy, SpeakerHigh } from '@phosphor-icons/react';
 
 interface SpellingWord {
   id: number;

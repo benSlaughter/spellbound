@@ -7,7 +7,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import Button from '@/components/ui/Button';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
-import { Flag, Signpost, Mountains, Star, PersonSimpleHike } from '@phosphor-icons/react';
+import { Flag, Signpost, Mountains, PersonSimpleHike } from '@phosphor-icons/react';
 import { playSound } from '@/lib/sounds';
 import {
   generateQuestions,

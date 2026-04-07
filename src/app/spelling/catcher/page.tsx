@@ -2,7 +2,7 @@
 
 import { shuffle as shuffleArray, recordProgress, smartWordOrder } from '@/lib/utils';
 
-import { Suspense, useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { Suspense, useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
