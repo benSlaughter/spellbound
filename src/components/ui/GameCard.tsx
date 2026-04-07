@@ -39,7 +39,7 @@ export default function GameCard({
       whileHover={locked ? undefined : { scale: 1.04, y: -4 }}
       whileTap={locked ? undefined : { scale: 0.98 }}
       className={`
-        relative game-card p-6 flex flex-col items-center text-center gap-3
+        relative game-card p-6 flex flex-col items-center text-center gap-3 h-full
         cursor-pointer select-none overflow-hidden
         ${locked ? 'opacity-60 grayscale' : ''}
         ${color}
@@ -51,7 +51,7 @@ export default function GameCard({
 
       <h3 className="text-xl font-extrabold text-garden-text">{title}</h3>
 
-      <p className="text-sm text-garden-text-light leading-snug">
+      <p className="text-sm text-garden-text-light leading-snug flex-1">
         {description}
       </p>
 
@@ -66,7 +66,7 @@ export default function GameCard({
   if (locked) return card;
 
   return (
-    <Link href={href} className="block">
+    <Link href={href} className="block h-full">
       {card}
     </Link>
   );
