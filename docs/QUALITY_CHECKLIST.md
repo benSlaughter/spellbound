@@ -113,16 +113,14 @@ These checks come directly from `docs/DESIGN_PHILOSOPHY.md`. If any fail, it's a
 
 | Issue | Severity | Details |
 |-------|----------|---------|
-| 7 unused imports | Low | page.tsx (Plant), builder (Sparkle), catcher (useMemo), spelling/page (Link, PencilSimple), scramble (Sparkle), mountain (Star), bubbles (Check) |
 | 6 API routes untested | Medium | challenge, settings, progress/items, unlocks, admin/login, admin/logout |
 | 47 inline styles | Low | Most are dynamic positioning (unavoidable). Some static ones in memory (3D transforms) and catcher (gradients) could be CSS classes |
-| Admin pages lack breadcrumbs | Low | Admin uses its own nav bar — breadcrumbs not needed there |
 | 2 potentially flaky tests | Low | progress.test.ts and feedback.test.ts use real dates — could break on timezone edge cases |
-| Missing DB indexes | Low | feedback(created_at), progress(profile_id, created_at) — not urgent at current scale |
 
 ### ✅ Previously Fixed (for reference)
 
 These were caught in earlier audits and resolved:
+- 7 unused imports across game pages → removed
 - Spelling games not using `recordProgress()` helper → extracted to shared `utils.ts`
 - Duplicate shuffle functions in 5 games → shared `shuffle()` in `utils.ts`
 - Hydration warnings on Mountain/River → moved to `useEffect`
@@ -135,27 +133,60 @@ These were caught in earlier audits and resolved:
 
 ## How to Run This Audit
 
-Quick automated checks:
+### Automated (one command)
 
 ```bash
-# Code quality
-npm run lint
-grep -r ': any\|as any' src/ --include='*.ts' --include='*.tsx'
-grep -rn 'console.log' src/ --include='*.ts' --include='*.tsx' | grep -v __tests__
-grep -rn 'TODO\|FIXME\|HACK' src/
-
-# Tests
-npm test
-
-# Inline styles count
-grep -rc 'style={{' src/ --include='*.tsx' | awk -F: '{s+=$2} END {print "Inline styles:", s}'
-
-# Security
-grep -rn 'checkCSRF\|checkAdminAuth' src/app/api/ | grep -v __tests__
+npm run quality
 ```
 
-Manual checks (do these by playing the app):
-- Play each game type, get answers wrong — is feedback always gentle?
-- Complete a game — does celebration show?
-- Check garden/progress page — are all numbers positive growth?
-- Test on phone viewport — are all buttons ≥44px?
+This runs `scripts/quality.sh` which checks: types, console.log, TODOs, lint, tests, npm audit, inline styles, docs, and prints a summary.
+
+### Test coverage report
+
+```bash
+npm run test:coverage
+```
+
+Check that key files in `src/lib/` and `src/app/api/` have meaningful coverage (aim for >80% on lib, >60% on API routes).
+
+### Build size
+
+```bash
+npm run build
+```
+
+Check the output for route sizes. Watch for any page over 200KB first-load JS.
+
+### Dependency audit
+
+```bash
+npm audit
+```
+
+Fix critical/high vulnerabilities immediately. Moderate can be tracked.
+
+### Manual Playtest Checklist
+
+Play through each of these scenarios on a phone-sized viewport:
+
+- [ ] **Word Scramble** — play 2 words, get 1 wrong. Is feedback gentle? Does celebration show at end?
+- [ ] **Missing Letters** — play 1 word. Are blanks tappable? Does it accept correct input?
+- [ ] **Number Bubbles** — play 2 questions, get 1 wrong. Do bubbles float? Is wrong feedback encouraging?
+- [ ] **Math Mountain** — play 3 stops. Does climber advance? Are buttons ≥44px?
+- [ ] **Daily Challenge** — complete all 6 questions. Does completion screen show with "Back to Garden" button?
+- [ ] **Garden page** — are all stats positive numbers? Do badges show correctly?
+- [ ] **Admin progress** — do confidence pills show? Are colours correct (red/amber/green)?
+- [ ] **Home page** — do all 4 cards work? Is the learner name correct?
+
+---
+
+## Audit History
+
+Track results over time to see trends.
+
+| Date | Tests | Lint Errors | Lint Warnings | Issues Found | Notes |
+|------|-------|-------------|---------------|-------------|-------|
+| 2026-03-26 | 211 / 18 files | 0 | 26 | Initial QA complete | Visual QA with Playwright |
+| 2026-04-07 (early) | 218 / 19 files | 0 | 26 | 7 issues found | Profile API tests, a11y fix, coverage config |
+| 2026-04-07 (mid) | 229 / 21 files | 0 | 33 | Tech debt cleanup | Shared utils, deduped shuffle/progress |
+| 2026-04-07 (late) | 246 / 22 files | 0 | 27 | Spaced repetition shipped | SR engine, challenge mode, unused imports fixed |
