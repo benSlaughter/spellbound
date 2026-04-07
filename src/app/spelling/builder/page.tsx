@@ -3,6 +3,7 @@
 import { Suspense, useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { recordProgress } from '@/lib/utils';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
@@ -170,17 +171,7 @@ function Builder() {
         playSound('success');
 
         const result = usedHelp ? 'helped' : 'correct';
-        fetch('/api/progress', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            activity_type: 'spelling_builder',
-            activity_ref: currentWord.word,
-            result,
-          }),
-        })
-          .then(() => fetch('/api/achievements', { method: 'POST', headers: { 'Content-Type': 'application/json' } }))
-          .catch((err) => console.error('Failed to record progress:', err));
+        recordProgress('spelling_builder', currentWord.word, result);
 
         timerRef.current = setTimeout(advanceToNext, 2000);
       }
@@ -208,17 +199,7 @@ function Builder() {
             setIsCorrect(true);
             setEncouragement(getEncouragement());
             playSound('success');
-            fetch('/api/progress', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                activity_type: 'spelling_builder',
-                activity_ref: currentWord.word,
-                result: 'helped',
-              }),
-            })
-              .then(() => fetch('/api/achievements', { method: 'POST', headers: { 'Content-Type': 'application/json' } }))
-              .catch((err) => console.error('Failed to record progress:', err));
+            recordProgress('spelling_builder', currentWord.word, 'helped');
             timerRef.current = setTimeout(advanceToNext, 2000);
           }
         }, 400);

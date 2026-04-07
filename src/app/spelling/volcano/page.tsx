@@ -3,6 +3,7 @@
 import { Suspense, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { recordProgress } from '@/lib/utils';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
@@ -219,22 +220,7 @@ function Volcano() {
           playSound('achievement');
 
           if (currentWord) {
-            fetch('/api/progress', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                activity_type: 'spelling_volcano',
-                activity_ref: currentWord.word,
-                result: 'correct',
-              }),
-            })
-              .then(() =>
-                fetch('/api/achievements', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                })
-              )
-              .catch((err) => console.error('Failed to record progress:', err));
+            recordProgress('spelling_volcano', currentWord.word, 'correct');
           }
 
           timerRef.current = setTimeout(advanceToNext, 2000);

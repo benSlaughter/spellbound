@@ -1,5 +1,7 @@
 'use client';
 
+import { shuffle as shuffleArray, recordProgress } from '@/lib/utils';
+
 import { Suspense, useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -46,14 +48,6 @@ interface Card {
   matched: boolean;
 }
 
-function shuffleArray<T>(arr: T[]): T[] {
-  const shuffled = [...arr];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-}
 
 const CARD_BACKS: ReactNode[] = [
   <Flower key="f1" weight="duotone" size={32} color="#E91E63" />,
@@ -170,17 +164,7 @@ function MemoryMatch() {
             setIsChecking(false);
 
             // Record progress
-            fetch('/api/progress', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                activity_type: 'spelling_memory',
-                activity_ref: first.word,
-                result: 'correct',
-              }),
-            })
-              .then(() => fetch('/api/achievements', { method: 'POST', headers: { 'Content-Type': 'application/json' } }))
-              .catch((err) => console.error('Failed to record progress:', err));
+            recordProgress('spelling_memory', first.word, 'correct');
 
             timerRef.current = setTimeout(() => setMatchMessage(''), 1500);
 

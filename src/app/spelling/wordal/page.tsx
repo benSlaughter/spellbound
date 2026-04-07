@@ -1,5 +1,7 @@
 'use client';
 
+import { shuffle as shuffleArray, recordProgress } from '@/lib/utils';
+
 import { Suspense, useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -61,14 +63,6 @@ function getEncouragement() {
   return ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)];
 }
 
-function shuffleArray<T>(arr: T[]): T[] {
-  const shuffled = [...arr];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-}
 
 /* ── Guess evaluation ── */
 
@@ -248,22 +242,7 @@ function Wordal() {
         playSound('success');
 
         // Record progress
-        fetch('/api/progress', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            activity_type: 'spelling_wordal',
-            activity_ref: currentWordObj?.word,
-            result: 'correct',
-          }),
-        })
-          .then(() =>
-            fetch('/api/achievements', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-            }),
-          )
-          .catch((err) => console.error('Failed to record progress:', err));
+        if (currentWordObj?.word) recordProgress('spelling_wordal', currentWordObj.word, 'correct');
 
         timerRef.current = setTimeout(() => setShowCelebration(true), 300);
         timerRef.current = setTimeout(() => {
@@ -276,22 +255,7 @@ function Wordal() {
         playSound('pop');
 
         // Record progress
-        fetch('/api/progress', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            activity_type: 'spelling_wordal',
-            activity_ref: currentWordObj?.word,
-            result: 'helped',
-          }),
-        })
-          .then(() =>
-            fetch('/api/achievements', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-            }),
-          )
-          .catch((err) => console.error('Failed to record progress:', err));
+        if (currentWordObj?.word) recordProgress('spelling_wordal', currentWordObj.word, 'helped');
 
         timerRef.current = setTimeout(() => setShowResult(true), 800);
       } else {

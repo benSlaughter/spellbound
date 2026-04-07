@@ -1,4 +1,8 @@
 /** A generated maths question with answer and distractors. */
+import { shuffle, recordProgress } from './utils';
+
+export { recordProgress };
+
 export interface MathQuestion {
   /** The displayed question text (e.g. "7 × 8") */
   question: string;
@@ -39,18 +43,11 @@ export function randomEncouragement(): string {
 }
 
 /**
- * Create a new shuffled copy of an array (Fisher-Yates shuffle).
+ * Shuffle an array (re-exported from utils for backwards compatibility).
  * @param arr - The array to shuffle
  * @returns A new array with elements in random order
  */
-export function shuffleArray<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+export { shuffle as shuffleArray };
 
 /**
  * Combine the correct answer with wrong answers and shuffle them.
@@ -59,17 +56,9 @@ export function shuffleArray<T>(arr: T[]): T[] {
  * @returns Shuffled array containing all answers
  */
 export function makeShuffledAnswers(correct: number, wrongAnswers: number[]): number[] {
-  return shuffleArray([correct, ...wrongAnswers]);
+  return shuffle([correct, ...wrongAnswers]);
 }
 
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 
 function generatePlausibleWrongAnswers(
   correctAnswer: number,
@@ -216,30 +205,4 @@ export function parseDifficultyParam(param: string | null): Difficulty {
   const valid: Difficulty[] = ['seedling', 'sapling', 'tree', 'mighty_oak'];
   if (param && valid.includes(param as Difficulty)) return param as Difficulty;
   return 'sapling';
-}
-
-/**
- * Client-side helper to record a progress event and check for new achievements.
- * Posts to /api/progress then /api/achievements. Silently fails to avoid
- * interrupting the child's experience.
- * @param activityType - Game identifier (e.g. "maths_bubbles")
- * @param activityRef - What was practised (e.g. "7x8")
- * @param result - Outcome: "correct", "helped", or "skipped"
- */
-export async function recordProgress(
-  activityType: string,
-  activityRef: string,
-  result: 'correct' | 'helped' | 'skipped',
-) {
-  try {
-    const res = await fetch('/api/progress', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ activity_type: activityType, activity_ref: activityRef, result }),
-    });
-    if (!res.ok) console.error('Failed to record progress:', res.status);
-    await fetch('/api/achievements', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
-  } catch (err) {
-    console.error('Failed to record progress:', err);
-  }
 }

@@ -1,5 +1,7 @@
 'use client';
 
+import { shuffle as shuffleArray, recordProgress } from '@/lib/utils';
+
 import { Suspense, useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -38,14 +40,6 @@ interface CellData {
   col: number;
 }
 
-function shuffleArray<T>(arr: T[]): T[] {
-  const shuffled = [...arr];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-}
 
 function getDirectionDelta(dir: Direction): [number, number] {
   switch (dir) {
@@ -271,17 +265,7 @@ function WordSearch() {
           setFoundCells(newFoundCells);
 
           // Record progress
-          fetch('/api/progress', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              activity_type: 'spelling_wordsearch',
-              activity_ref: match.word,
-              result: 'correct',
-            }),
-          })
-            .then(() => fetch('/api/achievements', { method: 'POST', headers: { 'Content-Type': 'application/json' } }))
-            .catch((err) => console.error('Failed to record progress:', err));
+          recordProgress('spelling_wordsearch', match.word, 'correct');
 
           if (newFound.size === placedWords.length) {
             timerRef.current = setTimeout(() => setShowFinal(true), 800);

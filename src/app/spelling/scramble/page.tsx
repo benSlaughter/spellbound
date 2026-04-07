@@ -1,5 +1,7 @@
 'use client';
 
+import { shuffle as shuffleArray, recordProgress } from '@/lib/utils';
+
 import { Suspense, useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -59,14 +61,6 @@ function tileSize(wordLength: number): { tile: string; text: string; empty: stri
   };
 }
 
-function shuffleArray<T>(arr: T[]): T[] {
-  const shuffled = [...arr];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-}
 
 function getEncouragement() {
   return ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)];
@@ -169,17 +163,7 @@ function Scramble() {
 
     // Read hint state from ref for accurate recording
     const result = hintRef.current ? 'helped' : 'correct';
-    fetch('/api/progress', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        activity_type: 'spelling_scramble',
-        activity_ref: word,
-        result,
-      }),
-    })
-      .then(() => fetch('/api/achievements', { method: 'POST', headers: { 'Content-Type': 'application/json' } }))
-      .catch((err) => console.error('Failed to record progress:', err));
+    recordProgress('spelling_scramble', word, result);
 
     timerRef.current = setTimeout(() => {
       const ctx = ctxRef.current;

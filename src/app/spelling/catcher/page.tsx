@@ -1,5 +1,7 @@
 'use client';
 
+import { shuffle as shuffleArray, recordProgress } from '@/lib/utils';
+
 import { Suspense, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -62,14 +64,6 @@ function getEncouragement() {
   return ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)];
 }
 
-function shuffleArray<T>(arr: T[]): T[] {
-  const shuffled = [...arr];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-}
 
 let letterIdCounter = 0;
 
@@ -200,22 +194,7 @@ function SpellCatcher() {
           playSound('achievement');
 
           const result = wrongCount > 0 ? 'helped' : 'correct';
-          fetch('/api/progress', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              activity_type: 'spelling_catcher',
-              activity_ref: currentWord.word,
-              result,
-            }),
-          })
-            .then(() =>
-              fetch('/api/achievements', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-              })
-            )
-            .catch((err) => console.error('Failed to record progress:', err));
+          recordProgress('spelling_catcher', currentWord.word, result);
 
           timerRef.current = setTimeout(advanceToNext, 2500);
         } else {
