@@ -3,27 +3,9 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import GameCard from '@/components/ui/GameCard';
-import { Plant, Tree, TreeEvergreen, Lightbulb, Books, Calculator, GameController, Trophy, ArrowRight } from '@phosphor-icons/react';
+import { Plant, Tree, TreeEvergreen, Lightbulb, Books, Calculator, GameController, Trophy } from '@phosphor-icons/react';
 import { SvgDaisy, SvgTulip, SvgBluebell, SvgDaffodil, SvgLavender } from '@/components/svg';
 import Link from 'next/link';
-
-const ACTIVITY_ROUTES: Record<string, { label: string; href: string }> = {
-  spelling_scramble: { label: 'Word Scramble', href: '/spelling/scramble' },
-  spelling_wordsearch: { label: 'Word Search', href: '/spelling/wordsearch' },
-  spelling_memory: { label: 'Memory Match', href: '/spelling/memory' },
-  spelling_missing: { label: 'Missing Letters', href: '/spelling/missing' },
-  spelling_builder: { label: 'Word Builder', href: '/spelling/builder' },
-  spelling_catcher: { label: 'Spell Catcher', href: '/spelling/catcher' },
-  spelling_volcano: { label: 'Word Volcano', href: '/spelling/volcano' },
-  spelling_wordal: { label: 'Wordal', href: '/spelling/wordal' },
-  maths_bubbles: { label: 'Number Bubbles', href: '/maths/bubbles' },
-  maths_mountain: { label: 'Math Mountain', href: '/maths/mountain' },
-  maths_puzzle: { label: 'Puzzle Pieces', href: '/maths/puzzle' },
-  maths_river: { label: 'Number River', href: '/maths/river' },
-  maths_maze: { label: 'Math Maze', href: '/maths/maze' },
-  maths_cascade: { label: 'Number Cascade', href: '/maths/cascade' },
-  maths_explorer: { label: 'Times Table Explorer', href: '/maths/explorer' },
-};
 
 const stagger = {
   hidden: { opacity: 0 },
@@ -47,24 +29,12 @@ const SUGGESTIONS = [
 
 export default function Home() {
   const [name, setName] = useState('Learner');
-  const [lastActivity, setLastActivity] = useState<{ label: string; href: string } | null>(null);
   const suggestion = SUGGESTIONS[new Date().getDay() % SUGGESTIONS.length];
 
   useEffect(() => {
     fetch('/api/profile')
       .then(res => res.ok ? res.json() : null)
       .then(data => { if (data?.name) setName(data.name); })
-      .catch(() => {});
-
-    fetch('/api/progress')
-      .then(res => res.ok ? res.json() : null)
-      .then(data => {
-        const recent = data?.recentActivity?.[0];
-        if (recent?.activity_type) {
-          const route = ACTIVITY_ROUTES[recent.activity_type];
-          if (route) setLastActivity(route);
-        }
-      })
       .catch(() => {});
   }, []);
 
@@ -96,22 +66,6 @@ export default function Home() {
           <p className="text-garden-text-light">{suggestion}</p>
         </div>
       </motion.div>
-
-      {/* Continue where you left off */}
-      {lastActivity && (
-        <motion.div variants={fadeUp}>
-          <Link
-            href={lastActivity.href}
-            className="game-card p-4 flex items-center gap-4 bg-primary-light/10 border border-primary/20 hover:border-primary/40 transition-colors"
-          >
-            <ArrowRight weight="duotone" size={24} className="text-primary shrink-0" />
-            <div className="flex-1 min-w-0">
-              <p className="text-sm text-garden-text-light">Pick up where you left off</p>
-              <p className="font-bold text-garden-text">{lastActivity.label}</p>
-            </div>
-          </Link>
-        </motion.div>
-      )}
 
       {/* Main activity cards */}
       <motion.section variants={fadeUp}>
