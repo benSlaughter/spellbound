@@ -298,6 +298,7 @@ function MissingLetters() {
                     maxLength={1}
                     autoComplete="off"
                     autoCapitalize="off"
+                    aria-label={`Letter ${slot.index + 1}`}
                     onChange={(e) => handleInput(slot.index, e.target.value)}
                     className={`
                       ${tileSizes.tile} rounded-xl text-center ${tileSizes.text} font-extrabold
