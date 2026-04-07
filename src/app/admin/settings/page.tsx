@@ -199,8 +199,8 @@ export default function SettingsPage() {
         <h2 className="text-lg font-semibold text-stone-800 mb-4">
           Learner Name
         </h2>
-        <form onSubmit={handleSaveName} className="flex gap-3 items-end">
-          <div className="flex-1">
+        <form onSubmit={handleSaveName} className="space-y-3">
+          <div>
             <label
               htmlFor="learner-name"
               className="block text-sm font-medium text-stone-700 mb-1"
@@ -223,7 +223,7 @@ export default function SettingsPage() {
             disabled={saving || !learnerName.trim()}
             className="btn-admin-primary"
           >
-            {saving ? "Saving…" : "Save"}
+            {saving ? "Saving…" : "Save Name"}
           </button>
         </form>
       </section>
