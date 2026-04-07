@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lightning, ArrowRight, Star, SpeakerHigh, LightbulbFilament } from '@phosphor-icons/react';
+import { Lightning, Star, SpeakerHigh, LightbulbFilament } from '@phosphor-icons/react';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
@@ -37,7 +37,6 @@ export default function ChallengePage() {
   const [finished, setFinished] = useState(false);
 
   // Shared question state
-  const [input, setInput] = useState('');
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState(false);
   const [shake, setShake] = useState(false);
@@ -54,7 +53,6 @@ export default function ChallengePage() {
   const [mathChoices, setMathChoices] = useState<number[]>([]);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     return () => { if (timerRef.current) clearTimeout(timerRef.current); };
@@ -77,7 +75,6 @@ export default function ChallengePage() {
   }, []);
 
   function setupQuestion(q: ChallengeQuestion) {
-    setInput('');
     setFeedback(null);
     setIsCorrect(false);
     setShake(false);
@@ -85,7 +82,8 @@ export default function ChallengePage() {
     setScrambleAnswer([]);
 
     if (q.type === 'spelling' && q.word) {
-      if (q.format === 'scramble') {
+      // Both 'type' and 'scramble' use letter tiles — no text input
+      if (q.format === 'type' || q.format === 'scramble') {
         const letters = q.word.split('');
         let shuffled = shuffle(letters);
         while (shuffled.join('') === q.word && letters.length > 1) {
@@ -110,8 +108,6 @@ export default function ChallengePage() {
       }
       setMathChoices(makeShuffledAnswers(q.answer, wrongs));
     }
-
-    setTimeout(() => inputRef.current?.focus(), 100);
   }
 
   function handleCorrect(q: ChallengeQuestion) {
@@ -140,19 +136,6 @@ export default function ChallengePage() {
     setAttempts(a => a + 1);
     playSound('pop');
     timerRef.current = setTimeout(() => setShake(false), 500);
-  }
-
-  // --- Spelling: Type ---
-  function handleTypeSubmit(q: ChallengeQuestion) {
-    if (input.trim().toLowerCase() === q.word?.toLowerCase()) {
-      handleCorrect(q);
-    } else {
-      handleWrong();
-      if (attempts >= 2 && q.word) {
-        setFeedback(`The answer is: ${q.word}`);
-        timerRef.current = setTimeout(() => handleCorrect(q), 2000);
-      }
-    }
   }
 
   // --- Spelling: Scramble ---
@@ -277,7 +260,7 @@ export default function ChallengePage() {
             )}
           </div>
 
-          {/* === SPELLING: TYPE === */}
+          {/* === SPELLING: TYPE (letter tiles) === */}
           {q.type === 'spelling' && q.format === 'type' && (
             <div className="text-center">
               <button
@@ -287,22 +270,26 @@ export default function ChallengePage() {
                 <SpeakerHigh weight="duotone" size={20} />
                 Hear the word
               </button>
-              <form onSubmit={e => { e.preventDefault(); handleTypeSubmit(q); }} className="flex gap-2">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={input}
-                  onChange={e => setInput(e.target.value)}
-                  className="input-student flex-1 text-center text-lg"
-                  placeholder="Type the word..."
-                  autoComplete="off"
-                  autoCapitalize="off"
-                  disabled={isCorrect}
-                />
-                <button type="submit" disabled={isCorrect || !input.trim()} className="btn-admin-primary">
-                  <ArrowRight weight="bold" size={20} />
-                </button>
-              </form>
+              <p className="text-sm text-stone-500 mb-3">Tap the letters in order:</p>
+              <div className="flex flex-wrap justify-center gap-2 mb-4 min-h-[44px]">
+                {scrambleAnswer.map((l, i) => (
+                  <span key={i} className="w-10 h-10 rounded-lg bg-emerald-100 border-2 border-emerald-300 flex items-center justify-center font-bold text-lg uppercase text-emerald-800">
+                    {l}
+                  </span>
+                ))}
+              </div>
+              <div className="flex flex-wrap justify-center gap-2">
+                {scrambledLetters.map((l, i) => (
+                  <button
+                    key={`${i}-${l}`}
+                    onClick={() => handleScrambleTap(l, i)}
+                    disabled={isCorrect}
+                    className="w-10 h-10 rounded-lg bg-sky-100 border-2 border-sky-300 font-bold text-lg uppercase text-sky-800 hover:bg-sky-200 transition-colors active:scale-90"
+                  >
+                    {l}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
