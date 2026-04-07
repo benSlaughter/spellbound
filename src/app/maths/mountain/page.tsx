@@ -18,6 +18,7 @@ import {
   makeShuffledAnswers,
   type MathQuestion,
 } from '@/lib/maths-helpers';
+import { fetchMathsStats } from '@/lib/utils';
 
 const TOTAL_STOPS = 10;
 
@@ -40,13 +41,15 @@ function MathMountain() {
   const [finished, setFinished] = useState(false);
   const [answers, setAnswers] = useState<number[]>([]);
 
-  // Generate questions client-side only to avoid hydration mismatch
+  // Generate questions client-side with spaced repetition ordering
   useEffect(() => {
     const tables = parseTablesParam(searchParams.get('tables'));
     const difficulty = parseDifficultyParam(searchParams.get('difficulty'));
-    const qs = generateQuestions(tables, difficulty, TOTAL_STOPS);
-    setQuestions(qs);
-    if (qs[0]) setAnswers(makeShuffledAnswers(qs[0].answer, qs[0].wrongAnswers));
+    fetchMathsStats().then(statsMap => {
+      const qs = generateQuestions(tables, difficulty, TOTAL_STOPS, statsMap);
+      setQuestions(qs);
+      if (qs[0]) setAnswers(makeShuffledAnswers(qs[0].answer, qs[0].wrongAnswers));
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const timerRef = useRef<NodeJS.Timeout | null>(null);

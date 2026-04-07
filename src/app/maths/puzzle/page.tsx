@@ -17,6 +17,7 @@ import {
   makeShuffledAnswers,
   type MathQuestion,
 } from '@/lib/maths-helpers';
+import { fetchMathsStats } from '@/lib/utils';
 import {
   Rainbow,
   Flower,
@@ -81,8 +82,10 @@ function PuzzlePieces() {
     setPictureIndex(Math.floor(Math.random() * PICTURES.length));
     const tables = parseTablesParam(searchParams.get('tables'));
     const difficulty = parseDifficultyParam(searchParams.get('difficulty'));
-    setQuestions(generateQuestions(tables, difficulty, GRID_SIZE));
-    setReady(true);
+    fetchMathsStats().then(statsMap => {
+      setQuestions(generateQuestions(tables, difficulty, GRID_SIZE, statsMap));
+      setReady(true);
+    });
   }, [searchParams]);
 
   const picture = PICTURES[pictureIndex];

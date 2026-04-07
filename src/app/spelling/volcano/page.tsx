@@ -3,7 +3,7 @@
 import { Suspense, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { recordProgress } from '@/lib/utils';
+import { recordProgress, smartWordOrder } from '@/lib/utils';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import CelebrationOverlay from '@/components/ui/CelebrationOverlay';
@@ -145,11 +145,12 @@ function Volcano() {
         if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
         return res.json();
       })
-      .then((raw) => {
+      .then(async (raw) => {
         const data: SpellingList[] = Array.isArray(raw) ? raw : [raw];
         if (data.length > 0 && data[0].words.length > 0) {
-          setList(data[0]);
-          setRocks(buildRocks(data[0].words[0].word));
+          const ordered = await smartWordOrder(data[0].words);
+          setList({ ...data[0], words: ordered });
+          setRocks(buildRocks(ordered[0].word));
         } else {
           setNoList(true);
         }

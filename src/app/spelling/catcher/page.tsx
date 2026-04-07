@@ -1,6 +1,6 @@
 'use client';
 
-import { shuffle as shuffleArray, recordProgress } from '@/lib/utils';
+import { shuffle as shuffleArray, recordProgress, smartWordOrder } from '@/lib/utils';
 
 import { Suspense, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -142,11 +142,12 @@ function SpellCatcher() {
         if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
         return res.json();
       })
-      .then((raw) => {
+      .then(async (raw) => {
         const data: SpellingList[] = Array.isArray(raw) ? raw : [raw];
         if (data.length > 0 && data[0].words.length > 0) {
-          setList(data[0]);
-          setLetters(buildFallingLetters(data[0].words[0].word));
+          const ordered = await smartWordOrder(data[0].words);
+          setList({ ...data[0], words: ordered });
+          setLetters(buildFallingLetters(ordered[0].word));
         } else {
           setNoList(true);
         }

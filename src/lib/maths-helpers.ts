@@ -1,5 +1,6 @@
 /** A generated maths question with answer and distractors. */
 import { shuffle, recordProgress } from './utils';
+import { sortForSession, canonicalMathsRef, type ItemStats } from './spaced-repetition';
 
 export { recordProgress };
 
@@ -119,12 +120,14 @@ function generatePlausibleWrongAnswers(
  * @param tables - Array of times tables to include (1–12). Empty = all tables.
  * @param difficulty - Difficulty level determining question types
  * @param count - Maximum number of questions to return
- * @returns Array of shuffled MathQuestion objects
+ * @param statsMap - Optional spaced repetition stats for smart ordering
+ * @returns Array of MathQuestion objects, ordered by confidence if stats provided
  */
 export function generateQuestions(
   tables: number[],
   difficulty: Difficulty,
   count: number,
+  statsMap?: Map<string, ItemStats>,
 ): MathQuestion[] {
   if (tables.length === 0) tables = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
@@ -175,6 +178,17 @@ export function generateQuestions(
         });
       }
     }
+  }
+
+  if (statsMap && statsMap.size > 0) {
+    // Use spaced repetition ordering: weakest facts first
+    const refs = allQuestions.map(q => canonicalMathsRef(q.ref));
+    const orderedRefs = sortForSession(refs, statsMap);
+    const refToQuestion = new Map(allQuestions.map(q => [canonicalMathsRef(q.ref), q]));
+    const ordered = orderedRefs
+      .map(ref => refToQuestion.get(ref))
+      .filter((q): q is MathQuestion => q !== undefined);
+    return ordered.slice(0, count);
   }
 
   return shuffle(allQuestions).slice(0, count);

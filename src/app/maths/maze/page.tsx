@@ -16,6 +16,7 @@ import {
   makeShuffledAnswers,
   type MathQuestion,
 } from '@/lib/maths-helpers';
+import { fetchMathsStats } from '@/lib/utils';
 
 const TOTAL_ROOMS = 8;
 
@@ -50,23 +51,24 @@ function MathMaze() {
     return () => { if (timerRef.current) clearTimeout(timerRef.current); };
   }, []);
 
-  // Generate questions client-side to avoid hydration mismatch
+  // Generate questions client-side with spaced repetition ordering
   useEffect(() => {
     const tables = parseTablesParam(searchParams.get('tables'));
     const difficulty = parseDifficultyParam(searchParams.get('difficulty'));
-    const questions = generateQuestions(tables, difficulty, TOTAL_ROOMS);
+    fetchMathsStats().then(statsMap => {
+      const questions = generateQuestions(tables, difficulty, TOTAL_ROOMS, statsMap);
 
-    const roomData: RoomData[] = questions.map((q) => {
-      // Pick 2 wrong answers from the available 3, then shuffle with the correct one
-      const twoWrong = q.wrongAnswers.slice(0, 2);
-      return {
-        question: q,
-        doors: makeShuffledAnswers(q.answer, twoWrong),
-      };
+      const roomData: RoomData[] = questions.map((q) => {
+        const twoWrong = q.wrongAnswers.slice(0, 2);
+        return {
+          question: q,
+          doors: makeShuffledAnswers(q.answer, twoWrong),
+        };
+      });
+
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setRooms(roomData);
     });
-
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setRooms(roomData);
   }, [searchParams]);
 
   const advanceToNext = useCallback(() => {

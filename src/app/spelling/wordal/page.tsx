@@ -1,6 +1,6 @@
 'use client';
 
-import { shuffle as shuffleArray, recordProgress } from '@/lib/utils';
+import { shuffle as shuffleArray, recordProgress, smartWordOrder } from '@/lib/utils';
 
 import { Suspense, useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -147,13 +147,13 @@ function Wordal() {
         if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
         return res.json();
       })
-      .then((raw) => {
+      .then(async (raw) => {
         const data: SpellingList[] = Array.isArray(raw) ? raw : [raw];
         if (data.length > 0 && data[0].words.length > 0) {
-          setList(data[0]);
-          const indices = data[0].words.map((_, i) => i);
-          const shuffled = shuffleArray(indices);
-          setWordOrder(shuffled);
+          const ordered = await smartWordOrder(data[0].words);
+          setList({ ...data[0], words: ordered });
+          // Words already ordered by SR — just generate sequential indices
+          setWordOrder(ordered.map((_, i) => i));
         } else {
           setNoList(true);
         }

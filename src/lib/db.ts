@@ -61,9 +61,13 @@ function initSchema(database: Database.Database): void {
 /** Apply incremental schema migrations for existing databases. */
 function migrateSchema(database: Database.Database): void {
   // Add unique constraint on spelling_words(list_id, word) if missing.
-  // SQLite can't ALTER to add constraints, so we create the index instead.
   database.exec(
     "CREATE UNIQUE INDEX IF NOT EXISTS idx_spelling_words_unique ON spelling_words(list_id, word)"
+  );
+
+  // Composite index for spaced repetition item stats queries.
+  database.exec(
+    "CREATE INDEX IF NOT EXISTS idx_progress_profile_type ON progress(profile_id, activity_type)"
   );
 }
 

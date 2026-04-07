@@ -16,6 +16,7 @@ import {
   recordProgress,
   type MathQuestion,
 } from '@/lib/maths-helpers';
+import { fetchMathsStats } from '@/lib/utils';
 
 const TOTAL_QUESTIONS = 10;
 const GRID_COLS = 4;
@@ -84,13 +85,15 @@ function NumberCascade() {
   useEffect(() => {
     const tables = parseTablesParam(searchParams.get('tables'));
     const difficulty = parseDifficultyParam(searchParams.get('difficulty'));
-    const qs = generateQuestions(tables, difficulty, TOTAL_QUESTIONS);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setQuestions(qs);
-    if (qs.length > 0) {
-      setGrid(makeGrid(qs[0].answer, qs[0].wrongAnswers));
-    }
-    setReady(true);
+    fetchMathsStats().then(statsMap => {
+      const qs = generateQuestions(tables, difficulty, TOTAL_QUESTIONS, statsMap);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setQuestions(qs);
+      if (qs.length > 0) {
+        setGrid(makeGrid(qs[0].answer, qs[0].wrongAnswers));
+      }
+      setReady(true);
+    });
   }, [searchParams]);
 
   const question: MathQuestion | undefined = questions[currentIndex];
