@@ -100,7 +100,6 @@ export default function SimonPage() {
     const newSeq = [...currentSeq, next];
     setSequence(newSeq);
     setFeedback(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)]);
-    playSound('success');
 
     timerRef.current = setTimeout(() => {
       showSequence(newSeq);
