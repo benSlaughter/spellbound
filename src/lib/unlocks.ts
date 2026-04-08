@@ -29,5 +29,15 @@ export const GAMES_UNLOCKS: GameUnlock[] = [
     requiredCorrect: 20,
     unlockMessage: 'Get 20 correct answers to unlock!',
   },
-  // Leave room for future games — add more entries here
+  {
+    href: '/games/simon',
+    title: 'Simon Says',
+    description:
+      'Watch the pattern, then repeat it — how long a sequence can you remember?',
+    iconName: 'Brain',
+    iconColor: '#E91E63',
+    cardColor: 'bg-pink-50 border-2 border-pink-200',
+    requiredCorrect: 40,
+    unlockMessage: 'Get 40 correct answers to unlock!',
+  },
 ];

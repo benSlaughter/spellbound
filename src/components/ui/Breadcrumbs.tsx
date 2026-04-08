@@ -21,6 +21,7 @@ const ROUTE_NAMES: Record<string, string> = {
   'progress': 'My Garden',
   'games': 'Games',
   'spotmatch': 'Spot Match',
+  'simon': 'Simon Says',
   'entry': 'Add Words',
   'admin': 'Admin',
   'spellings': 'Spellings',
