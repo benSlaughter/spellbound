@@ -17,18 +17,18 @@ export async function GET() {
     const db = getDb();
     const profileId = 1;
 
-    // --- Spelling: get active list words ---
-    const activeList = db.prepare(
-      "SELECT id FROM spelling_lists WHERE is_active = 1 AND (profile_id = ? OR profile_id IS NULL) LIMIT 1"
-    ).get(profileId) as { id: number } | undefined;
+    // --- Spelling: get words from ALL non-archived lists ---
+    const words = db.prepare(
+      `SELECT DISTINCT sw.word, sw.hint
+       FROM spelling_words sw
+       JOIN spelling_lists sl ON sw.list_id = sl.id
+       WHERE (sl.profile_id = ? OR sl.profile_id IS NULL)
+         AND sl.archived = 0`
+    ).all(profileId) as WordRow[];
 
     let spellingItems: { word: string; hint: string | null; confidence: number }[] = [];
 
-    if (activeList) {
-      const words = db.prepare(
-        "SELECT word, hint FROM spelling_words WHERE list_id = ?"
-      ).all(activeList.id) as WordRow[];
-
+    if (words.length > 0) {
       const spellingStats = db.prepare(
         `SELECT activity_ref, COUNT(*) as total,
                 SUM(CASE WHEN result='correct' THEN 1 ELSE 0 END) as correct,
