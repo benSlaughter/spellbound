@@ -153,8 +153,25 @@ export default function ChallengePage() {
     playSound('pop');
     timerRef.current = setTimeout(() => {
       setShake(false);
-      setFeedback(null);
-    }, 1500);
+    }, 500);
+  }
+
+  function handleSkip() {
+    const q = questions[currentIdx];
+    const activityType = q.type === 'spelling' ? 'spelling_challenge' : 'maths_challenge';
+    recordProgress(activityType, q.ref, 'skipped');
+    setFeedback(q.word ? `The answer was: ${q.word}` : `The answer was: ${q.answer}`);
+    setIsCorrect(true);
+    timerRef.current = setTimeout(() => {
+      const nextIdx = currentIdx + 1;
+      if (nextIdx >= questions.length) {
+        setFinished(true);
+        playSound('achievement');
+      } else {
+        setCurrentIdx(nextIdx);
+        setupQuestion(questions[nextIdx]);
+      }
+    }, 2000);
   }
 
   // --- Spelling: Scramble ---
@@ -330,6 +347,13 @@ export default function ChallengePage() {
           {/* === SPELLING: SCRAMBLE === */}
           {q.type === 'spelling' && q.format === 'scramble' && (
             <div className="text-center">
+              <button
+                onClick={() => q.word && speakWord(q.word)}
+                className="mx-auto mb-3 flex items-center gap-2 px-3 py-1.5 bg-primary-light/20 rounded-full text-primary font-bold text-sm hover:bg-primary-light/30 transition-colors"
+              >
+                <SpeakerHigh weight="duotone" size={18} />
+                Hear the word
+              </button>
               <p className="text-sm text-stone-500 mb-3">Unscramble the letters:</p>
               <div className="flex flex-wrap justify-center gap-2 mb-4 min-h-[44px]">
                 {scrambleAnswer.map((l, i) => (
@@ -356,6 +380,13 @@ export default function ChallengePage() {
           {/* === SPELLING: MISSING === */}
           {q.type === 'spelling' && q.format === 'missing' && (
             <div className="text-center">
+              <button
+                onClick={() => q.word && speakWord(q.word)}
+                className="mx-auto mb-3 flex items-center gap-2 px-3 py-1.5 bg-primary-light/20 rounded-full text-primary font-bold text-sm hover:bg-primary-light/30 transition-colors"
+              >
+                <SpeakerHigh weight="duotone" size={18} />
+                Hear the word
+              </button>
               <p className="text-sm text-stone-500 mb-3">Fill in the missing letters:</p>
               <div className="flex flex-wrap justify-center gap-1.5">
                 {missingSlots.map((slot, i) => (
@@ -399,6 +430,22 @@ export default function ChallengePage() {
                 ))}
               </div>
             </div>
+          )}
+
+          {/* Skip button — appears after a wrong attempt */}
+          {attempts > 0 && !isCorrect && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mt-4 text-center"
+            >
+              <button
+                onClick={handleSkip}
+                className="text-sm text-stone-400 hover:text-stone-600 transition-colors underline underline-offset-2"
+              >
+                Too tricky? Skip this one
+              </button>
+            </motion.div>
           )}
 
           {/* Feedback */}
