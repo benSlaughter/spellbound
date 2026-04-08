@@ -114,13 +114,14 @@ export default function ChallengePage() {
         })));
       }
     } else if (q.type === 'maths' && q.answer !== undefined) {
+      const answer = q.answer;
       const wrongs: number[] = [];
       while (wrongs.length < 3) {
         const offset = (Math.floor(Math.random() * 10) + 1) * (Math.random() > 0.5 ? 1 : -1);
-        const wrong = q.answer + offset;
-        if (wrong > 0 && wrong !== q.answer && !wrongs.includes(wrong)) wrongs.push(wrong);
+        const wrong = answer + offset;
+        if (wrong > 0 && wrong !== answer && !wrongs.includes(wrong)) wrongs.push(wrong);
       }
-      setMathChoices(makeShuffledAnswers(q.answer, wrongs));
+      setMathChoices(makeShuffledAnswers(answer, wrongs));
     }
   }
 
@@ -220,7 +221,9 @@ export default function ChallengePage() {
     return (
       <div className="page-container max-w-lg mx-auto text-center py-12">
         <CelebrationOverlay
+          show={true}
           message="Challenge Complete!"
+          onDismiss={() => {}}
           navigateBack
         />
         <Lightning weight="duotone" size={64} className="mx-auto text-amber-400 mb-4" />
